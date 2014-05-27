@@ -1,4 +1,4 @@
-#region Using Statements
+﻿#region Using Statements
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace ZombieRoids
 {
+#if WINDOWS || LINUX
     /// <summary>
     /// The main class.
     /// </summary>
@@ -21,4 +22,5 @@ namespace ZombieRoids
                 game.Run();
         }
     }
+#endif
 }
