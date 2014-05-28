@@ -18,6 +18,7 @@ namespace ZombieRoids
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
+        Player player;
 
         public Game1()
             : base()
@@ -37,6 +38,13 @@ namespace ZombieRoids
             // TODO: Add your initialization logic here
 
             base.Initialize();
+
+            // Player
+            player = new Player();
+            Vector2 v2playerPos = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X,
+                                              GraphicsDevice.Viewport.TitleSafeArea.Y + GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
+
+            player.Initialize(Content.Load<Texture2D>("Graphics\\player"), v2playerPos);
         }
 
         /// <summary>
@@ -84,7 +92,12 @@ namespace ZombieRoids
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+            spriteBatch.Begin();
+            
+            // Player
+            player.Draw(spriteBatch);
 
+            spriteBatch.End();
             base.Draw(gameTime);
         }
     }
