@@ -126,33 +126,33 @@ namespace ZombieRoids
         {
             player.Update(gameTime);
             // Gamepad Input
-            player.v2Pos.X += curGamepadState.ThumbSticks.Left.X * fPlayerMoveSpeed;
-            player.v2Pos.Y += curGamepadState.ThumbSticks.Left.Y * fPlayerMoveSpeed;
+            player.m_v2Pos.X += curGamepadState.ThumbSticks.Left.X * fPlayerMoveSpeed;
+            player.m_v2Pos.Y += curGamepadState.ThumbSticks.Left.Y * fPlayerMoveSpeed;
 
             // KB || DPAD
             if (curKeyboardState.IsKeyDown(Keys.Left) ||
                 curGamepadState.DPad.Left == ButtonState.Pressed)
             {
-                player.v2Pos.X -= fPlayerMoveSpeed;
+                player.m_v2Pos.X -= fPlayerMoveSpeed;
             }
             if (curKeyboardState.IsKeyDown(Keys.Right) ||
                 curGamepadState.DPad.Right == ButtonState.Pressed)
             {
-                player.v2Pos.X += fPlayerMoveSpeed;
+                player.m_v2Pos.X += fPlayerMoveSpeed;
             }
             if (curKeyboardState.IsKeyDown(Keys.Up) ||
                 curGamepadState.DPad.Up == ButtonState.Pressed)
             {
-                player.v2Pos.Y -= fPlayerMoveSpeed;
+                player.m_v2Pos.Y -= fPlayerMoveSpeed;
             }
             if (curKeyboardState.IsKeyDown(Keys.Down) ||
                 curGamepadState.DPad.Down == ButtonState.Pressed)
             {
-                player.v2Pos.Y += fPlayerMoveSpeed;
+                player.m_v2Pos.Y += fPlayerMoveSpeed;
             }
 
-            player.v2Pos.X = MathHelper.Clamp(player.v2Pos.X, 0, GraphicsDevice.Viewport.Width - player.iWidth);
-            player.v2Pos.Y = MathHelper.Clamp(player.v2Pos.Y, 0, GraphicsDevice.Viewport.Height - player.iHeight);
+            player.m_v2Pos.X = MathHelper.Clamp(player.m_v2Pos.X, 0, GraphicsDevice.Viewport.Width - player.m_iWidth);
+            player.m_v2Pos.Y = MathHelper.Clamp(player.m_v2Pos.Y, 0, GraphicsDevice.Viewport.Height - player.iHeight);
 
         }
 

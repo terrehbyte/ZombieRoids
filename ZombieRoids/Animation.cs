@@ -8,102 +8,102 @@ namespace ZombieRoids
     class Animation
     {
         // Spritesheet for Animation
-        Texture2D tspriteSheet;
+        Texture2D m_tSpriteSheet;
 
         // Strip Scale
-        float fscale;
+        float m_fScale;
 
         // Time since last animation frame
-        int ielapsedtime;
+        int m_iElapsedTime;
 
         // Time until next animation frame
-        int iframetime;
+        int m_iFrameTime;
 
         // Frame Count
-        int iframeCount;
+        int m_iFrameCount;
 
         // Frame Index
-        int icurFrame;
+        int m_iCurFrame;
 
         // Frame Color
-        Color ccolor;
+        Color m_cColor;
 
         // Source Rect to display
-        Rectangle rctsourceRect = new Rectangle();
-        Rectangle rctdestRect = new Rectangle();
+        Rectangle m_rctSourceRect = new Rectangle();
+        Rectangle m_rctDestRect = new Rectangle();
 
         // Frame Dims
-        public int iFrameWidth;
-        public int iFrameHeight;
+        public int m_iFrameWidth;
+        public int m_iFrameHeight;
 
-        public bool bActive;
-        public bool bLooping;
+        public bool m_bActive;
+        public bool m_bLooping;
 
-        public Vector2 v2Pos;
+        public Vector2 m_v2Pos;
 
         public void Initialize(Texture2D a_tTexture, Vector2 a_v2Pos, int a_iFrameWidth, int a_iFrameHeight,
                                int a_iFrameCount, int a_iFrameTime,
                                Color a_cColor, float a_fScale, bool a_bLooping)
         {
-            this.ccolor = a_cColor;
-            this.iFrameWidth = a_iFrameWidth;
-            this.iFrameHeight = a_iFrameHeight;
-            this.iframeCount = a_iFrameCount;
-            this.iframetime = a_iFrameTime;
-            this.fscale = a_fScale;
+            this.m_cColor = a_cColor;
+            this.m_iFrameWidth = a_iFrameWidth;
+            this.m_iFrameHeight = a_iFrameHeight;
+            this.m_iFrameCount = a_iFrameCount;
+            this.m_iFrameTime = a_iFrameTime;
+            this.m_fScale = a_fScale;
 
-            bLooping = a_bLooping;
-            v2Pos = a_v2Pos;
-            tspriteSheet = a_tTexture;
+            m_bLooping = a_bLooping;
+            m_v2Pos = a_v2Pos;
+            m_tSpriteSheet = a_tTexture;
 
-            bActive = true;
+            m_bActive = true;
         }
 
         public void Update(GameTime gameTime)
         {
-            if (!bActive)
+            if (!m_bActive)
             {
                 return;
             }
 
-            ielapsedtime += (int)gameTime.ElapsedGameTime.TotalMilliseconds;
+            m_iElapsedTime += (int)gameTime.ElapsedGameTime.TotalMilliseconds;
 
-            if (ielapsedtime > iframetime)
+            if (m_iElapsedTime > m_iFrameTime)
             {
                 // Next Frame
-                icurFrame++;
+                m_iCurFrame++;
 
-                if (icurFrame == iframeCount)
+                if (m_iCurFrame == m_iFrameCount)
                 {
-                    icurFrame = 0;
+                    m_iCurFrame = 0;
 
-                    if (!bLooping)
+                    if (!m_bLooping)
                     {
-                        bActive = false;
+                        m_bActive = false;
                     }
                 }
 
 
                 // Reset elapsed time
-                ielapsedtime = 0;
+                m_iElapsedTime = 0;
 
             }
 
 
-            rctsourceRect = new Rectangle(icurFrame * iFrameWidth, 0, iFrameWidth, iFrameHeight);
+            m_rctSourceRect = new Rectangle(m_iCurFrame * m_iFrameWidth, 0, m_iFrameWidth, m_iFrameHeight);
 
-            rctdestRect = new Rectangle((int)v2Pos.X - (int)(iFrameWidth * fscale) / 2,
-                                        (int)v2Pos.Y - (int)(iFrameHeight * fscale) / 2,
-                                        (int)(iFrameWidth * fscale),
-                                        (int)(iFrameHeight * fscale));
+            m_rctDestRect = new Rectangle((int)m_v2Pos.X - (int)(m_iFrameWidth * m_fScale) / 2,
+                                        (int)m_v2Pos.Y - (int)(m_iFrameHeight * m_fScale) / 2,
+                                        (int)(m_iFrameWidth * m_fScale),
+                                        (int)(m_iFrameHeight * m_fScale));
 
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            if (bActive)
+            if (m_bActive)
             {
-                spriteBatch.Draw(tspriteSheet, rctdestRect, rctsourceRect, ccolor);
+                spriteBatch.Draw(m_tSpriteSheet, m_rctDestRect, m_rctSourceRect, m_cColor);
             }
         }
     }
