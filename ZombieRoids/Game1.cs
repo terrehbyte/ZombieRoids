@@ -34,7 +34,7 @@ namespace ZombieRoids
         MouseState prevMouseState;
 
         // Move Speed
-        float playerMoveSpeed;
+        float fPlayerMoveSpeed;
 
         public Game1()
             : base()
@@ -57,13 +57,21 @@ namespace ZombieRoids
 
             // Player
             player = new Player();
-            Vector2 v2playerPos = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X,
-                                              GraphicsDevice.Viewport.TitleSafeArea.Y + GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
 
-            playerMoveSpeed = 8.0f;
+            fPlayerMoveSpeed = 8.0f;
             TouchPanel.EnabledGestures = GestureType.FreeDrag;
 
-            player.Initialize(Content.Load<Texture2D>("Graphics\\player"), v2playerPos);
+            Animation aniPlayerAni = new Animation();
+            Texture2D tPlayerTex = Content.Load<Texture2D>("Graphics\\shipanimation");
+
+            //player.Initialize(Content.Load<Texture2D>("Graphics\\player"), v2playerPos);
+            aniPlayerAni.Initialize(tPlayerTex, Vector2.Zero, 115, 69, 8, 30, Color.White, 1f, true);
+
+            Vector2 v2PlayerPos = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X,
+                                              GraphicsDevice.Viewport.TitleSafeArea.Y + GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
+            
+            player.Initialize(aniPlayerAni, v2PlayerPos);
+            
         }
 
         /// <summary>
@@ -116,30 +124,31 @@ namespace ZombieRoids
 
         private void UpdatePlayer(GameTime gameTime)
         {
+            player.Update(gameTime);
             // Gamepad Input
-            player.v2Pos.X += curGamepadState.ThumbSticks.Left.X * playerMoveSpeed;
-            player.v2Pos.Y += curGamepadState.ThumbSticks.Left.Y * playerMoveSpeed;
+            player.v2Pos.X += curGamepadState.ThumbSticks.Left.X * fPlayerMoveSpeed;
+            player.v2Pos.Y += curGamepadState.ThumbSticks.Left.Y * fPlayerMoveSpeed;
 
             // KB || DPAD
             if (curKeyboardState.IsKeyDown(Keys.Left) ||
                 curGamepadState.DPad.Left == ButtonState.Pressed)
             {
-                player.v2Pos.X -= playerMoveSpeed;
+                player.v2Pos.X -= fPlayerMoveSpeed;
             }
             if (curKeyboardState.IsKeyDown(Keys.Right) ||
                 curGamepadState.DPad.Right == ButtonState.Pressed)
             {
-                player.v2Pos.X += playerMoveSpeed;
+                player.v2Pos.X += fPlayerMoveSpeed;
             }
             if (curKeyboardState.IsKeyDown(Keys.Up) ||
                 curGamepadState.DPad.Up == ButtonState.Pressed)
             {
-                player.v2Pos.Y -= playerMoveSpeed;
+                player.v2Pos.Y -= fPlayerMoveSpeed;
             }
             if (curKeyboardState.IsKeyDown(Keys.Down) ||
                 curGamepadState.DPad.Down == ButtonState.Pressed)
             {
-                player.v2Pos.Y += playerMoveSpeed;
+                player.v2Pos.Y += fPlayerMoveSpeed;
             }
 
             player.v2Pos.X = MathHelper.Clamp(player.v2Pos.X, 0, GraphicsDevice.Viewport.Width - player.iWidth);
