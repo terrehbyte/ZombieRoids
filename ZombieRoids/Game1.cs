@@ -171,6 +171,7 @@ namespace ZombieRoids
             pbgBGLayer2.Update(gameTime);
 
             UpdateEnemies(gameTime);
+            UpdateCollision();
 
             // Gamepad Input
             player.m_v2Pos.X += curGamepadState.ThumbSticks.Left.X * fPlayerMoveSpeed;
@@ -240,6 +241,37 @@ namespace ZombieRoids
                 }
             }
             
+        }
+
+        void UpdateCollision()
+        {
+            Rectangle rctPlayer;
+            Rectangle rctEnemy;
+
+            rctPlayer = new Rectangle((int)player.m_v2Pos.X,
+                                      (int)player.m_v2Pos.Y,
+                                      player.m_iWidth,
+                                      player.m_iHealth);
+
+            for (int i = 0; i < lenEnemyList.Count; i++)
+            {
+                rctEnemy = new Rectangle((int)lenEnemyList[i].m_v2Pos.X,
+                                         (int)lenEnemyList[i].m_v2Pos.Y,
+                                         lenEnemyList[i].m_iWidth,
+                                         lenEnemyList[i].m_iHeight);
+
+                if (rctPlayer.Intersects(rctEnemy))
+                {
+                    player.m_iHealth -= lenEnemyList[i].m_iDamage;
+
+                    lenEnemyList[i].m_iHealth = 0;
+                }
+
+                if (player.m_iHealth <= 0)
+                {
+                    player.m_bActive = false;
+                }
+            }
         }
 
         /// <summary>
