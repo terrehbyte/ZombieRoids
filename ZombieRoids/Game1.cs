@@ -36,6 +36,15 @@ namespace ZombieRoids
         // Move Speed
         float fPlayerMoveSpeed;
 
+        // Background
+
+        Texture2D tMainBackground;
+        Rectangle rctBackground;
+        float fBGScale = 1.0f;
+
+        ParallaxingBackground pbgBGLayer1;
+        ParallaxingBackground pbgBGLayer2;
+
         public Game1()
             : base()
         {
@@ -56,21 +65,13 @@ namespace ZombieRoids
             base.Initialize();
 
             // Player
-            player = new Player();
-
             fPlayerMoveSpeed = 8.0f;
             TouchPanel.EnabledGestures = GestureType.FreeDrag;
 
-            Animation aniPlayerAni = new Animation();
-            Texture2D tPlayerTex = Content.Load<Texture2D>("Graphics\\shipanimation");
+            rctBackground = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
 
-            //player.Initialize(Content.Load<Texture2D>("Graphics\\player"), v2playerPos);
-            aniPlayerAni.Initialize(tPlayerTex, Vector2.Zero, 115, 69, 8, 30, Color.White, 1f, true);
-
-            Vector2 v2PlayerPos = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X,
-                                              GraphicsDevice.Viewport.TitleSafeArea.Y + GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
             
-            player.Initialize(aniPlayerAni, v2PlayerPos);
+
             
         }
 
@@ -84,6 +85,31 @@ namespace ZombieRoids
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+            player = new Player();
+
+            Animation aniPlayerAni = new Animation();
+            Texture2D tPlayerTex = Content.Load<Texture2D>("Graphics\\shipanimation");
+
+            aniPlayerAni.Initialize(tPlayerTex, Vector2.Zero, 115, 69, 8, 30, Color.White, 1f, true);
+
+            Vector2 v2PlayerPos = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X,
+                                              GraphicsDevice.Viewport.TitleSafeArea.Y + GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
+
+            player.Initialize(aniPlayerAni, v2PlayerPos);
+
+            // Background
+            pbgBGLayer1 = new ParallaxingBackground();
+            pbgBGLayer2 = new ParallaxingBackground();
+
+            // BACKGROUND
+            pbgBGLayer1.Initialize(Content, "Graphics/bgLayer1", GraphicsDevice.Viewport.Width,
+                                   GraphicsDevice.Viewport.Height, -1);
+
+            pbgBGLayer2.Initialize(Content, "Graphics/bgLayer2", GraphicsDevice.Viewport.Width,
+                                   GraphicsDevice.Viewport.Height, -2);
+
+            tMainBackground = Content.Load<Texture2D>("Graphics/mainbackground");
+
         }
 
         /// <summary>
@@ -125,6 +151,10 @@ namespace ZombieRoids
         private void UpdatePlayer(GameTime gameTime)
         {
             player.Update(gameTime);
+
+            pbgBGLayer1.Update(gameTime);
+            pbgBGLayer2.Update(gameTime);
+
             // Gamepad Input
             player.m_v2Pos.X += curGamepadState.ThumbSticks.Left.X * fPlayerMoveSpeed;
             player.m_v2Pos.Y += curGamepadState.ThumbSticks.Left.Y * fPlayerMoveSpeed;
@@ -167,6 +197,12 @@ namespace ZombieRoids
             // TODO: Add your drawing code here
             spriteBatch.Begin();
             
+            // BG
+            spriteBatch.Draw(tMainBackground, rctBackground, Color.White);
+
+            pbgBGLayer1.Draw(spriteBatch);
+            pbgBGLayer2.Draw(spriteBatch);
+
             // Player
             player.Draw(spriteBatch);
 
