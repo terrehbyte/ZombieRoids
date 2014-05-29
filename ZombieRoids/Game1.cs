@@ -45,6 +45,14 @@ namespace ZombieRoids
         ParallaxingBackground pbgBGLayer1;
         ParallaxingBackground pbgBGLayer2;
 
+        Texture2D tEnemyTex;
+        List<Enemy> lenEnemyList;
+
+        TimeSpan tsEnemySpawnTime;
+        TimeSpan tsPrevEnemySpawnTime;
+
+        Random rngRandom;
+
         public Game1()
             : base()
         {
@@ -70,7 +78,12 @@ namespace ZombieRoids
 
             rctBackground = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
 
-            
+
+            lenEnemyList = new List<Enemy>();
+            tsPrevEnemySpawnTime = TimeSpan.Zero;
+
+            tsEnemySpawnTime = TimeSpan.FromSeconds(1.0f);
+            rngRandom = new Random();
 
             
         }
@@ -110,6 +123,8 @@ namespace ZombieRoids
 
             tMainBackground = Content.Load<Texture2D>("Graphics/mainbackground");
 
+            // Enemy
+            tEnemyTex = Content.Load<Texture2D>("Graphics/mineAnimation");
         }
 
         /// <summary>
@@ -155,6 +170,8 @@ namespace ZombieRoids
             pbgBGLayer1.Update(gameTime);
             pbgBGLayer2.Update(gameTime);
 
+            UpdateEnemies(gameTime);
+
             // Gamepad Input
             player.m_v2Pos.X += curGamepadState.ThumbSticks.Left.X * fPlayerMoveSpeed;
             player.m_v2Pos.Y += curGamepadState.ThumbSticks.Left.Y * fPlayerMoveSpeed;
@@ -186,6 +203,45 @@ namespace ZombieRoids
 
         }
 
+        void AddEnemy()
+        {
+            Animation aniEnemyAnim = new Animation();
+
+            aniEnemyAnim.Initialize(tEnemyTex, Vector2.Zero, 47, 61, 8, 30, Color.White, 1f, true);
+
+            // RNG Enemy Pos
+
+            Vector2 v2EnePos = new Vector2(GraphicsDevice.Viewport.Width + tEnemyTex.Width / 2,
+                                           rngRandom.Next(100, GraphicsDevice.Viewport.Height - 100));
+
+            Enemy eneTemp = new Enemy();
+
+            eneTemp.Initialize(aniEnemyAnim, v2EnePos);
+
+            lenEnemyList.Add(eneTemp);
+        }
+
+        private void UpdateEnemies(GameTime gameTime)
+        {
+            if (gameTime.TotalGameTime - tsPrevEnemySpawnTime > tsEnemySpawnTime)
+            {
+                tsPrevEnemySpawnTime = gameTime.TotalGameTime;
+
+                // Add Enemy
+                AddEnemy();
+            }
+
+            for (int i = lenEnemyList.Count - 1; i >= 0; i--)
+            {
+                lenEnemyList[i].Update(gameTime);
+                if (lenEnemyList[i].m_bActive == false)
+                {
+                    lenEnemyList.RemoveAt(i);
+                }
+            }
+            
+        }
+
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
@@ -206,8 +262,16 @@ namespace ZombieRoids
             // Player
             player.Draw(spriteBatch);
 
+            for (int i = 0; i < lenEnemyList.Count; i++)
+            {
+                lenEnemyList[i].Draw(spriteBatch);
+            }
+
+
             spriteBatch.End();
             base.Draw(gameTime);
+
+
         }
     }
 }
