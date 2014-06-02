@@ -1,49 +1,57 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace ZombieRoids
 {
-    class Player
+    class Player : Entity
     {
-        public Animation m_aniPlayerAnimation;
-        public Texture2D m_tPlayerTex;
-        public Vector2 m_v2Pos;
         public bool m_bActive;
         public int m_iHealth;
-        public int m_iWidth
-        {
-            get
-            {
-                return m_aniPlayerAnimation.m_iFrameWidth;
-            }
-        }
-        public int iHeight
-        {
-            get
-            {
-                return m_aniPlayerAnimation.m_iFrameHeight;
-            }
-        }
+        public int m_iSpeed = 10;
 
-        public void Initialize(Animation a_animation, Vector2 a_v2Pos)
+        public override void Initialize(Texture2D a_tTex, Vector2 a_v2Pos)
         {
-            m_aniPlayerAnimation = a_animation;
+            m_tTex = a_tTex;
             m_v2Pos = a_v2Pos;
             m_bActive = true;
             m_iHealth = 100;
         }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
-            m_aniPlayerAnimation.m_v2Pos = m_v2Pos;
-            m_aniPlayerAnimation.Update(gameTime);
+            m_v2Vel = Input();
+
+            // Calculate new position
+            m_v2Pos += m_v2Vel;
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        Vector2 Input()
         {
-            //spriteBatch.Draw(tPlayerTex, v2Pos, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
-            m_aniPlayerAnimation.Draw(spriteBatch);
+            // grab Keyboard Input and stuff it into a vector
+            KeyboardState kbCurKeys = Keyboard.GetState();
+            Vector2 v2Input = new Vector2();
+
+            if (kbCurKeys.IsKeyDown(Keys.W))
+            {
+                v2Input.Y -= m_iSpeed;
+            }
+            if (kbCurKeys.IsKeyDown(Keys.S))
+            {
+                v2Input.Y += m_iSpeed;
+            }
+
+            if (kbCurKeys.IsKeyDown(Keys.A))
+            {
+                v2Input.X -= m_iSpeed;
+            }
+            if (kbCurKeys.IsKeyDown(Keys.D))
+            {
+                v2Input.X += m_iSpeed;
+            }
+
+            return v2Input;
         }
     }
 }

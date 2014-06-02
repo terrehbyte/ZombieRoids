@@ -100,15 +100,12 @@ namespace ZombieRoids
             // TODO: use this.Content to load your game content here
             player = new Player();
 
-            Animation aniPlayerAni = new Animation();
-            Texture2D tPlayerTex = Content.Load<Texture2D>("Graphics\\shipanimation");
-
-            aniPlayerAni.Initialize(tPlayerTex, Vector2.Zero, 115, 69, 8, 30, Color.White, 1f, true);
+            Texture2D tPlayerTex = Content.Load<Texture2D>("Graphics\\player");
 
             Vector2 v2PlayerPos = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X,
                                               GraphicsDevice.Viewport.TitleSafeArea.Y + GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
 
-            player.Initialize(aniPlayerAni, v2PlayerPos);
+            player.Initialize(tPlayerTex, v2PlayerPos);
 
             // Background
             pbgBGLayer1 = new ParallaxingBackground();
@@ -143,65 +140,20 @@ namespace ZombieRoids
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
-            // TODO: Add your update logic here
-
-            base.Update(gameTime);
-
-            prevGamepadState = curGamepadState;
-            prevKeyboardState = curKeyboardState;
-            prevMouseState = curMouseState;
-
-            curKeyboardState = Keyboard.GetState();
-            curGamepadState = GamePad.GetState(PlayerIndex.One);
-            curMouseState = Mouse.GetState();
-
-
-
             UpdatePlayer(gameTime);
+            UpdateEnemies(gameTime);
+            UpdateCollision();
+
+            pbgBGLayer1.Update(gameTime);
+            pbgBGLayer2.Update(gameTime);
         }
 
         private void UpdatePlayer(GameTime gameTime)
         {
             player.Update(gameTime);
 
-            pbgBGLayer1.Update(gameTime);
-            pbgBGLayer2.Update(gameTime);
-
-            UpdateEnemies(gameTime);
-            UpdateCollision();
-
-            // Gamepad Input
-            player.m_v2Pos.X += curGamepadState.ThumbSticks.Left.X * fPlayerMoveSpeed;
-            player.m_v2Pos.Y += curGamepadState.ThumbSticks.Left.Y * fPlayerMoveSpeed;
-
-            // KB || DPAD
-            if (curKeyboardState.IsKeyDown(Keys.Left) ||
-                curGamepadState.DPad.Left == ButtonState.Pressed)
-            {
-                player.m_v2Pos.X -= fPlayerMoveSpeed;
-            }
-            if (curKeyboardState.IsKeyDown(Keys.Right) ||
-                curGamepadState.DPad.Right == ButtonState.Pressed)
-            {
-                player.m_v2Pos.X += fPlayerMoveSpeed;
-            }
-            if (curKeyboardState.IsKeyDown(Keys.Up) ||
-                curGamepadState.DPad.Up == ButtonState.Pressed)
-            {
-                player.m_v2Pos.Y -= fPlayerMoveSpeed;
-            }
-            if (curKeyboardState.IsKeyDown(Keys.Down) ||
-                curGamepadState.DPad.Down == ButtonState.Pressed)
-            {
-                player.m_v2Pos.Y += fPlayerMoveSpeed;
-            }
-
-            player.m_v2Pos.X = MathHelper.Clamp(player.m_v2Pos.X, 0, GraphicsDevice.Viewport.Width - player.m_iWidth);
-            player.m_v2Pos.Y = MathHelper.Clamp(player.m_v2Pos.Y, 0, GraphicsDevice.Viewport.Height - player.iHeight);
-
+            player.m_v2Pos.X = MathHelper.Clamp(player.m_v2Pos.X, 0, GraphicsDevice.Viewport.Width - player.m_v2Dims.X);
+            player.m_v2Pos.Y = MathHelper.Clamp(player.m_v2Pos.Y, 0, GraphicsDevice.Viewport.Height - player.m_v2Dims.Y);
         }
 
         void AddEnemy()
@@ -250,8 +202,8 @@ namespace ZombieRoids
 
             rctPlayer = new Rectangle((int)player.m_v2Pos.X,
                                       (int)player.m_v2Pos.Y,
-                                      player.m_iWidth,
-                                      player.m_iHealth);
+                                      (int)player.m_v2Dims.X,
+                                      (int)player.m_v2Dims.Y);
 
             for (int i = 0; i < lenEnemyList.Count; i++)
             {
@@ -302,8 +254,6 @@ namespace ZombieRoids
 
             spriteBatch.End();
             base.Draw(gameTime);
-
-
         }
     }
 }
