@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -7,9 +8,12 @@ namespace ZombieRoids
 {
     class Player : Entity
     {
+        private Vector2 m_v2Target;
         public int m_iSpeed = 10;
+        private TimeSpan m_tsLastShot;
+        private TimeSpan m_tsShotDelay = TimeSpan.FromSeconds(0.1);
 
-
+        public List<Bullet> m_lbulBulletList = new List<Bullet>();
 
         public override void Initialize(Texture2D a_tTex, Vector2 a_v2Pos)
         {
@@ -35,7 +39,7 @@ namespace ZombieRoids
                 m_v2Pos += m_v2Vel;
 
                 // Calculate aim rotation
-                //m_fRotRads = AimInput();
+                m_fRotRads = AimInput();
                 
 
                 // Check for death
@@ -44,9 +48,27 @@ namespace ZombieRoids
                     // Player is dead
                     m_bAlive = false;
                 }
+
+                if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                {
+                    Fire(a_gtGameTime);
+                }
+
+                // Update Bullets
+                // null references here, terry
+                for (int i = 0; i < m_lbulBulletList.Count; i++)
+                {
+                    m_lbulBulletList[i].Update(a_gtGameTime);
+                }   
+
+                //Console.WriteLine("HP" + m_iHealth.ToString());
             }
         }
 
+        /// <summary>
+        /// handle user input for movement
+        /// </summary>
+        /// <returns>Horizontal and vertical change, respectively</returns>
         Vector2 MoveInput()
         {
             // grab Keyboard Input and stuff it into a vector
@@ -74,6 +96,10 @@ namespace ZombieRoids
             return v2Input;
         }
 
+        /// <summary>
+        /// Handle user input for aiming
+        /// </summary>
+        /// <returns>Radians to rotate</returns>
         float AimInput()
         {
             MouseState mCurState = Mouse.GetState();
@@ -84,8 +110,40 @@ namespace ZombieRoids
             Vector2 dir = v2Input - v2CurPos;
 
             fRotVal = (float)Math.Atan2(dir.Y, dir.X);
-            
+
+            m_v2Target = v2Input;
+
             return fRotVal;
+        }
+
+        void Fire(GameTime a_gtGameTime)
+        {
+            if (a_gtGameTime.TotalGameTime - m_tsLastShot > m_tsShotDelay)
+            {
+                m_tsLastShot = a_gtGameTime.TotalGameTime;
+
+                Bullet bulTemp = new Bullet(Engine.Instance.Instantiate("Graphics\\Laser", m_v2Pos));
+                bulTemp.m_fRotRads = m_fRotRads;
+                Vector2 v2BulletVel = m_v2Pos - m_v2Target;
+                
+                v2BulletVel.Normalize();
+                v2BulletVel *= -m_iSpeed;
+
+                bulTemp.m_v2Vel = v2BulletVel;
+
+                m_lbulBulletList.Add(bulTemp);
+            }
+        }
+
+        public override void Draw(SpriteBatch a_sbSpriteBatch)
+        {
+            base.Draw(a_sbSpriteBatch);
+
+            // null references here, terry
+            for (int i = 0; i < m_lbulBulletList.Count; i++)
+            {
+                m_lbulBulletList[i].Draw(a_sbSpriteBatch);
+            }
         }
     }
 }
