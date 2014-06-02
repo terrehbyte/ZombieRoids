@@ -2,10 +2,13 @@
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZombieRoids", "ZombieRoids\ZombieRoids.csproj", "{4C8D9BEF-4C56-49C6-8F94-F6EEC5794BC4}"
+	ProjectSection(ProjectDependencies) = postProject
+		{3FB09D4C-6DDE-4BEF-8553-39D0199BFE61} = {3FB09D4C-6DDE-4BEF-8553-39D0199BFE61}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZombieRoidsContent", "ZombieRoidsContent\ZombieRoidsContent\ZombieRoidsContent.csproj", "{3FB09D4C-6DDE-4BEF-8553-39D0199BFE61}"
 EndProject
-Project("{96E2B04D-8817-42C6-938A-82C39BA4D311}") = "ZombieRoidsContentContent", "ZombieRoidsContent\ZombieRoidsContentContent\ZombieRoidsContentContent.contentproj", "{D5D0DC77-A1F5-44ED-9AEA-B41AD6B17D0E}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZombieRoidsContentContent", "ZombieRoidsContent\ZombieRoidsContentContent\ZombieRoidsContentContent.contentproj", "{D5D0DC77-A1F5-44ED-9AEA-B41AD6B17D0E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

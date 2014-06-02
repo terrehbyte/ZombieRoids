@@ -32,13 +32,15 @@ namespace ZombieRoids
             }
         }
 
+        public float m_fRotRads = 0f;
+
         /// <summary>
         /// Queues the sprite for drawing in a sprite batch
         /// </summary>
         /// <param name="a_sbSpriteBatch">SpriteBatch to queue into</param>
         public virtual void Draw(SpriteBatch a_sbSpriteBatch)
         {
-            a_sbSpriteBatch.Draw(m_tTex, m_v2Pos, null, Color.White, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+            a_sbSpriteBatch.Draw(m_tTex, m_v2Pos, null, Color.White, m_fRotRads, new Vector2(m_v2Dims.X / 2, m_v2Dims.Y / 2), 1f, SpriteEffects.None, 0f);
         }
     }
 }

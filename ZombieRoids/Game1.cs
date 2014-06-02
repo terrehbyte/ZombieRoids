@@ -68,7 +68,7 @@ namespace ZombieRoids
             tsEnemySpawnTime = TimeSpan.FromSeconds(1.0f);
             rngRandom = new Random();
 
-            
+            IsMouseVisible = true;
         }
 
         /// <summary>
@@ -178,13 +178,14 @@ namespace ZombieRoids
 
         void UpdateCollision()
         {
-            Rectangle rctPlayer;
+            RotatedRectangleCollisions.RotatedRectangle rctPlayer;
             Rectangle rctEnemy;
-
-            rctPlayer = new Rectangle((int)player.m_v2Pos.X,
+            
+            rctPlayer = new RotatedRectangleCollisions.RotatedRectangle(
+                                        new Rectangle((int)player.m_v2Pos.X,
                                       (int)player.m_v2Pos.Y,
                                       (int)player.m_v2Dims.X,
-                                      (int)player.m_v2Dims.Y);
+                                      (int)player.m_v2Dims.Y), player.m_fRotRads);
 
             for (int i = 0; i < lenEnemyList.Count; i++)
             {
