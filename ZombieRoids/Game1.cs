@@ -69,6 +69,9 @@ namespace ZombieRoids
             rngRandom = new Random();
 
             IsMouseVisible = true;
+
+            // Initialize Engine Singleton
+            Engine.Instance.m_Game = this;
         }
 
         /// <summary>
@@ -179,6 +182,7 @@ namespace ZombieRoids
         void UpdateCollision()
         {
             RotatedRectangleCollisions.RotatedRectangle rctPlayer;
+            RotatedRectangleCollisions.RotatedRectangle rctBullet;
             Rectangle rctEnemy;
             
             rctPlayer = new RotatedRectangleCollisions.RotatedRectangle(
@@ -193,6 +197,23 @@ namespace ZombieRoids
                                          (int)lenEnemyList[i].m_v2Pos.Y,
                                          (int)lenEnemyList[i].m_v2Dims.X,
                                          (int)lenEnemyList[i].m_v2Dims.Y);
+
+                bool bulletCollision = false;
+
+                for (int j = 0; j < player.m_lbulBulletList.Count; j++)
+                {
+                    Rectangle rcttempBullet = new Rectangle((int)player.m_lbulBulletList[j].m_v2Pos.X,
+                                                            (int)player.m_lbulBulletList[j].m_v2Pos.Y,
+                                                            (int)player.m_lbulBulletList[j].m_v2Dims.X,
+                                                            (int)player.m_lbulBulletList[j].m_v2Dims.Y);
+                    rctBullet = new RotatedRectangleCollisions.RotatedRectangle(rcttempBullet, player.m_lbulBulletList[j].m_fRotRads);
+
+                    if (rctBullet.Intersects(rctEnemy))
+                    {
+                        lenEnemyList[i].m_iHealth = 0;
+                    }
+                }
+
 
                 if (rctPlayer.Intersects(rctEnemy))
                 {
