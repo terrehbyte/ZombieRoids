@@ -7,24 +7,40 @@ namespace ZombieRoids
 {
     class Player : Entity
     {
-        public bool m_bActive;
-        public int m_iHealth;
         public int m_iSpeed = 10;
+
+
 
         public override void Initialize(Texture2D a_tTex, Vector2 a_v2Pos)
         {
-            m_tTex = a_tTex;
-            m_v2Pos = a_v2Pos;
             m_bActive = true;
+            m_bAlive = true;
             m_iHealth = 100;
+            base.Initialize(a_tTex, a_v2Pos);
         }
 
-        public override void Update(GameTime gameTime)
+        /// <summary>
+        /// Perform Player game logic
+        /// </summary>
+        /// <param name="gameTime">GameTime</param>
+        public override void Update(GameTime a_gtGameTime)
         {
-            m_v2Vel = Input();
+            base.Update(a_gtGameTime);
 
-            // Calculate new position
-            m_v2Pos += m_v2Vel;
+            if (m_bAlive)
+            {
+                m_v2Vel = Input();
+
+                // Calculate new position
+                m_v2Pos += m_v2Vel;
+
+                // Check for death
+                if (m_iHealth <= 0)
+                {
+                    // Player is dead
+                    m_bAlive = false;
+                }
+            }
         }
 
         Vector2 Input()

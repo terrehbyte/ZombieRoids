@@ -19,22 +19,7 @@ namespace ZombieRoids
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Player player;
-
-        // Keyboard States
-        KeyboardState curKeyboardState;
-        KeyboardState prevKeyboardState;
-
-        // Gamepad States
-        GamePadState curGamepadState;
-        GamePadState prevGamepadState;
-
-        // Mouse States
-        MouseState curMouseState;
-        MouseState prevMouseState;
-
-        // Move Speed
-        float fPlayerMoveSpeed;
+        
 
         // Background
 
@@ -46,12 +31,14 @@ namespace ZombieRoids
         ParallaxingBackground pbgBGLayer2;
 
         Texture2D tEnemyTex;
-        List<Enemy> lenEnemyList;
-
+        
         TimeSpan tsEnemySpawnTime;
         TimeSpan tsPrevEnemySpawnTime;
 
         Random rngRandom;
+
+        Player player;
+        List<Enemy> lenEnemyList;
 
         public Game1()
             : base()
@@ -73,11 +60,7 @@ namespace ZombieRoids
             base.Initialize();
 
             // Player
-            fPlayerMoveSpeed = 8.0f;
-            TouchPanel.EnabledGestures = GestureType.FreeDrag;
-
             rctBackground = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
-
 
             lenEnemyList = new List<Enemy>();
             tsPrevEnemySpawnTime = TimeSpan.Zero;
@@ -152,24 +135,22 @@ namespace ZombieRoids
         {
             player.Update(gameTime);
 
+            // Keep player in window
             player.m_v2Pos.X = MathHelper.Clamp(player.m_v2Pos.X, 0, GraphicsDevice.Viewport.Width - player.m_v2Dims.X);
             player.m_v2Pos.Y = MathHelper.Clamp(player.m_v2Pos.Y, 0, GraphicsDevice.Viewport.Height - player.m_v2Dims.Y);
         }
 
         void AddEnemy()
         {
-            Animation aniEnemyAnim = new Animation();
-
-            aniEnemyAnim.Initialize(tEnemyTex, Vector2.Zero, 47, 61, 8, 30, Color.White, 1f, true);
+            Texture2D tEnemyTex = Content.Load<Texture2D>("Graphics\\mine");
 
             // RNG Enemy Pos
-
             Vector2 v2EnePos = new Vector2(GraphicsDevice.Viewport.Width + tEnemyTex.Width / 2,
                                            rngRandom.Next(100, GraphicsDevice.Viewport.Height - 100));
 
             Enemy eneTemp = new Enemy();
 
-            eneTemp.Initialize(aniEnemyAnim, v2EnePos);
+            eneTemp.Initialize(tEnemyTex, v2EnePos);
 
             lenEnemyList.Add(eneTemp);
         }
@@ -209,8 +190,8 @@ namespace ZombieRoids
             {
                 rctEnemy = new Rectangle((int)lenEnemyList[i].m_v2Pos.X,
                                          (int)lenEnemyList[i].m_v2Pos.Y,
-                                         lenEnemyList[i].m_iWidth,
-                                         lenEnemyList[i].m_iHeight);
+                                         (int)lenEnemyList[i].m_v2Dims.X,
+                                         (int)lenEnemyList[i].m_v2Dims.Y);
 
                 if (rctPlayer.Intersects(rctEnemy))
                 {

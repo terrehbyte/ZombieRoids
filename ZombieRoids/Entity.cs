@@ -12,6 +12,14 @@ namespace ZombieRoids
         /// </summary>
         public Vector2 m_v2Vel;
 
+        public int m_iHealth;
+        public bool m_bActive;
+        public bool m_bAlive;
+
+#if DEBUG
+        private bool m_bInitialized;
+#endif
+
         /// <summary>
         /// Assigns data critical to entity updates
         /// </summary>
@@ -24,11 +32,20 @@ namespace ZombieRoids
 
             // Assign Position
             m_v2Pos = a_v2Pos;
+
+#if DEBUG
+            m_bInitialized = true;
+#endif
         }
 
         public virtual void Update(GameTime a_gtGameTime)
         {
-
+#if DEBUG
+            if (!m_bInitialized)
+            {
+                throw new Exception("Not Initialized!");
+            }
+#endif
         }
     }
 }
