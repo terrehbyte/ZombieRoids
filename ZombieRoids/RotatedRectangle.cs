@@ -4,17 +4,19 @@ using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
 
+using ZombieRoids;
+
 //@terrehbyte: THIS CODE FROM: http://bit.ly/1l0YMzB - PLEASE REVIEW
 
 namespace RotatedRectangleCollisions
 {
-    class RotatedRectangle
+    class RotatedBoxCollider
     {
         public Rectangle CollisionRectangle;
         public float Rotation;
         public Vector2 Origin;
 
-        public RotatedRectangle(Rectangle theRectangle, float theInitialRotation)
+        public RotatedBoxCollider(Rectangle theRectangle, float theInitialRotation)
         {
             CollisionRectangle = theRectangle;
             Rotation = theInitialRotation;
@@ -43,7 +45,7 @@ namespace RotatedRectangleCollisions
         /// <returns></returns>
         public bool Intersects(Rectangle theRectangle)
         {
-            return Intersects(new RotatedRectangle(theRectangle, 0.0f));
+            return Intersects(new RotatedBoxCollider(theRectangle, 0.0f));
         }
 
         /// <summary>
@@ -51,7 +53,7 @@ namespace RotatedRectangleCollisions
         /// </summary>
         /// <param name="theRectangle"></param>
         /// <returns></returns>
-        public bool Intersects(RotatedRectangle theRectangle)
+        public bool Intersects(RotatedBoxCollider theRectangle)
         {
             //Calculate the Axis we will use to determine if a collision has occurred
             //Since the objects are rectangles, we only have to generate 4 Axis (2 for
@@ -85,7 +87,7 @@ namespace RotatedRectangleCollisions
         /// <param name="theRectangle"></param>
         /// <param name="aAxis"></param>
         /// <returns></returns>
-        private bool IsAxisCollision(RotatedRectangle theRectangle, Vector2 aAxis)
+        private bool IsAxisCollision(RotatedBoxCollider theRectangle, Vector2 aAxis)
         {
             //Project the corners of the Rectangle we are checking on to the Axis and
             //get a scalar value of that project we can then use for comparison

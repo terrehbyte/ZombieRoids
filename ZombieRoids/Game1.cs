@@ -181,41 +181,20 @@ namespace ZombieRoids
 
         void UpdateCollision()
         {
-            RotatedRectangleCollisions.RotatedRectangle rctPlayer;
-            RotatedRectangleCollisions.RotatedRectangle rctBullet;
-            Rectangle rctEnemy;
-            
-            rctPlayer = new RotatedRectangleCollisions.RotatedRectangle(
-                                        new Rectangle((int)player.m_v2Pos.X,
-                                      (int)player.m_v2Pos.Y,
-                                      (int)player.m_v2Dims.X,
-                                      (int)player.m_v2Dims.Y), player.m_fRotRads);
-
             for (int i = 0; i < lenEnemyList.Count; i++)
             {
-                rctEnemy = new Rectangle((int)lenEnemyList[i].m_v2Pos.X,
-                                         (int)lenEnemyList[i].m_v2Pos.Y,
-                                         (int)lenEnemyList[i].m_v2Dims.X,
-                                         (int)lenEnemyList[i].m_v2Dims.Y);
-
-                bool bulletCollision = false;
-
+                // Check Against bullet
                 for (int j = 0; j < player.m_lbulBulletList.Count; j++)
                 {
-                    Rectangle rcttempBullet = new Rectangle((int)player.m_lbulBulletList[j].m_v2Pos.X,
-                                                            (int)player.m_lbulBulletList[j].m_v2Pos.Y,
-                                                            (int)player.m_lbulBulletList[j].m_v2Dims.X,
-                                                            (int)player.m_lbulBulletList[j].m_v2Dims.Y);
-                    rctBullet = new RotatedRectangleCollisions.RotatedRectangle(rcttempBullet, player.m_lbulBulletList[j].m_fRotRads);
-
-                    if (rctBullet.Intersects(rctEnemy))
+                    if (Collision.CheckCollision(player.m_lbulBulletList[j].m_rotrctCollider,
+                                                 lenEnemyList[i].m_rctCollider))
                     {
                         lenEnemyList[i].m_iHealth = 0;
                     }
                 }
 
-
-                if (rctPlayer.Intersects(rctEnemy))
+                if (Collision.CheckCollision(player.m_rotrctCollider,
+                                             lenEnemyList[i].m_rctCollider))
                 {
                     player.m_iHealth -= lenEnemyList[i].m_iDamage;
 

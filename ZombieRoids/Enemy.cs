@@ -6,6 +6,8 @@ namespace ZombieRoids
 {
     class Enemy : Entity
     {
+        public Rectangle m_rctCollider;
+
         public int m_iDamage;   // damage dealt to other thigns
         public int m_iValue;    // score value
 
@@ -22,6 +24,14 @@ namespace ZombieRoids
             m_iValue = 100;
         }
 
+        public void UpdateCollider()
+        {
+            m_rctCollider = new Rectangle((int)m_v2Pos.X,
+                            (int)m_v2Pos.Y,
+                            (int)m_v2Dims.X,
+                            (int)m_v2Dims.X);
+        }
+
         public override void Update(GameTime gameTime)
         {
             m_v2Pos.X -= m_iSpeed;
@@ -31,6 +41,8 @@ namespace ZombieRoids
             {
                 m_bActive = false;
             }
+
+            UpdateCollider();
         }
     }
 }

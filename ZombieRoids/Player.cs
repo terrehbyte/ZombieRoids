@@ -4,10 +4,18 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+using RotatedRectangleCollisions;
+
 namespace ZombieRoids
 {
     class Player : Entity
     {
+        public RotatedBoxCollider m_rotrctCollider
+        {
+            get;
+            private set;
+        }
+
         private Vector2 m_v2Target;
         public int m_iSpeed = 10;
         private TimeSpan m_tsLastShot;
@@ -21,6 +29,16 @@ namespace ZombieRoids
             m_bAlive = true;
             m_iHealth = 100;
             base.Initialize(a_tTex, a_v2Pos);
+        }
+
+        void UpdateCollider()
+        {
+            Rectangle rctTempRect = new Rectangle((int)m_v2Pos.X,
+                                        (int)m_v2Pos.Y,
+                                        (int)m_v2Dims.X,
+                                        (int)m_v2Dims.X);
+
+            m_rotrctCollider = new RotatedBoxCollider(rctTempRect, m_fRotRads);
         }
 
         /// <summary>
@@ -63,6 +81,8 @@ namespace ZombieRoids
 
                 //Console.WriteLine("HP" + m_iHealth.ToString());
             }
+
+            UpdateCollider();
         }
 
         /// <summary>
