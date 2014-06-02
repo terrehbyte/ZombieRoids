@@ -47,12 +47,15 @@ namespace ZombieRoids
 
         public override void Update(GameTime a_gtGameTime)
         {
-            base.Update(a_gtGameTime);
+            if (m_bActive)
+            {
+                base.Update(a_gtGameTime);
 
-            // Calculate new position
-            m_v2Pos += m_v2Vel;
+                // Calculate new position
+                m_v2Pos += m_v2Vel;
 
-            UpdateCollider();
+                UpdateCollider();
+            }
         }
     }
 }

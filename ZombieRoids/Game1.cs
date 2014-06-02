@@ -19,7 +19,8 @@ namespace ZombieRoids
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        
+
+        Vector2 v2ScreenDims;
 
         // Background
 
@@ -38,6 +39,8 @@ namespace ZombieRoids
 
         Player player;
         List<Enemy> lenEnemyList;
+
+        Vector2 v2BulletGraveyard = new Vector2(-100, -100);
 
         public Game1()
             : base()
@@ -71,6 +74,8 @@ namespace ZombieRoids
 
             // Initialize Engine Singleton
             Engine.Instance.m_Game = this;
+
+            v2ScreenDims = new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
         }
 
         /// <summary>
@@ -137,11 +142,18 @@ namespace ZombieRoids
         {
             player.Update(gameTime);
 
-            Console.WriteLine("PLAYER POS" + player.m_v2Pos);
-
             // Keep player in window
             player.m_v2Pos.X = MathHelper.Clamp(player.m_v2Pos.X, 0 + player.m_v2Dims.X / 2, GraphicsDevice.Viewport.Width - player.m_v2Dims.X / 2);
             player.m_v2Pos.Y = MathHelper.Clamp(player.m_v2Pos.Y, 0 + player.m_v2Dims.Y / 2, GraphicsDevice.Viewport.Height - player.m_v2Dims.Y / 2);
+
+            // Check bullets
+            for (int i = 0; i < player.m_lbulBullets.Count; i++)
+            {
+                if (player.m_lbulBullets[i].CheckOffscreen(v2ScreenDims))
+                {
+                    player.m_lbulBullets[i].m_bActive = false;
+                }
+            }
         }
 
         void AddEnemy()
@@ -185,12 +197,16 @@ namespace ZombieRoids
             for (int i = 0; i < lenEnemyList.Count; i++)
             {
                 // Check Against bullet
-                for (int j = 0; j < player.m_lbulBulletList.Count; j++)
+                for (int j = 0; j < player.m_lbulBullets.Count; j++)
                 {
-                    if (Collision.CheckCollision(player.m_lbulBulletList[j].m_rotrctCollider,
-                                                 lenEnemyList[i].m_rctCollider))
+                    // Only check if the bullet is active
+                    if (player.m_lbulBullets[j].m_bActive)
                     {
-                        lenEnemyList[i].m_iHealth = 0;
+                        if (Collision.CheckCollision(player.m_lbulBullets[j].m_rotrctCollider,
+                                                     lenEnemyList[i].m_rctCollider))
+                        {
+                            lenEnemyList[i].m_iHealth = 0;
+                        }
                     }
                 }
 

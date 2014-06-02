@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
+
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -22,7 +24,7 @@ namespace ZombieRoids
         private TimeSpan m_tsLastShot;
         private TimeSpan m_tsShotDelay = TimeSpan.FromSeconds(0.1);
 
-        public List<Bullet> m_lbulBulletList = new List<Bullet>();
+        public List<Bullet> m_lbulBullets = new List<Bullet>();
 
         public override void Initialize(Texture2D a_tTex, Vector2 a_v2Pos)
         {
@@ -75,12 +77,13 @@ namespace ZombieRoids
 
                 // Update Bullets
                 // null references here, terry
-                for (int i = 0; i < m_lbulBulletList.Count; i++)
+                for (int i = 0; i < m_lbulBullets.Count; i++)
                 {
-                    m_lbulBulletList[i].Update(a_gtGameTime);
+                    m_lbulBullets[i].Update(a_gtGameTime);
                 }   
 
                 //Console.WriteLine("HP" + m_iHealth.ToString());
+                Console.WriteLine(m_lbulBullets.Count);
             }
 
             UpdateCollider();
@@ -142,8 +145,30 @@ namespace ZombieRoids
             if (a_gtGameTime.TotalGameTime - m_tsLastShot > m_tsShotDelay)
             {
                 m_tsLastShot = a_gtGameTime.TotalGameTime;
+                
+                // Search for Bullet
+                Bullet bulTemp = null;
 
-                Bullet bulTemp = new Bullet(Engine.Instance.Instantiate("Graphics\\Laser", m_v2Pos));
+                for (int i = 0; i < m_lbulBullets.Count; i++)
+                {
+                    if (!m_lbulBullets[i].m_bActive)
+                    {
+                        bulTemp = m_lbulBullets[i];
+                        m_lbulBullets[i].m_bActive = true;
+                        m_lbulBullets[i].m_v2Pos = m_v2Pos;
+                        break;
+                    }
+                }
+                
+                // If a bullet couldn't be found
+                if (bulTemp == null)
+                {
+                    bulTemp = new Bullet(Engine.Instance.Instantiate("Graphics\\Laser", m_v2Pos));
+                    m_lbulBullets.Add(bulTemp);
+                }
+
+                // Assign Attributes to Bullet
+                
                 bulTemp.m_fRotRads = m_fRotRads;
                 Vector2 v2BulletVel = m_v2Pos - m_v2Target;
                 
@@ -152,7 +177,7 @@ namespace ZombieRoids
 
                 bulTemp.m_v2Vel = v2BulletVel;
 
-                m_lbulBulletList.Add(bulTemp);
+
             }
         }
 
@@ -161,9 +186,9 @@ namespace ZombieRoids
             base.Draw(a_sbSpriteBatch);
 
             // null references here, terry
-            for (int i = 0; i < m_lbulBulletList.Count; i++)
+            for (int i = 0; i < m_lbulBullets.Count; i++)
             {
-                m_lbulBulletList[i].Draw(a_sbSpriteBatch);
+                m_lbulBullets[i].Draw(a_sbSpriteBatch);
             }
         }
     }

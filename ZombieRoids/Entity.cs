@@ -47,5 +47,28 @@ namespace ZombieRoids
             }
 #endif
         }
+
+        public bool CheckOffscreen(Vector2 a_v2ScreenDims)
+        {
+            Rectangle rctScreen = new Rectangle(0, 0, (int)a_v2ScreenDims.X, (int)a_v2ScreenDims.Y);
+            Rectangle entBox = new Rectangle((int)m_v2Pos.X, (int)m_v2Pos.Y, (int)m_v2Dims.X, (int)m_v2Dims.Y);
+
+            if (!rctScreen.Intersects(entBox))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        public override void Draw(SpriteBatch a_sbSpriteBatch)
+        {
+            if (m_bActive)
+            {
+                base.Draw(a_sbSpriteBatch);
+            }
+        }
     }
 }
