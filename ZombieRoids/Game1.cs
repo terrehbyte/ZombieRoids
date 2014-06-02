@@ -25,7 +25,6 @@ namespace ZombieRoids
 
         Texture2D tMainBackground;
         Rectangle rctBackground;
-        float fBGScale = 1.0f;
 
         ParallaxingBackground pbgBGLayer1;
         ParallaxingBackground pbgBGLayer2;
@@ -138,9 +137,11 @@ namespace ZombieRoids
         {
             player.Update(gameTime);
 
+            Console.WriteLine("PLAYER POS" + player.m_v2Pos);
+
             // Keep player in window
-            player.m_v2Pos.X = MathHelper.Clamp(player.m_v2Pos.X, 0, GraphicsDevice.Viewport.Width - player.m_v2Dims.X);
-            player.m_v2Pos.Y = MathHelper.Clamp(player.m_v2Pos.Y, 0, GraphicsDevice.Viewport.Height - player.m_v2Dims.Y);
+            player.m_v2Pos.X = MathHelper.Clamp(player.m_v2Pos.X, 0 + player.m_v2Dims.X / 2, GraphicsDevice.Viewport.Width - player.m_v2Dims.X / 2);
+            player.m_v2Pos.Y = MathHelper.Clamp(player.m_v2Pos.Y, 0 + player.m_v2Dims.Y / 2, GraphicsDevice.Viewport.Height - player.m_v2Dims.Y / 2);
         }
 
         void AddEnemy()

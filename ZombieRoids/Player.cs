@@ -18,6 +18,7 @@ namespace ZombieRoids
 
         private Vector2 m_v2Target;
         public int m_iSpeed = 10;
+        public int m_iBulletSpeed = 15;
         private TimeSpan m_tsLastShot;
         private TimeSpan m_tsShotDelay = TimeSpan.FromSeconds(0.1);
 
@@ -147,7 +148,7 @@ namespace ZombieRoids
                 Vector2 v2BulletVel = m_v2Pos - m_v2Target;
                 
                 v2BulletVel.Normalize();
-                v2BulletVel *= -m_iSpeed;
+                v2BulletVel *= -m_iBulletSpeed;
 
                 bulTemp.m_v2Vel = v2BulletVel;
 
