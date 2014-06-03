@@ -15,7 +15,7 @@
 ///     June 3, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Refactoring Sprite class
+///     Refactoring Entity class
 /// </description></item>
 /// </list>
 
@@ -49,9 +49,8 @@ namespace ZombieRoids
 
         public override void Initialize(Texture2D a_tTex, Vector2 a_v2Pos)
         {
-            m_bActive = true;
-            m_bAlive = true;
-            m_iHealth = 100;
+            Active = true;
+            HitPoints = 100;
             base.Initialize(a_tTex, a_v2Pos);
         }
 
@@ -68,24 +67,16 @@ namespace ZombieRoids
         {
             base.Update(a_gtGameTime);
 
-            if (m_bAlive)
+            if (Alive)
             {
-                m_v2Vel = MoveInput();
+                Velocity = MoveInput();
 
                 // Calculate new position
-                Position += m_v2Vel;
+                Position += Velocity;
 
                 // Calculate aim rotation
                 Rotation = AimInput();
                 
-
-                // Check for death
-                if (m_iHealth <= 0)
-                {
-                    // Player is dead
-                    m_bAlive = false;
-                }
-
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                 {
                     Fire(a_gtGameTime);
@@ -165,10 +156,10 @@ namespace ZombieRoids
 
                 for (int i = 0; i < m_lbulBullets.Count; i++)
                 {
-                    if (!m_lbulBullets[i].m_bActive)
+                    if (!m_lbulBullets[i].Active)
                     {
                         bulTemp = m_lbulBullets[i];
-                        m_lbulBullets[i].m_bActive = true;
+                        m_lbulBullets[i].Active = true;
                         m_lbulBullets[i].Position = Position;
                         break;
                     }
@@ -189,7 +180,7 @@ namespace ZombieRoids
                 v2BulletVel.Normalize();
                 v2BulletVel *= -m_iBulletSpeed;
 
-                bulTemp.m_v2Vel = v2BulletVel;
+                bulTemp.Velocity = v2BulletVel;
 
 
             }

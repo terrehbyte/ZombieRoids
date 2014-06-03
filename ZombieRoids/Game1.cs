@@ -15,7 +15,7 @@
 ///     June 3, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Refactoring Sprite class
+///     Refactoring Entity class
 /// </description></item>
 /// </list>
 
@@ -43,7 +43,7 @@ namespace ZombieRoids
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        Vector2 v2ScreenDims;
+        Point m_ptScreenSize;
 
         Texture2D tMainBackground;
         Rectangle rctBackground;
@@ -100,7 +100,7 @@ namespace ZombieRoids
             // Initialize Engine Singleton
             Engine.Instance.m_Game = this;
 
-            v2ScreenDims = new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+            m_ptScreenSize = new Point(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
         }
 
         /// <summary>
@@ -206,9 +206,9 @@ namespace ZombieRoids
             // Check bullets
             for (int i = 0; i < player.m_lbulBullets.Count; i++)
             {
-                if (player.m_lbulBullets[i].CheckOffscreen(v2ScreenDims))
+                if (player.m_lbulBullets[i].CheckOffscreen(m_ptScreenSize))
                 {
-                    player.m_lbulBullets[i].m_bActive = false;
+                    player.m_lbulBullets[i].Active = false;
                 }
             }
         }
@@ -222,7 +222,7 @@ namespace ZombieRoids
                                            rngRandom.Next(100, GraphicsDevice.Viewport.Height - 100));
 
             Enemy eneTemp = new Enemy();
-            eneTemp.m_v2Vel = new Vector2(-4f, 0);
+            eneTemp.Velocity = new Vector2(-4f, 0);
 
             eneTemp.Initialize(tEnemyTex, v2EnePos);
 
@@ -245,11 +245,11 @@ namespace ZombieRoids
             for (int i = lenEnemyList.Count - 1; i >= 0; i--)
             {
                 lenEnemyList[i].Update(gameTime);
-                if (lenEnemyList[i].m_bActive == false)
+                if (lenEnemyList[i].Active == false)
                 {
                     int iChildren = lenEnemyList[i].m_iDivisions;
                     Vector2 v2OrigPos = lenEnemyList[i].Position;
-                    Vector2 v2OrigVel = lenEnemyList[i].m_v2Vel;
+                    Vector2 v2OrigVel = lenEnemyList[i].Velocity;
 
                     lenEnemyList.RemoveAt(i);
 
@@ -268,7 +268,7 @@ namespace ZombieRoids
                             eneNewFoe.Position = v2OrigPos + new Vector2(rngXOffset.Next(-50, 45),
                                                                         rngYOffset.Next(-50, 55));
 
-                            eneNewFoe.m_v2Vel = new Vector2(rngXOffset.Next((int)v2OrigVel.X, -1),
+                            eneNewFoe.Velocity = new Vector2(rngXOffset.Next((int)v2OrigVel.X, -1),
                                                              rngYOffset.Next(-2, 2));
 
                             eneNewFoe.m_iDivisions = iChildren - 1;
@@ -287,30 +287,30 @@ namespace ZombieRoids
                 for (int j = 0; j < player.m_lbulBullets.Count; j++)
                 {
                     // Only check if the bullet is active
-                    if (player.m_lbulBullets[j].m_bActive)
+                    if (player.m_lbulBullets[j].Active)
                     {
                         if (Collision.CheckCollision(player.m_lbulBullets[j].m_rotrctCollider,
                                                      lenEnemyList[i].m_rctCollider))
                         {
-                            lenEnemyList[i].m_iHealth = 0;
-                            player.m_lbulBullets[j].m_bActive = false;
+                            lenEnemyList[i].HitPoints = 0;
+                            player.m_lbulBullets[j].Active = false;
                         }
                     }
                 }
 
-                if (player.m_bActive)
+                if (player.Active)
                 {
                     if (Collision.CheckCollision(player.m_rotrctCollider,
                                                  lenEnemyList[i].m_rctCollider))
                     {
-                        player.m_iHealth -= lenEnemyList[i].m_iDamage;
+                        player.HitPoints -= lenEnemyList[i].m_iDamage;
 
-                        lenEnemyList[i].m_iHealth = 0;
+                        lenEnemyList[i].HitPoints = 0;
                     }
 
-                    if (player.m_iHealth <= 0)
+                    if (player.HitPoints <= 0)
                     {
-                        player.m_bActive = false;
+                        player.Active = false;
                     }
                 }
             }

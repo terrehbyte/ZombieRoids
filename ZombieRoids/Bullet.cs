@@ -15,7 +15,7 @@
 ///     June 3, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Refactoring Sprite class
+///     Refactoring Entity class
 /// </description></item>
 /// </list>
 
@@ -42,7 +42,7 @@ namespace ZombieRoids
         public Bullet(Entity a_bulSource)
         {
             Initialize(a_bulSource.Texture, a_bulSource.Position);
-            m_v2Vel = a_bulSource.m_v2Vel;
+            Velocity = a_bulSource.Velocity;
             Rotation = a_bulSource.Rotation;
         }
 
@@ -53,8 +53,8 @@ namespace ZombieRoids
 
         public override void Initialize(Texture2D a_tTex,Vector2 a_v2Pos)
         {
-            m_bActive = true;
-            m_bAlive = true;
+            Active = true;
+            Alive = true;
 
 
 
@@ -63,12 +63,12 @@ namespace ZombieRoids
 
         public override void Update(GameTime a_gtGameTime)
         {
-            if (m_bActive)
+            if (Active)
             {
                 base.Update(a_gtGameTime);
 
                 // Calculate new position
-                Position += m_v2Vel;
+                Position += Velocity;
 
                 UpdateCollider();
             }

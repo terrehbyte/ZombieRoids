@@ -15,7 +15,7 @@
 ///     June 3, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Refactoring Sprite class
+///     Refactoring Entity class
 /// </description></item>
 /// </list>
 
@@ -39,9 +39,9 @@ namespace ZombieRoids
         {
             base.Initialize(a_tTex, a_v2Pos);
 
-            m_bActive = true;
+            Active = true;
 
-            m_iHealth = 10;
+            HitPoints = 10;
             m_iDamage = 10;
             m_iValue = 100;
         }
@@ -53,14 +53,14 @@ namespace ZombieRoids
 
         public override void Update(GameTime gameTime)
         {
-            if (m_bActive)
+            if (Active)
             {
-                Position += m_v2Vel;
+                Position += Velocity;
 
                 // TODO: Add recycling
-                if (Left < -Size.X || m_iHealth <= 0)
+                if (Left < -Size.X || HitPoints <= 0)
                 {
-                    m_bActive = false;
+                    Active = false;
                 }
 
                 UpdateCollider();
