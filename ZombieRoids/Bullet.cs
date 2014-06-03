@@ -12,6 +12,9 @@ namespace ZombieRoids
 {
     class Bullet : Entity
     {
+        public TimeSpan m_tsBulletLifetime = TimeSpan.FromSeconds(1.0);
+        public TimeSpan m_tsBulletDeathTime;
+
         public RotatedBoxCollider m_rotrctCollider
         {
             get;
@@ -40,8 +43,6 @@ namespace ZombieRoids
             m_bActive = true;
             m_bAlive = true;
 
-
-
             base.Initialize(a_tTex, a_v2Pos);
         }
 
@@ -53,6 +54,11 @@ namespace ZombieRoids
 
                 // Calculate new position
                 m_v2Pos += m_v2Vel;
+
+                if (a_gtGameTime.TotalGameTime > m_tsBulletDeathTime)
+                {
+                    m_bActive = false;
+                }
 
                 UpdateCollider();
             }

@@ -191,6 +191,7 @@ namespace ZombieRoids
                         bulTemp = m_lbulBullets[i];
                         m_lbulBullets[i].m_bActive = true;
                         m_lbulBullets[i].m_v2Pos = m_v2Pos;
+                        
                         break;
                     }
                 }
@@ -203,7 +204,9 @@ namespace ZombieRoids
                 }
 
                 // Assign Attributes to Bullet
-                
+
+                bulTemp.m_tsBulletDeathTime = a_gtGameTime.TotalGameTime + bulTemp.m_tsBulletLifetime;
+
                 bulTemp.m_fRotRads = m_fRotRads;
                 Vector2 v2BulletVel = m_v2Pos - m_v2Target;
                 

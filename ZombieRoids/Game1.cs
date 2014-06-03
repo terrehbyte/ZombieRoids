@@ -182,15 +182,6 @@ namespace ZombieRoids
             // Keep player in window
             //player.m_v2Pos.X = MathHelper.Clamp(player.m_v2Pos.X, 0 + player.m_v2Dims.X / 2, GraphicsDevice.Viewport.Width - player.m_v2Dims.X / 2);
             //player.m_v2Pos.Y = MathHelper.Clamp(player.m_v2Pos.Y, 0 + player.m_v2Dims.Y / 2, GraphicsDevice.Viewport.Height - player.m_v2Dims.Y / 2);
-
-            // Check bullets
-            for (int i = 0; i < player.m_lbulBullets.Count; i++)
-            {
-                if (player.m_lbulBullets[i].CheckOffscreen(v2ScreenDims))
-                {
-                    player.m_lbulBullets[i].m_bActive = false;
-                }
-            }
         }
 
         Enemy AddEnemy()
