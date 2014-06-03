@@ -15,6 +15,7 @@ namespace ZombieRoids
         {
             base.Initialize(a_tTex, a_v2Pos);
 
+            m_bAlive = true;
             m_bActive = true;
             m_iValue = 100;
         }
