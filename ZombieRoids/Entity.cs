@@ -16,6 +16,12 @@ namespace ZombieRoids
         public bool m_bActive;
         public bool m_bAlive;
 
+        private bool m_bOnScreen;
+
+        public delegate void OnScreenExit();
+        public OnScreenExit ScreenExitEvent;
+
+
 #if DEBUG
         private bool m_bInitialized;
 #endif
@@ -33,8 +39,12 @@ namespace ZombieRoids
             // Assign Position
             m_v2Pos = a_v2Pos;
 
+
+            ScreenExitEvent = ScreenWrap;
+
 #if DEBUG
             m_bInitialized = true;
+            ScreenExitEvent += ExitPrint;
 #endif
         }
 
@@ -44,6 +54,22 @@ namespace ZombieRoids
             if (!m_bInitialized)
             {
                 throw new Exception("Not Initialized!");
+            }
+
+            if (m_bOnScreen)
+            {
+                if (!CheckOffscreen(Game1.v2ScreenDims))
+                {
+                    m_bOnScreen = true;
+                }
+            }
+            else
+            {
+                if (CheckOffscreen(Game1.v2ScreenDims))
+                {
+                    m_bOnScreen = false;
+                    ScreenExitEvent();
+                }
             }
 #endif
         }
@@ -71,14 +97,37 @@ namespace ZombieRoids
             }
         }
 
-        public void OnActive()
+        private void ScreenWrap()
         {
+            // Vertical Wrap
+            // Top
+            if (m_v2Pos.Y < 0)
+            {
+                m_v2Pos.Y = Game1.v2ScreenDims.Y;
+            }
+            // Below
+            else if (m_v2Pos.Y > Game1.v2ScreenDims.Y)
+            {
+                m_v2Pos.Y = 0;
+            }
+            
+            // Horizontal Wrap
+            // Left
+            if (m_v2Pos.X < 0)
+            {
+                m_v2Pos.X = Game1.v2ScreenDims.X;
+            }
+
+            // Right
+            else if (m_v2Pos.X > Game1.v2ScreenDims.X)
+            {
+                m_v2Pos.X = 0;
+            }
 
         }
-
-        public void OnInactive()
+        private void ExitPrint()
         {
-
+            Console.WriteLine("Exited");
         }
     }
 }

@@ -22,7 +22,7 @@ namespace ZombieRoids
         public int m_iSpeed = 5;
         public int m_iBulletSpeed = 7;
         private TimeSpan m_tsLastShot;
-        private TimeSpan m_tsShotDelay = TimeSpan.FromSeconds(0.2);
+        private TimeSpan m_tsShotDelay = TimeSpan.FromSeconds(-1.0);
 
         public List<Bullet> m_lbulBullets = new List<Bullet>();
 

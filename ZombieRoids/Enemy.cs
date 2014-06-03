@@ -35,12 +35,13 @@ namespace ZombieRoids
 
         public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
             if (m_bActive)
             {
                 m_v2Pos += m_v2Vel;
 
                 // TODO: Add recycling
-                if (m_v2Pos.X < -m_v2Dims.X || m_iHealth <= 0)
+                if (m_iHealth <= 0)
                 {
                     m_bActive = false;
                 }

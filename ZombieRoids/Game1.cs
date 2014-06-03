@@ -9,6 +9,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
+using System.Diagnostics;
 #endregion
 
 namespace ZombieRoids
@@ -22,7 +23,7 @@ namespace ZombieRoids
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        Vector2 v2ScreenDims;
+        public static Vector2 v2ScreenDims;
 
         Texture2D tMainBackground;
         Rectangle rctBackground;
@@ -179,8 +180,8 @@ namespace ZombieRoids
             player.Update(gameTime);
 
             // Keep player in window
-            player.m_v2Pos.X = MathHelper.Clamp(player.m_v2Pos.X, 0 + player.m_v2Dims.X / 2, GraphicsDevice.Viewport.Width - player.m_v2Dims.X / 2);
-            player.m_v2Pos.Y = MathHelper.Clamp(player.m_v2Pos.Y, 0 + player.m_v2Dims.Y / 2, GraphicsDevice.Viewport.Height - player.m_v2Dims.Y / 2);
+            //player.m_v2Pos.X = MathHelper.Clamp(player.m_v2Pos.X, 0 + player.m_v2Dims.X / 2, GraphicsDevice.Viewport.Width - player.m_v2Dims.X / 2);
+            //player.m_v2Pos.Y = MathHelper.Clamp(player.m_v2Pos.Y, 0 + player.m_v2Dims.Y / 2, GraphicsDevice.Viewport.Height - player.m_v2Dims.Y / 2);
 
             // Check bullets
             for (int i = 0; i < player.m_lbulBullets.Count; i++)
@@ -196,23 +197,74 @@ namespace ZombieRoids
         {
             Texture2D tEnemyTex = Content.Load<Texture2D>("Graphics\\mine");
 
-            // RNG Enemy Pos
-            Vector2 v2EnePos = new Vector2(GraphicsDevice.Viewport.Width + tEnemyTex.Width / 2,
-                                           rngRandom.Next(100, GraphicsDevice.Viewport.Height - 100));
-
             Enemy eneTemp = new Enemy();
-            eneTemp.m_v2Vel = new Vector2(-4f, 0);
+            Random rngGennie = new Random();
 
+            int iOffset = 100;  // Offset in Screen Space
+            int iMinVel = 1;    // Minimum Velocity for any axis
+            int iMaxVel = 2;    // Maximum Velocity for any axis
+
+            // RNG Enemy Pos
+            Vector2 v2EnePos = new Vector2(rngGennie.Next(-iOffset, (int)v2ScreenDims.X + iOffset),
+                                           rngGennie.Next(-iOffset, (int)v2ScreenDims.Y + iOffset));
+
+            // Correct Y Offset if it will spawn in the middle
+            if (v2EnePos.X > 0 &&
+                v2EnePos.X < v2ScreenDims.X)
+            {
+                if (v2EnePos.Y > v2ScreenDims.Y / 2)
+                {
+                    v2EnePos.Y = -iOffset;
+                }
+                else
+                {
+                    v2EnePos.Y = v2ScreenDims.Y + iOffset;
+                }
+            }
+
+            // H-Speed
+            // If Left
+            if (v2EnePos.X < 0)
+            {
+                eneTemp.m_v2Vel.X = rngGennie.Next(iMinVel, iMaxVel);
+            }
+            // Right
+            else
+            {
+                eneTemp.m_v2Vel.X = rngGennie.Next(-iMaxVel, -iMinVel);
+            }
+            
+
+            // V-Speed
+            // If Top
+            if (v2EnePos.Y < 0)
+            {
+                eneTemp.m_v2Vel.Y = rngGennie.Next(iMinVel, iMaxVel);
+            }
+            // RIght
+            else
+            {
+                eneTemp.m_v2Vel.Y = rngGennie.Next(-iMaxVel, -iMinVel);
+            }
+
+            Debug.Assert(eneTemp.m_v2Vel.Y != 0);
+
+            // Initialize Enemy
             eneTemp.Initialize(tEnemyTex, v2EnePos);
 
+            // Add Enemy to List
             lenEnemyList.Add(eneTemp);
 
+            // Return Added Enemy
             return lenEnemyList.Last();
         }
 
         private void UpdateEnemies(GameTime gameTime)
         {
-            if (gameTime.TotalGameTime - tsPrevEnemySpawnTime > tsEnemySpawnTime)
+            int iMaxOnScreen = 5;
+
+            if (gameTime.TotalGameTime - tsPrevEnemySpawnTime > tsEnemySpawnTime &&
+                lenEnemyList.Count < iMaxOnScreen)
             {
                 tsPrevEnemySpawnTime = gameTime.TotalGameTime;
 
@@ -246,9 +298,9 @@ namespace ZombieRoids
                             // Influence new Position
                             eneNewFoe.m_v2Pos = v2OrigPos + new Vector2(rngXOffset.Next(-50, 45),
                                                                         rngYOffset.Next(-50, 55));
-
-                            eneNewFoe.m_v2Vel = new Vector2(rngXOffset.Next((int)v2OrigVel.X, -1),
-                                                             rngYOffset.Next(-2, 2));
+                            eneNewFoe.m_v2Vel = v2OrigVel;
+                            eneNewFoe.m_v2Vel += new Vector2(rngXOffset.Next(-1, 1),
+                                                             rngYOffset.Next(-1, 1));
 
                             eneNewFoe.m_iDivisions = iChildren - 1;
                         }
