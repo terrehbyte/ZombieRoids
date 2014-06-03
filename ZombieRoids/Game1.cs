@@ -64,6 +64,8 @@ namespace ZombieRoids
 
         Vector2 v2BulletGraveyard = new Vector2(-100, -100);
 
+        int iStartLives = 3;
+
         #endregion
 
         #region FrameworkMethods
@@ -122,6 +124,7 @@ namespace ZombieRoids
                                               GraphicsDevice.Viewport.TitleSafeArea.Y + GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
 
             player.Initialize(tPlayerTex, v2PlayerPos);
+            player.m_iLives = iStartLives;
 
             // Background
             pbgBGLayer1 = new ParallaxingBackground();
@@ -347,6 +350,10 @@ namespace ZombieRoids
                     if (Collision.CheckCollision(player.m_rotrctCollider,
                                                  lenEnemyList[i].m_rctCollider))
                     {
+                        if (!player.m_bInvuln)
+                        {
+                            player.m_bAlive = false;
+                        }
                         lenEnemyList[i].m_bAlive = false;
                     }
                 }

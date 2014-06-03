@@ -46,7 +46,7 @@ namespace ZombieRoids
         private TimeSpan m_tsLastShot;
         private TimeSpan m_tsShotDelay = TimeSpan.FromSeconds(-1.0);
         private TimeSpan m_tsInvulnEnd;
-        private TimeSpan m_tsInvulnDuration = TimeSpan.FromSeconds(5.0);
+        private TimeSpan m_tsInvulnDuration = TimeSpan.FromSeconds(2.0);
 
         public bool m_bInvuln = false;
 
@@ -77,39 +77,44 @@ namespace ZombieRoids
         {
             base.Update(a_gtGameTime);
 
-            if (m_bAlive)
+            if (m_bActive)
             {
-                m_v2Vel = MoveInput(a_gtGameTime);
-
-                // Calculate new position
-                Position += m_v2Vel;
-
-                // Calculate aim rotation
-
-                Rotation = AimInput();
-
-                if (Mouse.GetState().LeftButton == ButtonState.Pressed)
+                if (m_bAlive)
                 {
-                    Fire(a_gtGameTime);
-                }
+                    m_v2Vel = MoveInput(a_gtGameTime);
 
-                if (m_bInvuln)
-                {
-                    if (a_gtGameTime.TotalGameTime < m_tsInvulnEnd)
+                    // Calculate new position
+                    Position += m_v2Vel;
+
+                    // Calculate aim rotation
+
+                    Rotation = AimInput();
+
+                    if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                     {
-                        Console.WriteLine("INVULN");
+                        Fire(a_gtGameTime);
+                    }
+
+                    if (m_bInvuln)
+                    {
+                        if (!(a_gtGameTime.TotalGameTime < m_tsInvulnEnd))
+                        {
+                            m_bInvuln = false;
+                        }
+                    }
+                }
+                else
+                {
+                    if (m_iLives > 0)
+                    {
+                        Spawn(a_gtGameTime);
+                        m_iLives--;
+                        Console.WriteLine("Lives Remaining " + m_iLives);
                     }
                     else
                     {
-                        m_bInvuln = false;
+                        m_bActive = false;
                     }
-                }
-            }
-            else
-            {
-                if (m_iLives > 0)
-                {
-                    Spawn(a_gtGameTime);
                 }
             }
 
