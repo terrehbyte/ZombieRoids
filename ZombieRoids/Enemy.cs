@@ -8,20 +8,14 @@ namespace ZombieRoids
     {
         public Rectangle m_rctCollider;
 
-        public int m_iDamage;   // damage dealt to other thigns
         public int m_iValue;    // score value
         public int m_iDivisions = 2; // How many will this break into
-
-        int m_iSpeed = 3;
 
         public override void Initialize(Texture2D a_tTex, Vector2 a_v2Pos)
         {
             base.Initialize(a_tTex, a_v2Pos);
 
             m_bActive = true;
-
-            m_iHealth = 10;
-            m_iDamage = 10;
             m_iValue = 100;
         }
 
@@ -40,8 +34,8 @@ namespace ZombieRoids
             {
                 m_v2Pos += m_v2Vel;
 
-                // TODO: Add recycling
-                if (m_iHealth <= 0)
+                // Disable if dead
+                if (!m_bAlive)
                 {
                     m_bActive = false;
                 }

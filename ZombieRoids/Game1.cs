@@ -284,9 +284,6 @@ namespace ZombieRoids
 
                     lenEnemyList.RemoveAt(i);
 
-                    
-
-
                     Random rngXOffset = new Random();
                     Random rngYOffset = new Random();
 
@@ -307,7 +304,6 @@ namespace ZombieRoids
                     }
                 }
             }
-
         }
 
         void UpdateCollision()
@@ -323,7 +319,7 @@ namespace ZombieRoids
                         if (Collision.CheckCollision(player.m_lbulBullets[j].m_rotrctCollider,
                                                      lenEnemyList[i].m_rctCollider))
                         {
-                            lenEnemyList[i].m_iHealth = 0;
+                            lenEnemyList[i].m_bAlive = false;
                             player.m_lbulBullets[j].m_bActive = false;
                         }
                     }
@@ -334,14 +330,7 @@ namespace ZombieRoids
                     if (Collision.CheckCollision(player.m_rotrctCollider,
                                                  lenEnemyList[i].m_rctCollider))
                     {
-                        player.m_iHealth -= lenEnemyList[i].m_iDamage;
-
-                        lenEnemyList[i].m_iHealth = 0;
-                    }
-
-                    if (player.m_iHealth <= 0)
-                    {
-                        player.m_bActive = false;
+                        lenEnemyList[i].m_bAlive = false;
                     }
                 }
             }

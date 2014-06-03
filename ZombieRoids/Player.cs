@@ -12,6 +12,7 @@ namespace ZombieRoids
 {
     class Player : Entity
     {
+        #region Props and Vars
         public RotatedBoxCollider m_rotrctCollider
         {
             get;
@@ -23,27 +24,24 @@ namespace ZombieRoids
         public int m_iBulletSpeed = 7;
         private TimeSpan m_tsLastShot;
         private TimeSpan m_tsShotDelay = TimeSpan.FromSeconds(-1.0);
+        private TimeSpan m_tsInvulnEnd;
+        private TimeSpan m_tsInvulnDuration = TimeSpan.FromSeconds(5.0);
+
+        public bool m_bInvuln = false;
+
+        public int m_iLives;
 
         public List<Bullet> m_lbulBullets = new List<Bullet>();
 
+        #endregion
+
+        #region Entity Members
         public override void Initialize(Texture2D a_tTex, Vector2 a_v2Pos)
         {
             m_bActive = true;
             m_bAlive = true;
-            m_iHealth = 100;
             base.Initialize(a_tTex, a_v2Pos);
         }
-
-        void UpdateCollider()
-        {
-            Rectangle rctTempRect = new Rectangle((int)m_v2Pos.X,
-                                        (int)m_v2Pos.Y,
-                                        (int)m_v2Dims.X,
-                                        (int)m_v2Dims.X);
-
-            m_rotrctCollider = new RotatedBoxCollider(rctTempRect, m_fRotRads);
-        }
-
         /// <summary>
         /// Perform Player game logic
         /// </summary>
@@ -54,45 +52,73 @@ namespace ZombieRoids
 
             if (m_bAlive)
             {
-                m_v2Vel = MoveInput();
+                m_v2Vel = MoveInput(a_gtGameTime);
 
                 // Calculate new position
                 m_v2Pos += m_v2Vel;
 
                 // Calculate aim rotation
                 m_fRotRads = AimInput();
-                
 
-                // Check for death
-                if (m_iHealth <= 0)
-                {
-                    // Player is dead
-                    m_bAlive = false;
-                }
 
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                 {
                     Fire(a_gtGameTime);
                 }
 
-                
+                if (m_bInvuln)
+                {
+                    if (a_gtGameTime.TotalGameTime < m_tsInvulnEnd)
+                    {
+                        Console.WriteLine("INVULN");
+                    }
+                    else
+                    {
+                        m_bInvuln = false;
+                    }
+                }
+            }
+            else
+            {
+                if (m_iLives > 0)
+                {
+                    Spawn(a_gtGameTime);
+                }
             }
 
-// Update Bullets
-                // null references here, terry
-                for (int i = 0; i < m_lbulBullets.Count; i++)
-                {
-                    m_lbulBullets[i].Update(a_gtGameTime);
-                }   
+            for (int i = 0; i < m_lbulBullets.Count; i++)
+            {
+                m_lbulBullets[i].Update(a_gtGameTime);
+            }   
 
             UpdateCollider();
         }
+        public override void Draw(SpriteBatch a_sbSpriteBatch)
+        {
+            base.Draw(a_sbSpriteBatch);
 
+            // null references here, terry
+            for (int i = 0; i < m_lbulBullets.Count; i++)
+            {
+                m_lbulBullets[i].Draw(a_sbSpriteBatch);
+            }
+        }
+        #endregion
+
+        void UpdateCollider()
+        {
+            Rectangle rctTempRect = new Rectangle((int)m_v2Pos.X,
+                                        (int)m_v2Pos.Y,
+                                        (int)m_v2Dims.X,
+                                        (int)m_v2Dims.X);
+
+            m_rotrctCollider = new RotatedBoxCollider(rctTempRect, m_fRotRads);
+        }
         /// <summary>
         /// handle user input for movement
         /// </summary>
         /// <returns>Horizontal and vertical change, respectively</returns>
-        Vector2 MoveInput()
+        Vector2 MoveInput(GameTime a_gtGameTime)
         {
             // grab Keyboard Input and stuff it into a vector
             KeyboardState kbCurKeys = Keyboard.GetState();
@@ -114,6 +140,16 @@ namespace ZombieRoids
             if (kbCurKeys.IsKeyDown(Keys.D))
             {
                 v2Input.X += m_iSpeed;
+            }
+
+            if (kbCurKeys.IsKeyDown(Keys.Q))
+            {
+                m_v2Pos = Teleport();
+            }
+
+            if (kbCurKeys.IsKeyDown(Keys.E))
+            {
+                Spawn(a_gtGameTime);
             }
 
             return v2Input;
@@ -179,16 +215,22 @@ namespace ZombieRoids
 
             }
         }
-
-        public override void Draw(SpriteBatch a_sbSpriteBatch)
+        Vector2 Teleport()
         {
-            base.Draw(a_sbSpriteBatch);
+            Random rngGennie = new Random();
+            // gen two nums
+            Vector2 v2NewPos = new Vector2(rngGennie.Next(0, (int)Game1.v2ScreenDims.X),
+                                           rngGennie.Next(0, (int)Game1.v2ScreenDims.Y));
 
-            // null references here, terry
-            for (int i = 0; i < m_lbulBullets.Count; i++)
-            {
-                m_lbulBullets[i].Draw(a_sbSpriteBatch);
-            }
+            return v2NewPos;
+        }
+
+        public void Spawn(GameTime a_gtGameTime)
+        {
+            // Set time to be invulnerable
+            m_tsInvulnEnd = a_gtGameTime.TotalGameTime + m_tsInvulnDuration;
+            m_bAlive = true;
+            m_bInvuln = true;
         }
     }
 }

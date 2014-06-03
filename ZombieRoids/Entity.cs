@@ -11,8 +11,6 @@ namespace ZombieRoids
         /// Change in position
         /// </summary>
         public Vector2 m_v2Vel;
-
-        public int m_iHealth;
         public bool m_bActive;
         public bool m_bAlive;
 
