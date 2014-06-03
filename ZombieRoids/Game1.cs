@@ -34,10 +34,7 @@ namespace ZombieRoids
         bool m_bShooting;
         double m_dLastShotTime;
         bool m_bWarpKeyPressed;
-        Texture2D m_oPlayerImage;
-        Texture2D m_oShotImage;
-        Texture2D m_oTargetImage;
-        Texture2D m_oFrag1Image, m_oFrag2Image, m_oFrag3Image;
+        Texture2D m_oPlayerImage, m_oShotImage, m_oTargetImage, m_oFrag1Image, m_oFrag2Image, m_oFrag3Image;
         double m_dShotRadius, m_dTargetRadius, m_dFrag1Radius, m_dFrag2Radius, m_dFrag3Radius;
         HashSet<MovingObject> m_oTargets;
 
@@ -57,8 +54,7 @@ namespace ZombieRoids
             m_bShooting = false;
             m_dLastShotTime = 0;
             m_bWarpKeyPressed = false;
-            m_oPlayerImage = null;
-            m_oShotImage = null;
+            m_oPlayerImage = m_oShotImage = m_oTargetImage = m_oFrag1Image = m_oFrag2Image = m_oFrag3Image = null;
             m_oRandom = new Random();
             m_oTargets = new HashSet<MovingObject>();
         }
