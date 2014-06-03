@@ -10,8 +10,9 @@ namespace ZombieRoids
 
         public int m_iDamage;   // damage dealt to other thigns
         public int m_iValue;    // score value
+        public int m_iDivisions = 2; // How many will this break into
 
-        int m_iSpeed = 10;
+        int m_iSpeed = 3;
 
         public override void Initialize(Texture2D a_tTex, Vector2 a_v2Pos)
         {
@@ -34,15 +35,18 @@ namespace ZombieRoids
 
         public override void Update(GameTime gameTime)
         {
-            m_v2Pos.X -= m_iSpeed;
-
-            // TODO: Add recycling
-            if (m_v2Pos.X < -m_v2Dims.X || m_iHealth <= 0)
+            if (m_bActive)
             {
-                m_bActive = false;
-            }
+                m_v2Pos += m_v2Vel;
 
-            UpdateCollider();
+                // TODO: Add recycling
+                if (m_v2Pos.X < -m_v2Dims.X || m_iHealth <= 0)
+                {
+                    m_bActive = false;
+                }
+
+                UpdateCollider();
+            }
         }
     }
 }

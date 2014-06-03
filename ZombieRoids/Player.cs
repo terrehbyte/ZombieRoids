@@ -19,10 +19,10 @@ namespace ZombieRoids
         }
 
         private Vector2 m_v2Target;
-        public int m_iSpeed = 10;
-        public int m_iBulletSpeed = 15;
+        public int m_iSpeed = 5;
+        public int m_iBulletSpeed = 7;
         private TimeSpan m_tsLastShot;
-        private TimeSpan m_tsShotDelay = TimeSpan.FromSeconds(0.1);
+        private TimeSpan m_tsShotDelay = TimeSpan.FromSeconds(0.2);
 
         public List<Bullet> m_lbulBullets = new List<Bullet>();
 
@@ -75,16 +75,15 @@ namespace ZombieRoids
                     Fire(a_gtGameTime);
                 }
 
-                // Update Bullets
+                
+            }
+
+// Update Bullets
                 // null references here, terry
                 for (int i = 0; i < m_lbulBullets.Count; i++)
                 {
                     m_lbulBullets[i].Update(a_gtGameTime);
                 }   
-
-                //Console.WriteLine("HP" + m_iHealth.ToString());
-                Console.WriteLine(m_lbulBullets.Count);
-            }
 
             UpdateCollider();
         }

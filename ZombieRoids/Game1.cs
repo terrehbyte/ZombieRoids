@@ -1,6 +1,7 @@
 ﻿#region Using Statements
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -17,12 +18,11 @@ namespace ZombieRoids
     /// </summary>
     public class Game1 : Game
     {
+        #region Props & Vars
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
         Vector2 v2ScreenDims;
-
-        // Background
 
         Texture2D tMainBackground;
         Rectangle rctBackground;
@@ -41,6 +41,10 @@ namespace ZombieRoids
         List<Enemy> lenEnemyList;
 
         Vector2 v2BulletGraveyard = new Vector2(-100, -100);
+
+        #endregion
+
+        #region FrameworkMethods
 
         public Game1()
             : base()
@@ -138,93 +142,6 @@ namespace ZombieRoids
             pbgBGLayer2.Update(gameTime);
         }
 
-        private void UpdatePlayer(GameTime gameTime)
-        {
-            player.Update(gameTime);
-
-            // Keep player in window
-            player.m_v2Pos.X = MathHelper.Clamp(player.m_v2Pos.X, 0 + player.m_v2Dims.X / 2, GraphicsDevice.Viewport.Width - player.m_v2Dims.X / 2);
-            player.m_v2Pos.Y = MathHelper.Clamp(player.m_v2Pos.Y, 0 + player.m_v2Dims.Y / 2, GraphicsDevice.Viewport.Height - player.m_v2Dims.Y / 2);
-
-            // Check bullets
-            for (int i = 0; i < player.m_lbulBullets.Count; i++)
-            {
-                if (player.m_lbulBullets[i].CheckOffscreen(v2ScreenDims))
-                {
-                    player.m_lbulBullets[i].m_bActive = false;
-                }
-            }
-        }
-
-        void AddEnemy()
-        {
-            Texture2D tEnemyTex = Content.Load<Texture2D>("Graphics\\mine");
-
-            // RNG Enemy Pos
-            Vector2 v2EnePos = new Vector2(GraphicsDevice.Viewport.Width + tEnemyTex.Width / 2,
-                                           rngRandom.Next(100, GraphicsDevice.Viewport.Height - 100));
-
-            Enemy eneTemp = new Enemy();
-
-            eneTemp.Initialize(tEnemyTex, v2EnePos);
-
-            lenEnemyList.Add(eneTemp);
-        }
-
-        private void UpdateEnemies(GameTime gameTime)
-        {
-            if (gameTime.TotalGameTime - tsPrevEnemySpawnTime > tsEnemySpawnTime)
-            {
-                tsPrevEnemySpawnTime = gameTime.TotalGameTime;
-
-                // Add Enemy
-                AddEnemy();
-            }
-
-            for (int i = lenEnemyList.Count - 1; i >= 0; i--)
-            {
-                lenEnemyList[i].Update(gameTime);
-                if (lenEnemyList[i].m_bActive == false)
-                {
-                    lenEnemyList.RemoveAt(i);
-                }
-            }
-            
-        }
-
-        void UpdateCollision()
-        {
-            for (int i = 0; i < lenEnemyList.Count; i++)
-            {
-                // Check Against bullet
-                for (int j = 0; j < player.m_lbulBullets.Count; j++)
-                {
-                    // Only check if the bullet is active
-                    if (player.m_lbulBullets[j].m_bActive)
-                    {
-                        if (Collision.CheckCollision(player.m_lbulBullets[j].m_rotrctCollider,
-                                                     lenEnemyList[i].m_rctCollider))
-                        {
-                            lenEnemyList[i].m_iHealth = 0;
-                        }
-                    }
-                }
-
-                if (Collision.CheckCollision(player.m_rotrctCollider,
-                                             lenEnemyList[i].m_rctCollider))
-                {
-                    player.m_iHealth -= lenEnemyList[i].m_iDamage;
-
-                    lenEnemyList[i].m_iHealth = 0;
-                }
-
-                if (player.m_iHealth <= 0)
-                {
-                    player.m_bActive = false;
-                }
-            }
-        }
-
         /// <summary>
         /// This is called when the game should draw itself.
         /// </summary>
@@ -254,5 +171,129 @@ namespace ZombieRoids
             spriteBatch.End();
             base.Draw(gameTime);
         }
+        #endregion
+
+        #region Logic Methods
+        private void UpdatePlayer(GameTime gameTime)
+        {
+            player.Update(gameTime);
+
+            // Keep player in window
+            player.m_v2Pos.X = MathHelper.Clamp(player.m_v2Pos.X, 0 + player.m_v2Dims.X / 2, GraphicsDevice.Viewport.Width - player.m_v2Dims.X / 2);
+            player.m_v2Pos.Y = MathHelper.Clamp(player.m_v2Pos.Y, 0 + player.m_v2Dims.Y / 2, GraphicsDevice.Viewport.Height - player.m_v2Dims.Y / 2);
+
+            // Check bullets
+            for (int i = 0; i < player.m_lbulBullets.Count; i++)
+            {
+                if (player.m_lbulBullets[i].CheckOffscreen(v2ScreenDims))
+                {
+                    player.m_lbulBullets[i].m_bActive = false;
+                }
+            }
+        }
+
+        Enemy AddEnemy()
+        {
+            Texture2D tEnemyTex = Content.Load<Texture2D>("Graphics\\mine");
+
+            // RNG Enemy Pos
+            Vector2 v2EnePos = new Vector2(GraphicsDevice.Viewport.Width + tEnemyTex.Width / 2,
+                                           rngRandom.Next(100, GraphicsDevice.Viewport.Height - 100));
+
+            Enemy eneTemp = new Enemy();
+            eneTemp.m_v2Vel = new Vector2(-4f, 0);
+
+            eneTemp.Initialize(tEnemyTex, v2EnePos);
+
+            lenEnemyList.Add(eneTemp);
+
+            return lenEnemyList.Last();
+        }
+
+        private void UpdateEnemies(GameTime gameTime)
+        {
+            if (gameTime.TotalGameTime - tsPrevEnemySpawnTime > tsEnemySpawnTime)
+            {
+                tsPrevEnemySpawnTime = gameTime.TotalGameTime;
+
+                // Add Enemy
+                AddEnemy();
+            }
+
+            // Prune dead enemies
+            for (int i = lenEnemyList.Count - 1; i >= 0; i--)
+            {
+                lenEnemyList[i].Update(gameTime);
+                if (lenEnemyList[i].m_bActive == false)
+                {
+                    int iChildren = lenEnemyList[i].m_iDivisions;
+                    Vector2 v2OrigPos = lenEnemyList[i].m_v2Pos;
+                    Vector2 v2OrigVel = lenEnemyList[i].m_v2Vel;
+
+                    lenEnemyList.RemoveAt(i);
+
+                    
+
+
+                    Random rngXOffset = new Random();
+                    Random rngYOffset = new Random();
+
+                    if (iChildren != 0)
+                    {
+                        for (int j = 0; j < iChildren; j++)
+                        {
+                            Enemy eneNewFoe = AddEnemy();
+                            // Influence new Position
+                            eneNewFoe.m_v2Pos = v2OrigPos + new Vector2(rngXOffset.Next(-50, 45),
+                                                                        rngYOffset.Next(-50, 55));
+
+                            eneNewFoe.m_v2Vel = new Vector2(rngXOffset.Next((int)v2OrigVel.X, -1),
+                                                             rngYOffset.Next(-2, 2));
+
+                            eneNewFoe.m_iDivisions = iChildren - 1;
+                        }
+                    }
+                }
+            }
+
+        }
+
+        void UpdateCollision()
+        {
+            for (int i = 0; i < lenEnemyList.Count; i++)
+            {
+                // Check Against bullet
+                for (int j = 0; j < player.m_lbulBullets.Count; j++)
+                {
+                    // Only check if the bullet is active
+                    if (player.m_lbulBullets[j].m_bActive)
+                    {
+                        if (Collision.CheckCollision(player.m_lbulBullets[j].m_rotrctCollider,
+                                                     lenEnemyList[i].m_rctCollider))
+                        {
+                            lenEnemyList[i].m_iHealth = 0;
+                            player.m_lbulBullets[j].m_bActive = false;
+                        }
+                    }
+                }
+
+                if (player.m_bActive)
+                {
+                    if (Collision.CheckCollision(player.m_rotrctCollider,
+                                                 lenEnemyList[i].m_rctCollider))
+                    {
+                        player.m_iHealth -= lenEnemyList[i].m_iDamage;
+
+                        lenEnemyList[i].m_iHealth = 0;
+                    }
+
+                    if (player.m_iHealth <= 0)
+                    {
+                        player.m_bActive = false;
+                    }
+                }
+            }
+        }
+        #endregion
     }
 }

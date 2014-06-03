@@ -70,5 +70,15 @@ namespace ZombieRoids
                 base.Draw(a_sbSpriteBatch);
             }
         }
+
+        public void OnActive()
+        {
+
+        }
+
+        public void OnInactive()
+        {
+
+        }
     }
 }
