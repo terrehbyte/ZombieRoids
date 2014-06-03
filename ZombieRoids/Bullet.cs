@@ -1,4 +1,25 @@
-﻿using System;
+﻿/// <list type="table">
+/// <listheader><term>Bullet.cs</term><description>
+///     Represents a bullet fired by the player
+/// </description></listheader>
+/// <item><term>Author</term><description>
+///     Terry Nguyen
+/// </description></item>
+/// <item><term>Date Created</term><description>
+///     June 2, 2014
+/// </description></item>
+/// <item><term>Last Modified By</term><description>
+///     Elizabeth Lowry
+/// </description></item>
+/// <item><term>Last Modified</term><description>
+///     June 3, 2014
+/// </description></item>
+/// <item><term>Last Modification</term><description>
+///     Refactoring Sprite class
+/// </description></item>
+/// </list>
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,19 +44,14 @@ namespace ZombieRoids
 
         public Bullet(Entity a_bulSource)
         {
-            Initialize(a_bulSource.m_tTex, a_bulSource.m_v2Pos);
+            Initialize(a_bulSource.Texture, a_bulSource.Position);
             m_v2Vel = a_bulSource.m_v2Vel;
-            m_fRotRads = a_bulSource.m_fRotRads;
+            Rotation = a_bulSource.Rotation;
         }
 
         void UpdateCollider()
         {
-            Rectangle rctTempRect = new Rectangle((int)m_v2Pos.X,
-                                        (int)m_v2Pos.Y,
-                                        (int)m_v2Dims.X,
-                                        (int)m_v2Dims.X);
-
-            m_rotrctCollider = new RotatedBoxCollider(rctTempRect, m_fRotRads);
+            m_rotrctCollider = new RotatedBoxCollider(Boundary, Rotation);
         }
 
         public override void Initialize(Texture2D a_tTex,Vector2 a_v2Pos)
@@ -53,7 +69,7 @@ namespace ZombieRoids
                 base.Update(a_gtGameTime);
 
                 // Calculate new position
-                m_v2Pos += m_v2Vel;
+                Position += m_v2Vel;
 
                 if (a_gtGameTime.TotalGameTime > m_tsBulletDeathTime)
                 {

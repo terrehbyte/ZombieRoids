@@ -1,4 +1,25 @@
-﻿using System;
+﻿/// <list type="table">
+/// <listheader><term>Player.cs</term><description>
+///     Class representing the player on the screen
+/// </description></listheader>
+/// <item><term>Author</term><description>
+///     Terry Nguyen
+/// </description></item>
+/// <item><term>Date Created</term><description>
+///     May 27, 2014
+/// </description></item>
+/// <item><term>Last Modified By</term><description>
+///     Elizabeth Lowry
+/// </description></item>
+/// <item><term>Last Modified</term><description>
+///     June 3, 2014
+/// </description></item>
+/// <item><term>Last Modification</term><description>
+///     Refactoring Sprite class
+/// </description></item>
+/// </list>
+
+using System;
 using System.Linq;
 using System.Collections.Generic;
 
@@ -42,6 +63,12 @@ namespace ZombieRoids
             m_bAlive = true;
             base.Initialize(a_tTex, a_v2Pos);
         }
+
+        void UpdateCollider()
+        {
+            m_rotrctCollider = new RotatedBoxCollider(Boundary, Rotation);
+        }
+
         /// <summary>
         /// Perform Player game logic
         /// </summary>
@@ -55,11 +82,11 @@ namespace ZombieRoids
                 m_v2Vel = MoveInput(a_gtGameTime);
 
                 // Calculate new position
-                m_v2Pos += m_v2Vel;
+                Position += m_v2Vel;
 
                 // Calculate aim rotation
-                m_fRotRads = AimInput();
 
+                Rotation = AimInput();
 
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                 {
@@ -105,15 +132,6 @@ namespace ZombieRoids
         }
         #endregion
 
-        void UpdateCollider()
-        {
-            Rectangle rctTempRect = new Rectangle((int)m_v2Pos.X,
-                                        (int)m_v2Pos.Y,
-                                        (int)m_v2Dims.X,
-                                        (int)m_v2Dims.X);
-
-            m_rotrctCollider = new RotatedBoxCollider(rctTempRect, m_fRotRads);
-        }
         /// <summary>
         /// handle user input for movement
         /// </summary>
@@ -144,7 +162,7 @@ namespace ZombieRoids
 
             if (kbCurKeys.IsKeyDown(Keys.Q))
             {
-                m_v2Pos = Teleport();
+                Position = Teleport();
             }
 
             if (kbCurKeys.IsKeyDown(Keys.E))
@@ -163,12 +181,11 @@ namespace ZombieRoids
         {
             MouseState mCurState = Mouse.GetState();
             float fRotVal;
-            Vector2 v2CurPos = new Vector2(m_v2Pos.X, m_v2Pos.Y);
             Vector2 v2Input = new Vector2(mCurState.Position.X, mCurState.Position.Y);
 
-            Vector2 dir = v2Input - v2CurPos;
+            Vector2 dir = v2Input - Position;
 
-            fRotVal = (float)Math.Atan2(dir.Y, dir.X);
+            fRotVal = (Vector2.Zero == dir ? Rotation : (float)Math.Atan2(dir.Y, dir.X));
 
             m_v2Target = v2Input;
 
@@ -190,8 +207,7 @@ namespace ZombieRoids
                     {
                         bulTemp = m_lbulBullets[i];
                         m_lbulBullets[i].m_bActive = true;
-                        m_lbulBullets[i].m_v2Pos = m_v2Pos;
-                        
+                        m_lbulBullets[i].Position = Position;
                         break;
                     }
                 }
@@ -199,17 +215,14 @@ namespace ZombieRoids
                 // If a bullet couldn't be found
                 if (bulTemp == null)
                 {
-                    bulTemp = new Bullet(Engine.Instance.Instantiate("Graphics\\Laser", m_v2Pos));
+                    bulTemp = new Bullet(Engine.Instance.Instantiate("Graphics\\Laser", Position));
                     m_lbulBullets.Add(bulTemp);
                 }
 
                 // Assign Attributes to Bullet
-
                 bulTemp.m_tsBulletDeathTime = a_gtGameTime.TotalGameTime + bulTemp.m_tsBulletLifetime;
-
-                bulTemp.m_fRotRads = m_fRotRads;
-                Vector2 v2BulletVel = m_v2Pos - m_v2Target;
-                
+                bulTemp.Rotation = Rotation;
+                Vector2 v2BulletVel = Position - m_v2Target;
                 v2BulletVel.Normalize();
                 v2BulletVel *= -m_iBulletSpeed;
 

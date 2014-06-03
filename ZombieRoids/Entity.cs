@@ -1,4 +1,25 @@
-﻿using System;
+﻿/// <list type="table">
+/// <listheader><term>Entity.cs</term><description>
+///     Class representing a moving object
+/// </description></listheader>
+/// <item><term>Author</term><description>
+///     Terry Nguyen
+/// </description></item>
+/// <item><term>Date Created</term><description>
+///     June 2, 2014
+/// </description></item>
+/// <item><term>Last Modified By</term><description>
+///     Elizabeth Lowry
+/// </description></item>
+/// <item><term>Last Modified</term><description>
+///     June 3, 2014
+/// </description></item>
+/// <item><term>Last Modification</term><description>
+///     Refactoring Sprite class
+/// </description></item>
+/// </list>
+
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -32,10 +53,10 @@ namespace ZombieRoids
         public virtual void Initialize(Texture2D a_tTex, Vector2 a_v2Pos)
         {
             // Assign Texture
-            m_tTex = a_tTex;
+            Texture = a_tTex;
 
             // Assign Position
-            m_v2Pos = a_v2Pos;
+            Position = a_v2Pos;
 
 
             ScreenExitEvent = ScreenWrap;
@@ -75,9 +96,8 @@ namespace ZombieRoids
         public bool CheckOffscreen(Vector2 a_v2ScreenDims)
         {
             Rectangle rctScreen = new Rectangle(0, 0, (int)a_v2ScreenDims.X, (int)a_v2ScreenDims.Y);
-            Rectangle entBox = new Rectangle((int)m_v2Pos.X, (int)m_v2Pos.Y, (int)m_v2Dims.X, (int)m_v2Dims.Y);
 
-            if (!rctScreen.Intersects(entBox))
+            if (!rctScreen.Intersects(Boundary))
             {
                 return true;
             }
@@ -99,27 +119,27 @@ namespace ZombieRoids
         {
             // Vertical Wrap
             // Top
-            if (m_v2Pos.Y < 0)
+            if (Position.Y < 0)
             {
-                m_v2Pos.Y = Game1.v2ScreenDims.Y;
+                Position = new Vector2(Position.X,Game1.v2ScreenDims.Y);
             }
             // Below
-            else if (m_v2Pos.Y > Game1.v2ScreenDims.Y)
+            else if (Position.Y > Game1.v2ScreenDims.Y)
             {
-                m_v2Pos.Y = 0;
+                Position = new Vector2(Position.X,0);
             }
             
             // Horizontal Wrap
             // Left
-            if (m_v2Pos.X < 0)
+            if (Position.X < 0)
             {
-                m_v2Pos.X = Game1.v2ScreenDims.X;
+                Position = new Vector2(Game1.v2ScreenDims.X, Position.Y);
             }
 
             // Right
-            else if (m_v2Pos.X > Game1.v2ScreenDims.X)
+            else if (Position.X > Game1.v2ScreenDims.X)
             {
-                m_v2Pos.X = 0;
+                Position = new Vector2(0, Position.Y);
             }
 
         }

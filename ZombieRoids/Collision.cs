@@ -1,4 +1,25 @@
-﻿using System;
+﻿/// <list type="table">
+/// <listheader><term>Collision.cs</term><description>
+///     Functions for checking for collisions between objects
+/// </description></listheader>
+/// <item><term>Author</term><description>
+///     Terry Nguyen
+/// </description></item>
+/// <item><term>Date Created</term><description>
+///     June 2, 2014
+/// </description></item>
+/// <item><term>Last Modified By</term><description>
+///     Elizabeth Lowry
+/// </description></item>
+/// <item><term>Last Modified</term><description>
+///     June 3, 2014
+/// </description></item>
+/// <item><term>Last Modification</term><description>
+///     Refactoring Sprite class
+/// </description></item>
+/// </list>
+
+using System;
 using Microsoft.Xna.Framework;
 using RotatedRectangleCollisions;
 
@@ -8,17 +29,7 @@ namespace ZombieRoids
     {
         public static bool CheckCollision(Entity a_entFirst, Entity a_entSecond)
         {
-            Rectangle rctFirst = new Rectangle((int)a_entFirst.m_v2Pos.X,
-                                               (int)a_entFirst.m_v2Pos.Y,
-                                               (int)a_entFirst.m_v2Dims.X,
-                                               (int)a_entFirst.m_v2Dims.Y);
-
-            Rectangle rctSecond = new Rectangle((int)a_entSecond.m_v2Pos.X,
-                                               (int)a_entSecond.m_v2Pos.Y,
-                                               (int)a_entSecond.m_v2Dims.X,
-                                               (int)a_entSecond.m_v2Dims.Y);
-
-            return rctFirst.Intersects(rctSecond);
+            return CheckCollision(a_entFirst.Boundary, a_entSecond.Boundary);
         }
 
         public static bool CheckCollision(Rectangle a_rctFirst, Rectangle a_rctSecond)
