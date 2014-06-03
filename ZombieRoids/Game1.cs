@@ -202,15 +202,6 @@ namespace ZombieRoids
         private void UpdatePlayer(GameTime gameTime)
         {
             player.Update(gameTime);
-
-            // Check bullets
-            for (int i = 0; i < player.m_lbulBullets.Count; i++)
-            {
-                if (player.m_lbulBullets[i].CheckOffscreen(v2ScreenDims))
-                {
-                    player.m_lbulBullets[i].m_bActive = false;
-                }
-            }
         }
 
         Enemy AddEnemy()
