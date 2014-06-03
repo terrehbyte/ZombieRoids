@@ -1,4 +1,25 @@
-﻿#region Using Statements
+﻿/// <list type="table">
+/// <listheader><term>Game.cs</term><description>
+///     The main class for the game as a whole.
+/// </description></listheader>
+/// <item><term>Author</term><description>
+///     Terry Nguyen
+/// </description></item>
+/// <item><term>Date Created</term><description>
+///     May 27, 2014
+/// </description></item>
+/// <item><term>Last Modified By</term><description>
+///     Elizabeth Lowry
+/// </description></item>
+/// <item><term>Last Modified</term><description>
+///     June 3, 2014
+/// </description></item>
+/// <item><term>Last Modification</term><description>
+///     Refactoring Sprite class
+/// </description></item>
+/// </list>
+
+#region Using Statements
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -179,8 +200,8 @@ namespace ZombieRoids
             player.Update(gameTime);
 
             // Keep player in window
-            player.m_v2Pos.X = MathHelper.Clamp(player.m_v2Pos.X, 0 + player.m_v2Dims.X / 2, GraphicsDevice.Viewport.Width - player.m_v2Dims.X / 2);
-            player.m_v2Pos.Y = MathHelper.Clamp(player.m_v2Pos.Y, 0 + player.m_v2Dims.Y / 2, GraphicsDevice.Viewport.Height - player.m_v2Dims.Y / 2);
+            player.Left = MathHelper.Clamp(player.Left, 0, GraphicsDevice.Viewport.Width - player.Width);
+            player.Top = MathHelper.Clamp(player.Top, 0, GraphicsDevice.Viewport.Height - player.Height);
 
             // Check bullets
             for (int i = 0; i < player.m_lbulBullets.Count; i++)
@@ -227,7 +248,7 @@ namespace ZombieRoids
                 if (lenEnemyList[i].m_bActive == false)
                 {
                     int iChildren = lenEnemyList[i].m_iDivisions;
-                    Vector2 v2OrigPos = lenEnemyList[i].m_v2Pos;
+                    Vector2 v2OrigPos = lenEnemyList[i].Position;
                     Vector2 v2OrigVel = lenEnemyList[i].m_v2Vel;
 
                     lenEnemyList.RemoveAt(i);
@@ -244,7 +265,7 @@ namespace ZombieRoids
                         {
                             Enemy eneNewFoe = AddEnemy();
                             // Influence new Position
-                            eneNewFoe.m_v2Pos = v2OrigPos + new Vector2(rngXOffset.Next(-50, 45),
+                            eneNewFoe.Position = v2OrigPos + new Vector2(rngXOffset.Next(-50, 45),
                                                                         rngYOffset.Next(-50, 55));
 
                             eneNewFoe.m_v2Vel = new Vector2(rngXOffset.Next((int)v2OrigVel.X, -1),

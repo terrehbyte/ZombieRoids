@@ -1,4 +1,25 @@
-﻿using System;
+﻿/// <list type="table">
+/// <listheader><term>Enemy.cs</term><description>
+///     Class representing an enemy for the player to shoot at
+/// </description></listheader>
+/// <item><term>Author</term><description>
+///     Terry Nguyen
+/// </description></item>
+/// <item><term>Date Created</term><description>
+///     May 29, 2014
+/// </description></item>
+/// <item><term>Last Modified By</term><description>
+///     Elizabeth Lowry
+/// </description></item>
+/// <item><term>Last Modified</term><description>
+///     June 3, 2014
+/// </description></item>
+/// <item><term>Last Modification</term><description>
+///     Refactoring Sprite class
+/// </description></item>
+/// </list>
+
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -27,20 +48,17 @@ namespace ZombieRoids
 
         public void UpdateCollider()
         {
-            m_rctCollider = new Rectangle((int)m_v2Pos.X,
-                            (int)m_v2Pos.Y,
-                            (int)m_v2Dims.X,
-                            (int)m_v2Dims.X);
+            m_rctCollider = Boundary;
         }
 
         public override void Update(GameTime gameTime)
         {
             if (m_bActive)
             {
-                m_v2Pos += m_v2Vel;
+                Position += m_v2Vel;
 
                 // TODO: Add recycling
-                if (m_v2Pos.X < -m_v2Dims.X || m_iHealth <= 0)
+                if (Left < -Size.X || m_iHealth <= 0)
                 {
                     m_bActive = false;
                 }
