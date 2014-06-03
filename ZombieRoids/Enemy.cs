@@ -9,13 +9,13 @@
 ///     May 29, 2014
 /// </description></item>
 /// <item><term>Last Modified By</term><description>
-///     Elizabeth Lowry
+///     Terry Nguyen
 /// </description></item>
 /// <item><term>Last Modified</term><description>
 ///     June 3, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Refactoring Sprite class
+///     Merged with dev for @emlowry Sprite refactor
 /// </description></item>
 /// </list>
 
