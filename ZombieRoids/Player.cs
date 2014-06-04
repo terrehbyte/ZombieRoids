@@ -12,10 +12,10 @@
 ///     Elizabeth Lowry
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 3, 2014
+///     June 4, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Refactoring Player and Bullet classes
+///     Refactoring Game1 class
 /// </description></item>
 /// </list>
 
@@ -32,7 +32,7 @@ namespace ZombieRoids
     /// <remarks>
     /// Represents the player on the screen
     /// </remarks>
-    class Player : Entity
+    public class Player : Entity
     {
         private const int mc_iSpeed = 150;
         private const int mc_iBulletSpeed = 210;
@@ -113,9 +113,14 @@ namespace ZombieRoids
         /// Perform Player game logic
         /// </summary>
         /// <param name="gameTime">GameTime</param>
-        public override void Update(GameTime a_gtGameTime)
+        public override void Update(Game1.Context a_oContext)
         {
-            base.Update(a_gtGameTime);
+            // Update position
+            base.Update(a_oContext);
+            Left = MathHelper.Clamp(Left, a_oContext.viewport.Left,
+                                          a_oContext.viewport.Right - Width);
+            Top = MathHelper.Clamp(Top, a_oContext.viewport.Top,
+                                        a_oContext.viewport.Bottom - Height);
 
             if (Alive)
             {
@@ -125,7 +130,7 @@ namespace ZombieRoids
                 // Fire bullets
                 if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                 {
-                    Fire(a_gtGameTime);
+                    Fire(a_oContext.time);
                 }
             }
 
@@ -134,7 +139,24 @@ namespace ZombieRoids
             {
                 if (null != m_lbulBullets[i])
                 {
-                    m_lbulBullets[i].Update(a_gtGameTime);
+                    m_lbulBullets[i].Update(a_oContext);
+                }
+            }
+
+            // Check for collision with enemies
+            if (Alive)
+            {
+                foreach (Enemy oEnemy in a_oContext.enemies)
+                {
+                    if (Collision.CheckCollision(this, oEnemy))
+                    {
+                        HitPoints -= oEnemy.Damage;
+                        oEnemy.Alive = false;
+                        if (!Alive)
+                        {
+                            break;
+                        }
+                    }
                 }
             }
         }
@@ -198,7 +220,10 @@ namespace ZombieRoids
         /// <param name="a_sbSpriteBatch"></param>
         public override void Draw(SpriteBatch a_sbSpriteBatch)
         {
-            base.Draw(a_sbSpriteBatch);
+            if (Alive)
+            {
+                base.Draw(a_sbSpriteBatch);
+            }
             for (int i = 0; i < m_lbulBullets.Count; i++)
             {
                 if (null != m_lbulBullets)

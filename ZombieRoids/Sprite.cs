@@ -32,7 +32,7 @@ namespace ZombieRoids
     /// <remarks>
     /// Base class for objects drawn to the screen
     /// </remarks>
-    class Sprite
+    public class Sprite
     {
 
         #region Basic transformation properties
@@ -510,9 +510,9 @@ namespace ZombieRoids
         {
             if (Visible)
             {
-                a_oSpriteBatch.Draw(Texture, Boundary, Slice, Tint, Rotation,
+                a_oSpriteBatch.Draw(Texture, Position, Slice, Tint, Rotation,
                                     new Vector2(Width / 2, Height / 2),
-                                    SpriteEffects.None, 0f);
+                                    Scale, SpriteEffects.None, 0f);
             }
         }
     }

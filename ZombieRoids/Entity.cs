@@ -12,10 +12,10 @@
 ///     Elizabeth Lowry
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 3, 2014
+///     June 4, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Refactoring Player and Bullet classes
+///     Refactoring Game1 class
 /// </description></item>
 /// </list>
 
@@ -31,7 +31,7 @@ namespace ZombieRoids
     /// <remarks>
     /// Represents a moving object with hitpoints
     /// </remarks>
-    class Entity : Sprite
+    public class Entity : Sprite
     {
         public RotatedBoxCollider Collider
         {
@@ -129,7 +129,7 @@ namespace ZombieRoids
         /// Update logic for this entity, if it needs updating each frame
         /// </summary>
         /// <param name="a_gtGameTime"></param>
-        public virtual void Update(GameTime a_gtGameTime)
+        public virtual void Update(Game1.Context a_oContext)
         {
 #if DEBUG
             // In debug mode, throw an exception if this is called before the
@@ -142,7 +142,7 @@ namespace ZombieRoids
             if (Active)
             {
                 Position += Velocity *
-                            (float)a_gtGameTime.ElapsedGameTime.TotalSeconds;
+                            (float)a_oContext.time.ElapsedGameTime.TotalSeconds;
             }
         }
 
@@ -151,11 +151,9 @@ namespace ZombieRoids
         /// </summary>
         /// <param name="a_ptScreenSize">Screen size</param>
         /// <returns>True if entity is completely outside screen area</returns>
-        public bool CheckOffscreen(Point a_ptScreenSize)
+        public bool CheckOffscreen(Rectangle a_oDisplayArea)
         {
-            Rectangle rctScreen =
-                new Rectangle(0, 0, a_ptScreenSize.X, a_ptScreenSize.Y);
-            if (!rctScreen.Intersects(Boundary))
+            if (!a_oDisplayArea.Intersects(Boundary))
             {
                 return true;
             }
