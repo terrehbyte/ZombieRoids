@@ -15,7 +15,7 @@
 ///     June 3, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Refactoring Entity class
+///     Refactoring Player and Bullet classes
 /// </description></item>
 /// </list>
 
@@ -33,7 +33,7 @@ namespace ZombieRoids
         public int m_iValue;    // score value
         public int m_iDivisions = 2; // How many will this break into
 
-        int m_iSpeed = 3;
+        int m_iSpeed = 90;
 
         public override void Initialize(Texture2D a_tTex, Vector2 a_v2Pos)
         {
@@ -46,24 +46,16 @@ namespace ZombieRoids
             m_iValue = 100;
         }
 
-        public void UpdateCollider()
-        {
-            m_rctCollider = Boundary;
-        }
-
         public override void Update(GameTime gameTime)
         {
+            base.Update(gameTime);
             if (Active)
             {
-                Position += Velocity;
-
                 // TODO: Add recycling
                 if (Left < -Size.X || HitPoints <= 0)
                 {
                     Active = false;
                 }
-
-                UpdateCollider();
             }
         }
     }

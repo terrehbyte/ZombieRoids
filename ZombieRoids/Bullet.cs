@@ -15,7 +15,7 @@
 ///     June 3, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Refactoring Entity class
+///     Refactoring Player and Bullet classes
 /// </description></item>
 /// </list>
 
@@ -31,47 +31,38 @@ using RotatedRectangleCollisions;
 
 namespace ZombieRoids
 {
+    /// <remarks>
+    /// Represents a bullet
+    /// </remarks>
     class Bullet : Entity
     {
-        public RotatedBoxCollider m_rotrctCollider
+        /// <summary>
+        /// Constructs a new bullet fired by the given entity at the given speed
+        /// </summary>
+        /// <param name="a_oShooter">Entity firing the bullet</param>
+        /// <param name="a_tTexture">Bullet image</param>
+        /// <param name="a_fSpeed">Bullet speed</param>
+        public Bullet(Entity a_oShooter, Texture2D a_tTexture, float a_fSpeed)
         {
-            get;
-            private set;
+            Initialize(a_tTexture, a_oShooter.Position);
+            if (null != a_oShooter)
+            {
+                Fire(a_oShooter, a_fSpeed);
+            }
         }
 
-        public Bullet(Entity a_bulSource)
-        {
-            Initialize(a_bulSource.Texture, a_bulSource.Position);
-            Velocity = a_bulSource.Velocity;
-            Rotation = a_bulSource.Rotation;
-        }
-
-        void UpdateCollider()
-        {
-            m_rotrctCollider = new RotatedBoxCollider(Boundary, Rotation);
-        }
-
-        public override void Initialize(Texture2D a_tTex,Vector2 a_v2Pos)
+        /// <summary>
+        /// Fires the bullet from the given entity at the given speed
+        /// </summary>
+        /// <param name="a_oShooter">Entity firing the bullet</param>
+        /// <param name="a_fSpeed">Bullet speed</param>
+        public void Fire(Entity a_oShooter, float a_fSpeed)
         {
             Active = true;
             Alive = true;
-
-
-
-            base.Initialize(a_tTex, a_v2Pos);
-        }
-
-        public override void Update(GameTime a_gtGameTime)
-        {
-            if (Active)
-            {
-                base.Update(a_gtGameTime);
-
-                // Calculate new position
-                Position += Velocity;
-
-                UpdateCollider();
-            }
+            Position = a_oShooter.Position;
+            Rotation = a_oShooter.Rotation;
+            Velocity = a_oShooter.Forward * a_fSpeed;
         }
     }
 }

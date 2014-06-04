@@ -15,7 +15,7 @@
 ///     June 3, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Refactoring Entity class
+///     Refactoring Player and Bullet classes
 /// </description></item>
 /// </list>
 
@@ -24,6 +24,8 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
+using RotatedRectangleCollisions;
+
 namespace ZombieRoids
 {
     /// <remarks>
@@ -31,10 +33,27 @@ namespace ZombieRoids
     /// </remarks>
     class Entity : Sprite
     {
+        public RotatedBoxCollider Collider
+        {
+            get { return new RotatedBoxCollider(Boundary, Rotation); }
+        }
+
         /// <summary>
         /// Change in position
         /// </summary>
-        public Vector2 Velocity { get; set; }
+        public virtual Vector2 Velocity { get; set; }
+
+        /// <summary>
+        /// Speed
+        /// </summary>
+        public float Speed
+        {
+            get { return Velocity.Length(); }
+            set
+            {
+                Velocity = Forward * value;
+            }
+        }
 
         /// <summary>
         /// Points of damage required to destroy this entity
@@ -120,6 +139,11 @@ namespace ZombieRoids
                 throw new Exception("Not Initialized!");
             }
 #endif
+            if (Active)
+            {
+                Position += Velocity *
+                            (float)a_gtGameTime.ElapsedGameTime.TotalSeconds;
+            }
         }
 
         /// <summary>

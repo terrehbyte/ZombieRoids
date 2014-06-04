@@ -15,7 +15,7 @@
 ///     June 3, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Refactoring Sprite class
+///     Refactoring Player and Bullet classes
 /// </description></item>
 /// </list>
 
@@ -293,6 +293,25 @@ namespace ZombieRoids
                 Height = value.Height;
                 Left = value.X;
                 Top = value.Y;
+            }
+        }
+
+        /// <summary>
+        /// Unit vector in the direction of this sprite's rotation
+        /// </summary>
+        public Vector2 Forward
+        {
+            get
+            {
+                return new Vector2((float)Math.Cos(Rotation),
+                                   (float)Math.Sin(Rotation));
+            }
+            set
+            {
+                if (Vector2.Zero != value)
+                {
+                    Rotation = (float)Math.Atan2(value.Y, value.X);
+                }
             }
         }
 

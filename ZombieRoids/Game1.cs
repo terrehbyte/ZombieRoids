@@ -15,7 +15,7 @@
 ///     June 3, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Refactoring Entity class
+///     Refactoring Player and Bullet classes
 /// </description></item>
 /// </list>
 
@@ -116,10 +116,12 @@ namespace ZombieRoids
             player = new Player();
 
             Texture2D tPlayerTex = Content.Load<Texture2D>("Graphics\\player");
+            Texture2D tBulletTex = Content.Load<Texture2D>("Graphics\\laser");
 
             Vector2 v2PlayerPos = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X,
                                               GraphicsDevice.Viewport.TitleSafeArea.Y + GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
 
+            player.BulletTexture = tBulletTex;
             player.Initialize(tPlayerTex, v2PlayerPos);
 
             // Background
@@ -222,7 +224,7 @@ namespace ZombieRoids
                                            rngRandom.Next(100, GraphicsDevice.Viewport.Height - 100));
 
             Enemy eneTemp = new Enemy();
-            eneTemp.Velocity = new Vector2(-4f, 0);
+            eneTemp.Velocity = new Vector2(-120f, 0);
 
             eneTemp.Initialize(tEnemyTex, v2EnePos);
 
@@ -289,8 +291,8 @@ namespace ZombieRoids
                     // Only check if the bullet is active
                     if (player.m_lbulBullets[j].Active)
                     {
-                        if (Collision.CheckCollision(player.m_lbulBullets[j].m_rotrctCollider,
-                                                     lenEnemyList[i].m_rctCollider))
+                        if (Collision.CheckCollision(player.m_lbulBullets[j].Collider,
+                                                     lenEnemyList[i].Collider))
                         {
                             lenEnemyList[i].HitPoints = 0;
                             player.m_lbulBullets[j].Active = false;
@@ -300,8 +302,8 @@ namespace ZombieRoids
 
                 if (player.Active)
                 {
-                    if (Collision.CheckCollision(player.m_rotrctCollider,
-                                                 lenEnemyList[i].m_rctCollider))
+                    if (Collision.CheckCollision(player.Collider,
+                                                 lenEnemyList[i].Collider))
                     {
                         player.HitPoints -= lenEnemyList[i].m_iDamage;
 
