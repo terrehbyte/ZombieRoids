@@ -27,8 +27,6 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-using RotatedRectangleCollisions;
-
 namespace ZombieRoids
 {
     /// <remarks>

@@ -15,7 +15,7 @@
 ///     June 3, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Refactoring Player and Bullet classes
+///     Refactoring Enemy class
 /// </description></item>
 /// </list>
 
@@ -249,7 +249,7 @@ namespace ZombieRoids
                 lenEnemyList[i].Update(gameTime);
                 if (lenEnemyList[i].Active == false)
                 {
-                    int iChildren = lenEnemyList[i].m_iDivisions;
+                    int iChildren = lenEnemyList[i].FragmentCount;
                     Vector2 v2OrigPos = lenEnemyList[i].Position;
                     Vector2 v2OrigVel = lenEnemyList[i].Velocity;
 
@@ -273,7 +273,7 @@ namespace ZombieRoids
                             eneNewFoe.Velocity = new Vector2(rngXOffset.Next((int)v2OrigVel.X, -1),
                                                              rngYOffset.Next(-2, 2));
 
-                            eneNewFoe.m_iDivisions = iChildren - 1;
+                            eneNewFoe.FragmentCount = iChildren - 1;
                         }
                     }
                 }
@@ -305,7 +305,7 @@ namespace ZombieRoids
                     if (Collision.CheckCollision(player.Collider,
                                                  lenEnemyList[i].Collider))
                     {
-                        player.HitPoints -= lenEnemyList[i].m_iDamage;
+                        player.HitPoints -= lenEnemyList[i].Damage;
 
                         lenEnemyList[i].HitPoints = 0;
                     }
