@@ -55,7 +55,7 @@ namespace ZombieRoids
         {
             for (int i = 0; i < m_loBullets.Count; i++)
             {
-                if (!m_loBullets[i].m_bActive)
+                if (!m_loBullets[i].Active)
                 {
                     // Assign data to inactive bullet
                     m_loBullets[i] = a_oSrcBullet;

@@ -12,10 +12,10 @@
 ///     Terry Nguyen
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 3, 2014
+///     June 4, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Fixed invuln system
+///     Merged with dev for @emlowry complete refactor
 /// </description></item>
 /// </list>
 
@@ -44,7 +44,7 @@ namespace ZombieRoids
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
 
-        public static Vector2 v2ScreenDims;
+        public static Point m_ptScreenSize;
 
         Texture2D tMainBackground;
         Rectangle rctBackground;
@@ -61,8 +61,6 @@ namespace ZombieRoids
 
         Player player;
         List<Enemy> lenEnemyList;
-
-        Vector2 v2BulletGraveyard = new Vector2(-100, -100);
 
         int iStartLives = 3;
 
@@ -103,7 +101,7 @@ namespace ZombieRoids
             // Initialize Engine Singleton
             Engine.Instance.m_Game = this;
 
-            v2ScreenDims = new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+            m_ptScreenSize = new Point(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
         }
 
         /// <summary>
@@ -119,10 +117,12 @@ namespace ZombieRoids
             player = new Player();
 
             Texture2D tPlayerTex = Content.Load<Texture2D>("Graphics\\player");
+            Texture2D tBulletTex = Content.Load<Texture2D>("Graphics\\laser");
 
             Vector2 v2PlayerPos = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X,
                                               GraphicsDevice.Viewport.TitleSafeArea.Y + GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
 
+            player.BulletTexture = tBulletTex;
             player.Initialize(tPlayerTex, v2PlayerPos);
             player.m_iLives = iStartLives;
 
@@ -206,30 +206,31 @@ namespace ZombieRoids
 
         Enemy AddEnemy()
         {
+            Console.WriteLine("Spawning new enemy.");
             Texture2D tEnemyTex = Content.Load<Texture2D>("Graphics\\mine");
 
             Enemy eneTemp = new Enemy();
             Random rngGennie = new Random();
 
             int iOffset = 100;  // Offset in Screen Space
-            int iMinVel = 1;    // Minimum Velocity for any axis
-            int iMaxVel = 2;    // Maximum Velocity for any axis
+            int iMinVel = 100;    // Minimum Velocity for any axis
+            int iMaxVel = 200;    // Maximum Velocity for any axis
 
             // RNG Enemy Pos
-            Vector2 v2EnePos = new Vector2(rngGennie.Next(-iOffset, (int)v2ScreenDims.X + iOffset),
-                                           rngGennie.Next(-iOffset, (int)v2ScreenDims.Y + iOffset));
+            Vector2 v2EnePos = new Vector2(rngGennie.Next(-iOffset, (int)m_ptScreenSize.X + iOffset),
+                                           rngGennie.Next(-iOffset, (int)m_ptScreenSize.Y + iOffset));
 
             // Correct Y Offset if it will spawn in the middle
             if (v2EnePos.X > 0 &&
-                v2EnePos.X < v2ScreenDims.X)
+                v2EnePos.X < m_ptScreenSize.X)
             {
-                if (v2EnePos.Y > v2ScreenDims.Y / 2)
+                if (v2EnePos.Y > m_ptScreenSize.Y / 2)
                 {
                     v2EnePos.Y = -iOffset;
                 }
                 else
                 {
-                    v2EnePos.Y = v2ScreenDims.Y + iOffset;
+                    v2EnePos.Y = m_ptScreenSize.Y + iOffset;
                 }
             }
 
@@ -237,12 +238,12 @@ namespace ZombieRoids
             // If Left
             if (v2EnePos.X < 0)
             {
-                eneTemp.m_v2Vel.X = rngGennie.Next(iMinVel, iMaxVel);
+                eneTemp.Velocity = new Vector2(rngGennie.Next(iMinVel, iMaxVel), eneTemp.Velocity.Y);
             }
             // Right
             else
             {
-                eneTemp.m_v2Vel.X = rngGennie.Next(-iMaxVel, -iMinVel);
+                eneTemp.Velocity = new Vector2(rngGennie.Next(-iMaxVel, -iMinVel), eneTemp.Velocity.Y);
             }
             
 
@@ -250,15 +251,15 @@ namespace ZombieRoids
             // If Top
             if (v2EnePos.Y < 0)
             {
-                eneTemp.m_v2Vel.Y = rngGennie.Next(iMinVel, iMaxVel);
+                eneTemp.Velocity = new Vector2(eneTemp.Velocity.X, rngGennie.Next(iMinVel, iMaxVel));
             }
             // RIght
             else
             {
-                eneTemp.m_v2Vel.Y = rngGennie.Next(-iMaxVel, -iMinVel);
+                eneTemp.Velocity = new Vector2(eneTemp.Velocity.X, rngGennie.Next(-iMaxVel, -iMinVel));
             }
 
-            Debug.Assert(eneTemp.m_v2Vel.Y != 0);
+            Debug.Assert(eneTemp.Velocity.Y != 0);
 
             // Initialize Enemy
             eneTemp.Initialize(tEnemyTex, v2EnePos);
@@ -287,32 +288,42 @@ namespace ZombieRoids
             for (int i = lenEnemyList.Count - 1; i >= 0; i--)
             {
                 lenEnemyList[i].Update(gameTime);
-                if (lenEnemyList[i].m_bActive == false)
+
+                // If 
+                if (lenEnemyList[i].Alive == false)
                 {
-                    int iChildren = lenEnemyList[i].m_iDivisions;
-                    Vector2 v2OrigPos = lenEnemyList[i].Position;
-                    Vector2 v2OrigVel = lenEnemyList[i].m_v2Vel;
+                    // Record number of children to spawn in place of dead parent
+                    int iChildren = lenEnemyList[i].FragmentCount;
 
-                    lenEnemyList.RemoveAt(i);
-
-                    Random rngXOffset = new Random();
-                    Random rngYOffset = new Random();
-
+                    // If there are children to spawn
                     if (iChildren != 0)
                     {
+                        // Instance RNGgennies
+                        Random rngXOffset = new Random();
+                        Random rngYOffset = new Random();
+
+                        Vector2 v2OrigPos = lenEnemyList[i].Position;
+                        Vector2 v2OrigVel = lenEnemyList[i].Velocity;
+
                         for (int j = 0; j < iChildren; j++)
                         {
                             Enemy eneNewFoe = AddEnemy();
-                            // Influence new Position
+                            
+                            // Influence Child Position
                             eneNewFoe.Position = v2OrigPos + new Vector2(rngXOffset.Next(-50, 45),
                                                                         rngYOffset.Next(-50, 55));
-                            eneNewFoe.m_v2Vel = v2OrigVel;
-                            eneNewFoe.m_v2Vel += new Vector2(rngXOffset.Next(-1, 1),
+
+                            // Influence Child Velocity
+                            eneNewFoe.Velocity = v2OrigVel + new Vector2(rngXOffset.Next(-1, 1),
                                                              rngYOffset.Next(-1, 1));
 
-                            eneNewFoe.m_iDivisions = iChildren - 1;
+                            // Decrement the number of children that will spawn from this child
+                            eneNewFoe.FragmentCount = iChildren - 1;
                         }
                     }
+
+                    /// Remove the dead enemy
+                    lenEnemyList.RemoveAt(i);
                 }
             }
         }
@@ -325,27 +336,33 @@ namespace ZombieRoids
                 for (int j = 0; j < player.m_lbulBullets.Count; j++)
                 {
                     // Only check if the bullet is active
-                    if (player.m_lbulBullets[j].m_bActive)
+                    if (player.m_lbulBullets[j].Active)
                     {
-                        if (Collision.CheckCollision(player.m_lbulBullets[j].m_rotrctCollider,
-                                                     lenEnemyList[i].m_rctCollider))
+                        if (Collision.CheckCollision(player.m_lbulBullets[j].Collider,
+                                                     lenEnemyList[i].Collider))
                         {
-                            lenEnemyList[i].m_bAlive = false;
-                            player.m_lbulBullets[j].m_bActive = false;
+                            lenEnemyList[i].HitPoints = 0;
+                            player.m_lbulBullets[j].Active = false;
                         }
                     }
                 }
 
-                if (player.m_bActive)
+                // If Player is still in play
+                if (player.Active)
                 {
-                    if (Collision.CheckCollision(player.m_rotrctCollider,
-                                                 lenEnemyList[i].m_rctCollider))
+                    // If Player-Enemy Collision
+                    if (Collision.CheckCollision(player.Collider,
+                                                 lenEnemyList[i].Collider))
                     {
+                        // If Not Invulnerable
                         if (!player.m_bInvuln)
                         {
-                            player.m_bAlive = false;
+                            // Inflict damage on the player
+                            player.HitPoints -= lenEnemyList[i].Damage;
                         }
-                        lenEnemyList[i].m_bAlive = false;
+
+                        // Kill Enemy
+                        lenEnemyList[i].HitPoints = 0;
                     }
                 }
             }

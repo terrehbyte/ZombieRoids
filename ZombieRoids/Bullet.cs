@@ -12,10 +12,10 @@
 ///     Terry Nguyen
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 3, 2014
+///     June 4, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Merged with dev for @emlowry Sprite refactor
+///     Merged with dev for @emlowry Player and Bullet classes refactor
 /// </description></item>
 /// </list>
 
@@ -27,57 +27,74 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-using RotatedRectangleCollisions;
-
 namespace ZombieRoids
 {
+    /// <remarks>
+    /// Represents a bullet
+    /// </remarks>
     class Bullet : Entity
     {
-        public TimeSpan m_tsBulletLifetime = TimeSpan.FromSeconds(1.0);
-        public TimeSpan m_tsBulletDeathTime;
+        // Duration of Bullet Life
+        TimeSpan m_tsBulletLifetime = TimeSpan.FromSeconds(1.0);
 
-        public RotatedBoxCollider m_rotrctCollider
+        // Time to Cull Bullet
+        TimeSpan m_tsBulletDeathtime;
+
+        /// <summary>
+        /// Constructs a new bullet fired by the given entity at the given speed
+        /// </summary>
+        /// <param name="a_oShooter">Entity firing the bullet</param>
+        /// <param name="a_tTexture">Bullet image</param>
+        /// <param name="a_fSpeed">Bullet speed</param>
+        public Bullet(Entity a_oShooter, Texture2D a_tTexture, float a_fSpeed)
         {
-            get;
-            private set;
+            Initialize(a_tTexture, a_oShooter.Position);
+            if (null != a_oShooter)
+            {
+                Fire(a_oShooter, a_fSpeed);
+            }
         }
 
-        public Bullet(Entity a_bulSource)
+        /// <summary>
+        /// Fires the bullet from the given entity at the given speed
+        /// </summary>
+        /// <param name="a_oShooter">Entity firing the bullet</param>
+        /// <param name="a_fSpeed">Bullet speed</param>
+        public void Fire(Entity a_oShooter, float a_fSpeed)
         {
-            Initialize(a_bulSource.Texture, a_bulSource.Position);
-            m_v2Vel = a_bulSource.m_v2Vel;
-            Rotation = a_bulSource.Rotation;
-        }
-
-        void UpdateCollider()
-        {
-            m_rotrctCollider = new RotatedBoxCollider(Boundary, Rotation);
-        }
-
-        public override void Initialize(Texture2D a_tTex,Vector2 a_v2Pos)
-        {
-            m_bActive = true;
-            m_bAlive = true;
-
-            base.Initialize(a_tTex, a_v2Pos);
+            Active = true;
+            Alive = true;
+            Position = a_oShooter.Position;
+            Rotation = a_oShooter.Rotation;
+            Velocity = a_oShooter.Forward * a_fSpeed;
         }
 
         public override void Update(GameTime a_gtGameTime)
         {
-            if (m_bActive)
+            base.Update(a_gtGameTime);
+
+            // Set death time 
+            // @terrehbyte: this isn't ideal but I don't want to break anything before
+            //              refactoring is complete
+            //              - Maybe make Time a global thing? static of Game1?
+            if (m_tsBulletDeathtime == TimeSpan.Zero)
             {
-                base.Update(a_gtGameTime);
-
-                // Calculate new position
-                Position += m_v2Vel;
-
-                if (a_gtGameTime.TotalGameTime > m_tsBulletDeathTime)
-                {
-                    m_bActive = false;
-                }
-
-                UpdateCollider();
+                m_tsBulletDeathtime = a_gtGameTime.TotalGameTime + m_tsBulletLifetime;
             }
+
+            // If passed culling time, then cull/deactivate
+            if (a_gtGameTime.TotalGameTime > m_tsBulletDeathtime)
+            {
+                Active = false;
+            }
+        }
+
+        public override void OnInactive()
+        {
+            base.OnInactive();
+
+            // Reset deathtime
+            m_tsBulletDeathtime = TimeSpan.Zero;
         }
     }
 }

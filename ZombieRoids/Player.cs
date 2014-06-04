@@ -12,10 +12,10 @@
 ///     Terry Nguyen
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 3, 2014
+///     June 4, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Fixed regres: bullets now screenwrap again 
+///     Merged with dev for @emlowry Player and Bullet classes refactor
 /// </description></item>
 /// </list>
 
@@ -27,46 +27,101 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
-using RotatedRectangleCollisions;
-
 namespace ZombieRoids
 {
+    /// <remarks>
+    /// Represents the player on the screen
+    /// </remarks>
     class Player : Entity
     {
-        #region Props and Vars
-        public RotatedBoxCollider m_rotrctCollider
-        {
-            get;
-            private set;
-        }
+        private const int mc_iSpeed = 150;
+        private const int mc_iBulletSpeed = 210;
 
-        private Vector2 m_v2Target;
-        public int m_iSpeed = 5;
-        public int m_iBulletSpeed = 7;
+        // Time of Last Fire
         private TimeSpan m_tsLastShot;
+
+        // Time Delay Between Shots
         private TimeSpan m_tsShotDelay = TimeSpan.FromSeconds(-1.0);
+
+        // Time When Invuln Ends
         private TimeSpan m_tsInvulnEnd;
+
+        // Time Duration of Invuln
         private TimeSpan m_tsInvulnDuration = TimeSpan.FromSeconds(2.0);
 
         public bool m_bInvuln = false;
 
+        // Number of Lives
         public int m_iLives;
 
         public List<Bullet> m_lbulBullets = new List<Bullet>();
+        public Texture2D BulletTexture { get; set; }
 
-        #endregion
-
-        #region Entity Members
-        public override void Initialize(Texture2D a_tTex, Vector2 a_v2Pos)
+        /// <summary>
+        /// handle user input for movement
+        /// </summary>
+        public override Vector2 Velocity
         {
-            m_bActive = true;
-            m_bAlive = true;
-            base.Initialize(a_tTex, a_v2Pos);
+            get
+            {
+                // grab Keyboard Input and stuff it into a vector
+                KeyboardState kbCurKeys = Keyboard.GetState();
+                Vector2 v2Input = new Vector2();
+
+                // Only move if alive
+                if (Alive)
+                {
+                    // To move up, press W, Up, or 8 (Up) on the number pad
+                    if (kbCurKeys.IsKeyDown(Keys.W) ||
+                        kbCurKeys.IsKeyDown(Keys.Up) ||
+                        kbCurKeys.IsKeyDown(Keys.NumPad8))
+                    {
+                        v2Input.Y -= mc_iSpeed;
+                    }
+
+                    // To move down, press S, Down, or 2 (Down) on the number
+                    // pad
+                    if (kbCurKeys.IsKeyDown(Keys.S) ||
+                        kbCurKeys.IsKeyDown(Keys.Down) ||
+                        kbCurKeys.IsKeyDown(Keys.NumPad2))
+                    {
+                        v2Input.Y += mc_iSpeed;
+                    }
+
+                    // To move left, press A, Left, or 4 (Left) on the number
+                    // pad
+                    if (kbCurKeys.IsKeyDown(Keys.A) ||
+                        kbCurKeys.IsKeyDown(Keys.Left) ||
+                        kbCurKeys.IsKeyDown(Keys.NumPad4))
+                    {
+                        v2Input.X -= mc_iSpeed;
+                    }
+
+                    // To move right, press D, Right, or 6 (Right) on the number
+                    // pad
+                    if (kbCurKeys.IsKeyDown(Keys.D) ||
+                        kbCurKeys.IsKeyDown(Keys.Right) ||
+                        kbCurKeys.IsKeyDown(Keys.NumPad6))
+                    {
+                        v2Input.X += mc_iSpeed;
+                    }
+                }
+
+                // Return calculated movement
+                return v2Input;
+            }
         }
 
-        void UpdateCollider()
+        /// <summary>
+        /// Sets up the player entity with 100 hitpoints
+        /// </summary>
+        /// <param name="a_tTexture">Player image</param>
+        /// <param name="a_v2Position">Player starting position</param>
+        public override void Initialize(Texture2D a_tTexture, Vector2 a_v2Position)
         {
-            m_rotrctCollider = new RotatedBoxCollider(Boundary, Rotation);
+            base.Initialize(a_tTexture, a_v2Position);
+            HitPoints = 100;
+            Active = true;
         }
 
         /// <summary>
@@ -77,24 +132,22 @@ namespace ZombieRoids
         {
             base.Update(a_gtGameTime);
 
-            if (m_bActive)
+            if (Active)
             {
-                if (m_bAlive)
+                // Update Player
+                if (Alive)
                 {
-                    m_v2Vel = MoveInput(a_gtGameTime);
-
-                    // Calculate new position
-                    Position += m_v2Vel;
-
                     // Calculate aim rotation
+                    FaceCursor();
 
-                    Rotation = AimInput();
-
+                    // Fire if Left-Click
                     if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                     {
                         Fire(a_gtGameTime);
                     }
 
+                    // Check for Invuln End
+                    // refactor as property?
                     if (m_bInvuln)
                     {
                         if (!(a_gtGameTime.TotalGameTime < m_tsInvulnEnd))
@@ -102,156 +155,154 @@ namespace ZombieRoids
                             m_bInvuln = false;
                         }
                     }
+                    else
+                    {
+                        // Declare dead if no hp left
+                        if (HitPoints <= 0)
+                        {
+                            Alive = false;
+                        }
+                    }
                 }
+                // If the player's dead, check for respawn
                 else
                 {
+                    // Respawn if lives remaining
                     if (m_iLives > 0)
                     {
                         Spawn(a_gtGameTime);
                         m_iLives--;
                         Console.WriteLine("Lives Remaining " + m_iLives);
                     }
+                    // Otherwise deactive player
                     else
                     {
-                        m_bActive = false;
+                        Active = false;
                     }
                 }
             }
-
+            
+            // Update Bullets
             for (int i = 0; i < m_lbulBullets.Count; i++)
             {
-                m_lbulBullets[i].Update(a_gtGameTime);
-            }   
-
-            UpdateCollider();
-        }
-        public override void Draw(SpriteBatch a_sbSpriteBatch)
-        {
-            base.Draw(a_sbSpriteBatch);
-
-            // null references here, terry
-            for (int i = 0; i < m_lbulBullets.Count; i++)
-            {
-                m_lbulBullets[i].Draw(a_sbSpriteBatch);
+                if (null != m_lbulBullets[i])
+                {
+                    m_lbulBullets[i].Update(a_gtGameTime);
+                }   
             }
         }
-        #endregion
 
         /// <summary>
-        /// handle user input for movement
+        /// Process input for other actions performed by player
         /// </summary>
-        /// <returns>Horizontal and vertical change, respectively</returns>
-        Vector2 MoveInput(GameTime a_gtGameTime)
+        private void OtherActions()
         {
-            // grab Keyboard Input and stuff it into a vector
             KeyboardState kbCurKeys = Keyboard.GetState();
-            Vector2 v2Input = new Vector2();
-
-            if (kbCurKeys.IsKeyDown(Keys.W))
-            {
-                v2Input.Y -= m_iSpeed;
-            }
-            if (kbCurKeys.IsKeyDown(Keys.S))
-            {
-                v2Input.Y += m_iSpeed;
-            }
-
-            if (kbCurKeys.IsKeyDown(Keys.A))
-            {
-                v2Input.X -= m_iSpeed;
-            }
-            if (kbCurKeys.IsKeyDown(Keys.D))
-            {
-                v2Input.X += m_iSpeed;
-            }
-
             if (kbCurKeys.IsKeyDown(Keys.Q))
             {
-                Position = Teleport();
+                Teleport();
             }
-
-            if (kbCurKeys.IsKeyDown(Keys.E))
-            {
-                Spawn(a_gtGameTime);
-            }
-
-            return v2Input;
         }
 
         /// <summary>
         /// Handle user input for aiming
         /// </summary>
-        /// <returns>Radians to rotate</returns>
-        float AimInput()
+        private void FaceCursor()
         {
+            // Get the mouse position
             MouseState mCurState = Mouse.GetState();
-            float fRotVal;
             Vector2 v2Input = new Vector2(mCurState.Position.X, mCurState.Position.Y);
 
-            Vector2 dir = v2Input - Position;
-
-            fRotVal = (Vector2.Zero == dir ? Rotation : (float)Math.Atan2(dir.Y, dir.X));
-
-            m_v2Target = v2Input;
-
-            return fRotVal;
+            // Rotate to face the cursor position
+            if (v2Input != Position)
+            {
+                Forward = v2Input - Position;
+            }
         }
 
-        void Fire(GameTime a_gtGameTime)
+        /// <summary>
+        /// Fire a bullet
+        /// </summary>
+        /// <param name="a_gtGameTime">Current/elapsed time</param>
+        private void Fire(GameTime a_gtGameTime)
         {
+            // If it's been long enough since the last shot,
             if (a_gtGameTime.TotalGameTime - m_tsLastShot > m_tsShotDelay)
             {
+                // Record new threshold for firing a bullet
                 m_tsLastShot = a_gtGameTime.TotalGameTime;
                 
-                // Search for Bullet
                 Bullet bulTemp = null;
 
+                // Search for an inactive Bullet
                 for (int i = 0; i < m_lbulBullets.Count; i++)
                 {
-                    if (!m_lbulBullets[i].m_bActive)
+                    if (null != m_lbulBullets[i] && !m_lbulBullets[i].Active)
                     {
                         bulTemp = m_lbulBullets[i];
-                        m_lbulBullets[i].m_bActive = true;
-                        m_lbulBullets[i].Position = Position;
                         break;
                     }
                 }
-                
-                // If a bullet couldn't be found
+
                 if (bulTemp == null)
                 {
-                    bulTemp = new Bullet(Engine.Instance.Instantiate("Graphics\\Laser", Position));
+                    // If a bullet couldn't be found, create a new one
+                    bulTemp = new Bullet(this, BulletTexture, mc_iBulletSpeed);
                     m_lbulBullets.Add(bulTemp);
                 }
 
-                // Assign Attributes to Bullet
-                bulTemp.m_tsBulletDeathTime = a_gtGameTime.TotalGameTime + bulTemp.m_tsBulletLifetime;
-                bulTemp.Rotation = Rotation;
-                Vector2 v2BulletVel = Position - m_v2Target;
-                v2BulletVel.Normalize();
-                v2BulletVel *= -m_iBulletSpeed;
-
-                bulTemp.m_v2Vel = v2BulletVel;
-
-
+                else
+                {
+                    // Otherwise, fire the preexisting bullet
+                    bulTemp.Fire(this, mc_iBulletSpeed);
+                }
             }
         }
-        Vector2 Teleport()
+
+        /// <summary>
+        /// Randomly dumps the player somewhere on-screen
+        /// </summary>
+        void Teleport()
         {
             Random rngGennie = new Random();
-            // gen two nums
-            Vector2 v2NewPos = new Vector2(rngGennie.Next(0, (int)Game1.v2ScreenDims.X),
-                                           rngGennie.Next(0, (int)Game1.v2ScreenDims.Y));
 
-            return v2NewPos;
+            // Obtain randomized position
+            Vector2 v2NewPos = new Vector2(rngGennie.Next(0, (int)Game1.m_ptScreenSize.X),
+                                           rngGennie.Next(0, (int)Game1.m_ptScreenSize.Y));
+
+            // Reassign position to randomized location
+            Position = v2NewPos;
         }
 
+        /// <summary>
+        /// (Re)spawn the player in-place as alive and invulnerable
+        /// </summary>
+        /// <param name="a_gtGameTime">GameTime</param>
         public void Spawn(GameTime a_gtGameTime)
         {
             // Set time to be invulnerable
             m_tsInvulnEnd = a_gtGameTime.TotalGameTime + m_tsInvulnDuration;
-            m_bAlive = true;
+
+            Alive = true;
             m_bInvuln = true;
+        }
+
+        /// <summary>
+        /// Draw the player and all bullets shot by the player
+        /// </summary>
+        /// <param name="a_sbSpriteBatch">SpriteBatch</param>
+        public override void Draw(SpriteBatch a_sbSpriteBatch)
+        {
+            base.Draw(a_sbSpriteBatch);
+
+            // Draw Bullets
+            for (int i = 0; i < m_lbulBullets.Count; i++)
+            {
+                if (null != m_lbulBullets)
+                {
+                    m_lbulBullets[i].Draw(a_sbSpriteBatch);
+                }
+            }
         }
     }
 }

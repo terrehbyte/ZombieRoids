@@ -296,6 +296,25 @@ namespace ZombieRoids
             }
         }
 
+        /// <summary>
+        /// Unit vector in the direction of this sprite's rotation
+        /// </summary>
+        public Vector2 Forward
+        {
+            get
+            {
+                return new Vector2((float)Math.Cos(Rotation),
+                                   (float)Math.Sin(Rotation));
+            }
+            set
+            {
+                if (Vector2.Zero != value)
+                {
+                    Rotation = (float)Math.Atan2(value.Y, value.X);
+                }
+            }
+        }
+
         #region Position
 
         /// <summary>
