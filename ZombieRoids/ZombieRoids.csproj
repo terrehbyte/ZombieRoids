@@ -114,6 +114,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\ZombieRoidsContent\ZombieRoidsContent\bin\PSM\Content\GameFont.xnb">
+      <Link>Content\GameFont.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="..\ZombieRoidsContent\ZombieRoidsContent\bin\PSM\Content\Graphics\bgLayer1.xnb">
       <Link>Content\Graphics\bgLayer1.xnb</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

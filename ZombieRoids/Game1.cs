@@ -52,6 +52,7 @@ namespace ZombieRoids
             public Rectangle viewport;
             public Random random;
             public HashSet<Enemy> enemies;
+            public int score;
         };
 
         // For generating random numbers
@@ -59,6 +60,9 @@ namespace ZombieRoids
 
         // Screen display area
         private Rectangle m_rctViewport;
+
+        // Score varible
+        private int m_iScore = 0;
 
         // Used for handling graphics
         private GraphicsDeviceManager m_oGraphics;
@@ -79,6 +83,9 @@ namespace ZombieRoids
         // Player
         private Player m_oPlayer;
         int iPlayerStartLives = 3;
+
+        // Score
+        SpriteFont scoreFont;
 
         #endregion
 
@@ -151,6 +158,9 @@ namespace ZombieRoids
 
             // Load enemy texture
             m_tEnemyTex = Content.Load<Texture2D>("Graphics\\mine");
+
+            // Load font
+            scoreFont = Content.Load<SpriteFont>("GameFont");
         }
 
         /// <summary>
@@ -176,6 +186,7 @@ namespace ZombieRoids
             oContext.viewport = m_rctViewport;
             oContext.random = m_rngRandom;
             oContext.enemies = m_oEnemies;
+            oContext.score = m_iScore;
 
             // Update player and enemies
             m_oPlayer.Update(oContext);
@@ -213,6 +224,9 @@ namespace ZombieRoids
                 }
             }
 
+            // Draw score
+            m_oSpriteBatch.DrawString(scoreFont, "Score: " + m_iScore, new Vector2(25, 25), Color.Black);
+
             // Finish drawing
             m_oSpriteBatch.End();
             base.Draw(gameTime);
@@ -242,7 +256,14 @@ namespace ZombieRoids
             HashSet<Enemy> oCurrentEnemies = new HashSet<Enemy>(m_oEnemies);
             foreach (Enemy oEnemy in oCurrentEnemies)
             {
+                // temp fix
+                // @emlowry : how should we pass score up?
+                if (!oEnemy.Alive)
+                {
+                    m_iScore += oEnemy.Value;
+                }
                 oEnemy.Update(a_oContext);
+                
             }
         }
         #endregion
