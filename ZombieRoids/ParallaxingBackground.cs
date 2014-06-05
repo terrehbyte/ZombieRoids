@@ -1,77 +1,133 @@
-﻿using System;
+﻿/// <list type="table">
+/// <listheader><term>ParallaxingBackground.cs</term><description>
+///     A class representing a tiled background that scrolls at a given speed
+/// </description></listheader>
+/// <item><term>Author</term><description>
+///     Terry Nguyen
+/// </description></item>
+/// <item><term>Date Created</term><description>
+///     May 28, 2014
+/// </description></item>
+/// <item><term>Last Modified By</term><description>
+///     Elizabeth Lowry
+/// </description></item>
+/// <item><term>Last Modified</term><description>
+///     June 4, 2014
+/// </description></item>
+/// <item><term>Last Modification</term><description>
+///     Adding comments
+/// </description></item>
+/// </list>
+
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace ZombieRoids
 {
-    class ParallaxingBackground
+    /// <summary>
+    /// Scrolling background
+    /// </summary>
+    public class ParallaxingBackground
     {
-        Texture2D m_tTex;
-        Vector2[] m_av2Pos;
+        // Tile texture
+        private Texture2D m_tTexture;
 
-        int m_iSpeed;
+        // Tile positions
+        private Vector2[] m_av2Positions;
 
-        int m_iBGHeight;
-        int m_iBGWidth;
+        // Scroll speed
+        private int m_iSpeed;
 
-        public void Initialize(ContentManager a_cmContent, String a_sTexturePath, int a_iScreenWidth, int a_iScreenHeight, int a_iSpeed)
+        // Screen area
+        private int m_iHeight;
+        private int m_iWidth;
+
+        /// <summary>
+        /// Sets up the background using a given tile texture, screen size, and
+        /// scroll speed
+        /// </summary>
+        /// <param name="a_cmContent">Content manager for loading texture</param>
+        /// <param name="a_sTexturePath">Texture name</param>
+        /// <param name="a_iScreenWidth">Screen width</param>
+        /// <param name="a_iScreenHeight">Screen Height</param>
+        /// <param name="a_iSpeed">Scroll speed</param>
+        public void Initialize(ContentManager a_cmContent, String a_sTexturePath,
+                               int a_iScreenWidth, int a_iScreenHeight, int a_iSpeed)
         {
-            m_iBGHeight = a_iScreenHeight;
-            m_iBGWidth = a_iScreenWidth;
+            // Save screen size
+            m_iHeight = a_iScreenHeight;
+            m_iWidth = a_iScreenWidth;
 
             // Load BG Tex
-            m_tTex = a_cmContent.Load<Texture2D>(a_sTexturePath);
+            m_tTexture = a_cmContent.Load<Texture2D>(a_sTexturePath);
 
             // Set Scroll Speed
             m_iSpeed = a_iSpeed;
 
-            m_av2Pos = new Vector2[a_iScreenWidth / m_tTex.Width + 1];
-
-            for (int i = 0; i < m_av2Pos.Length; i++)
+            // Store positions for as many tiles as needed to cover the entire
+            // screen at all points during scrolling
+            m_av2Positions =
+                new Vector2[Math.Max(a_iScreenWidth / m_tTexture.Width, 1) + 1];
+            for (int i = 0; i < m_av2Positions.Length; i++)
             {
-                m_av2Pos[i] = new Vector2(i * m_tTex.Width, 0);
+                m_av2Positions[i] = new Vector2(i * m_tTexture.Width, 0);
             }
         }
 
+        /// <summary>
+        /// Scroll the texture according to elapsed time
+        /// </summary>
+        /// <param name="gameTime">Current/elapsed time</param>
         public void Update(GameTime gameTime)
         {
             // Update the BG positions
-            for (int i = 0; i < m_av2Pos.Length; i++)
+            for (int i = 0; i < m_av2Positions.Length; i++)
             {
-                m_av2Pos[i].X += m_iSpeed;
+                // move position according to speed and elapsed time
+                m_av2Positions[i].X +=
+                    m_iSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
-                // if bg going left
-
+                // if moving left, loop tiles past the left edge of the screen
+                // back around to the right side
                 if (m_iSpeed <= 0)
                 {
-                    if (m_av2Pos[i].X <= -m_tTex.Width)
+                    while (m_av2Positions[i].X <= -m_tTexture.Width)
                     {
-                        m_av2Pos[i].X = m_tTex.Width * (m_av2Pos.Length - 1);
+                        m_av2Positions[i].X +=
+                            m_tTexture.Width * m_av2Positions.Length;
                     }
                 }
 
-                // bg going right
+                // if moving right, loop tiles past the right edge of the screen
+                // back around to the left side
                 else
                 {
-                    if (m_av2Pos[i].X >= m_tTex.Width * (m_av2Pos.Length - 1))
+                    while (m_av2Positions[i].X >=
+                           m_tTexture.Width * (m_av2Positions.Length - 1))
                     {
-                        m_av2Pos[i].X = -m_tTex.Width;
+                        m_av2Positions[i].X -=
+                            m_tTexture.Width * m_av2Positions.Length;
                     }
                 }
             }
         }
 
+        /// <summary>
+        /// Draw all the tiles
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            for (int i = 0; i < m_av2Pos.Length; i++)
+            for (int i = 0; i < m_av2Positions.Length; i++)
             {
-                Rectangle rectBg = new Rectangle((int)m_av2Pos[i].X,
-                                                 (int)m_av2Pos[i].Y,
-                                                 m_iBGWidth,
-                                                 m_iBGHeight);
+                Rectangle rectBg = new Rectangle((int)m_av2Positions[i].X,
+                                                 (int)m_av2Positions[i].Y,
+                                                 m_iWidth,
+                                                 m_iHeight);
 
-                spriteBatch.Draw(m_tTex, rectBg, Color.White);
+                spriteBatch.Draw(m_tTexture, rectBg, Color.White);
             }
         }
 

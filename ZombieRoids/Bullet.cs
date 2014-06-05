@@ -15,7 +15,7 @@
 ///     June 4, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Merged with dev for @emlowry Player and Bullet classes refactor
+///     Merged with dev for @emlowry Refactoring Game1 class
 /// </description></item>
 /// </list>
 
@@ -32,7 +32,7 @@ namespace ZombieRoids
     /// <remarks>
     /// Represents a bullet
     /// </remarks>
-    class Bullet : Entity
+    public class Bullet : Entity
     {
         // Duration of Bullet Life
         TimeSpan m_tsBulletLifetime = TimeSpan.FromSeconds(1.0);
@@ -69,9 +69,15 @@ namespace ZombieRoids
             Velocity = a_oShooter.Forward * a_fSpeed;
         }
 
-        public override void Update(GameTime a_gtGameTime)
+
+
+        /// <summary>
+        /// Updates bullet position and recycles bullets that leave the screen
+        /// </summary>
+        /// <param name="a_oContext"></param>
+        public override void Update(Game1.Context a_oContext)
         {
-            base.Update(a_gtGameTime);
+            base.Update(a_oContext);
 
             // Set death time 
             // @terrehbyte: this isn't ideal but I don't want to break anything before
@@ -79,13 +85,29 @@ namespace ZombieRoids
             //              - Maybe make Time a global thing? static of Game1?
             if (m_tsBulletDeathtime == TimeSpan.Zero)
             {
-                m_tsBulletDeathtime = a_gtGameTime.TotalGameTime + m_tsBulletLifetime;
+                m_tsBulletDeathtime = a_oContext.time.TotalGameTime + m_tsBulletLifetime;
             }
 
-            // If passed culling time, then cull/deactivate
-            if (a_gtGameTime.TotalGameTime > m_tsBulletDeathtime)
+
+
+            // If active, check for collision with an an enemy
+            if (Active)
             {
-                Active = false;
+                foreach (Enemy oEnemy in a_oContext.enemies)
+                {
+                    if (Collision.CheckCollision(this, oEnemy))
+                    {
+                        oEnemy.Alive = false;
+                        Active = false;
+                        break;
+                    }
+                }
+
+                // If passed culling time, then cull/deactivate
+                if (a_oContext.time.TotalGameTime > m_tsBulletDeathtime)
+                {
+                    Active = false;
+                }
             }
         }
 
@@ -93,7 +115,7 @@ namespace ZombieRoids
         {
             base.OnInactive();
 
-            // Reset deathtime
+            // Reset deathtime to zero so it can be set again later
             m_tsBulletDeathtime = TimeSpan.Zero;
         }
     }

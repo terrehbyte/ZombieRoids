@@ -12,10 +12,10 @@
 ///     Terry Nguyen
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 3, 2014
+///     June 4, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Merged with dev for @emlowry Animation refactor
+///     Merged with dev for @emlowry Refactoring Game1 class
 /// </description></item>
 /// </list>
 
@@ -29,7 +29,7 @@ namespace ZombieRoids
     /// <remarks>
     /// A sprite that animates through multiple frames
     /// </remarks>
-    class Animation : Sprite
+    public class Animation : Sprite
     {
         /// <summary>
         /// Animation frames per second

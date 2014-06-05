@@ -15,7 +15,7 @@
 ///     June 4, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Merged with dev for @emlowry complete refactor
+///     Refactoring Game1 class
 /// </description></item>
 /// </list>
 
@@ -41,37 +41,56 @@ namespace ZombieRoids
     public class Game1 : Game
     {
         #region Props & Vars
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
 
-        public static Point m_ptScreenSize;
+        /// <summary>
+        /// For passing information about the current game state to other
+        /// objects' Update methods
+        /// </summary>
+        public struct Context
+        {
+            public GameTime time;
+            public Rectangle viewport;
+            public Random random;
+            public HashSet<Enemy> enemies;
+        };
 
-        Texture2D tMainBackground;
-        Rectangle rctBackground;
+        // For generating random numbers
+        private Random m_rngRandom;
 
-        ParallaxingBackground pbgBGLayer1;
-        ParallaxingBackground pbgBGLayer2;
+        // Screen display area
+        private Rectangle m_rctViewport;
 
-        Texture2D tEnemyTex;
-        
-        TimeSpan tsEnemySpawnTime;
-        TimeSpan tsPrevEnemySpawnTime;
+        // Used for handling graphics
+        private GraphicsDeviceManager m_oGraphics;
+        private SpriteBatch m_oSpriteBatch;
 
-        Random rngRandom;
+        // Background images
+        private Texture2D m_tMainBackground;
+        private ParallaxingBackground m_pbgBGLayer1;
+        private ParallaxingBackground m_pbgBGLayer2;
 
-        Player player;
-        List<Enemy> lenEnemyList;
+        // Enemies
+        private Texture2D m_tEnemyTex;
+        private float mc_fEnemySpawnTimeSeconds = 1.0f;
+        private TimeSpan m_tsEnemySpawnTime;
+        private TimeSpan m_tsPrevEnemySpawnTime;
+        private HashSet<Enemy> m_oEnemies;
 
-        int iStartLives = 3;
+        // Player
+        private Player m_oPlayer;
+        int iPlayerStartLives = 3;
 
         #endregion
 
         #region FrameworkMethods
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public Game1()
             : base()
         {
-            graphics = new GraphicsDeviceManager(this);
+            m_oGraphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
 
@@ -83,25 +102,20 @@ namespace ZombieRoids
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
             base.Initialize();
-
-            // Player
-            rctBackground = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
-
-            lenEnemyList = new List<Enemy>();
-            tsPrevEnemySpawnTime = TimeSpan.Zero;
-
-            tsEnemySpawnTime = TimeSpan.FromSeconds(1.0f);
-            rngRandom = new Random();
-
-            IsMouseVisible = true;
 
             // Initialize Engine Singleton
             Engine.Instance.m_Game = this;
 
-            m_ptScreenSize = new Point(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+            // Initialize basic game properties
+            m_rctViewport = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
+            IsMouseVisible = true;
+            m_rngRandom = new Random();
+
+            // Track enemies
+            m_oEnemies = new HashSet<Enemy>();
+            m_tsPrevEnemySpawnTime = TimeSpan.Zero;
+            m_tsEnemySpawnTime = TimeSpan.FromSeconds(mc_fEnemySpawnTimeSeconds);
         }
 
         /// <summary>
@@ -111,36 +125,31 @@ namespace ZombieRoids
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            m_oSpriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
-            player = new Player();
-
+            // Load player graphics
             Texture2D tPlayerTex = Content.Load<Texture2D>("Graphics\\player");
             Texture2D tBulletTex = Content.Load<Texture2D>("Graphics\\laser");
-
             Vector2 v2PlayerPos = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X,
-                                              GraphicsDevice.Viewport.TitleSafeArea.Y + GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
+                                              GraphicsDevice.Viewport.TitleSafeArea.Y +
+                                              GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
 
-            player.BulletTexture = tBulletTex;
-            player.Initialize(tPlayerTex, v2PlayerPos);
-            player.m_iLives = iStartLives;
+            // Create player object
+            m_oPlayer = new Player();
+            m_oPlayer.BulletTexture = tBulletTex;
+            m_oPlayer.Initialize(tPlayerTex, v2PlayerPos);
 
-            // Background
-            pbgBGLayer1 = new ParallaxingBackground();
-            pbgBGLayer2 = new ParallaxingBackground();
+            // Load background images
+            m_tMainBackground = Content.Load<Texture2D>("Graphics/mainbackground");
+            m_pbgBGLayer1 = new ParallaxingBackground();
+            m_pbgBGLayer1.Initialize(Content, "Graphics/bgLayer1", GraphicsDevice.Viewport.Width,
+                                     GraphicsDevice.Viewport.Height, -30);
+            m_pbgBGLayer2 = new ParallaxingBackground();
+            m_pbgBGLayer2.Initialize(Content, "Graphics/bgLayer2", GraphicsDevice.Viewport.Width,
+                                   GraphicsDevice.Viewport.Height, -60);
 
-            // BACKGROUND
-            pbgBGLayer1.Initialize(Content, "Graphics/bgLayer1", GraphicsDevice.Viewport.Width,
-                                   GraphicsDevice.Viewport.Height, -1);
-
-            pbgBGLayer2.Initialize(Content, "Graphics/bgLayer2", GraphicsDevice.Viewport.Width,
-                                   GraphicsDevice.Viewport.Height, -2);
-
-            tMainBackground = Content.Load<Texture2D>("Graphics/mainbackground");
-
-            // Enemy
-            tEnemyTex = Content.Load<Texture2D>("Graphics/mineAnimation");
+            // Load enemy texture
+            m_tEnemyTex = Content.Load<Texture2D>("Graphics\\mine");
         }
 
         /// <summary>
@@ -149,7 +158,7 @@ namespace ZombieRoids
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            Content.Unload();
         }
 
         /// <summary>
@@ -159,12 +168,21 @@ namespace ZombieRoids
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            UpdatePlayer(gameTime);
-            UpdateEnemies(gameTime);
-            UpdateCollision();
+            // Make a game context object for passing game state information to
+            // entity Update functions
+            Context oContext;
+            oContext.time = gameTime;
+            oContext.viewport = m_rctViewport;
+            oContext.random = m_rngRandom;
+            oContext.enemies = m_oEnemies;
 
-            pbgBGLayer1.Update(gameTime);
-            pbgBGLayer2.Update(gameTime);
+            // Update player and enemies
+            m_oPlayer.Update(oContext);
+            UpdateEnemies(oContext);
+
+            // Update parallaxing background
+            m_pbgBGLayer1.Update(gameTime);
+            m_pbgBGLayer2.Update(gameTime);
         }
 
         /// <summary>
@@ -173,198 +191,57 @@ namespace ZombieRoids
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
+            // Get ready to draw
             GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            // TODO: Add your drawing code here
-            spriteBatch.Begin();
+            m_oSpriteBatch.Begin();
             
-            // BG
-            spriteBatch.Draw(tMainBackground, rctBackground, Color.White);
+            // Draw background
+            m_oSpriteBatch.Draw(m_tMainBackground, m_rctViewport, Color.White);
+            m_pbgBGLayer1.Draw(m_oSpriteBatch);
+            m_pbgBGLayer2.Draw(m_oSpriteBatch);
 
-            pbgBGLayer1.Draw(spriteBatch);
-            pbgBGLayer2.Draw(spriteBatch);
+            // Draw player (which in turn draws bullets)
+            m_oPlayer.Draw(m_oSpriteBatch);
 
-            // Player
-            player.Draw(spriteBatch);
-
-            for (int i = 0; i < lenEnemyList.Count; i++)
+            // Draw enemies
+            foreach (Enemy oEnemy in m_oEnemies)
             {
-                lenEnemyList[i].Draw(spriteBatch);
+                if (null != oEnemy)
+                {
+                    oEnemy.Draw(m_oSpriteBatch);
+                }
             }
 
-
-            spriteBatch.End();
+            // Finish drawing
+            m_oSpriteBatch.End();
             base.Draw(gameTime);
         }
         #endregion
 
         #region Logic Methods
-        private void UpdatePlayer(GameTime gameTime)
+        /// <summary>
+        /// Add enemy if neccessary and update all enemies
+        /// </summary>
+        /// <param name="a_oContext">Current state of game</param>
+        private void UpdateEnemies(Game1.Context a_oContext)
         {
-            player.Update(gameTime);
-        }
-
-        Enemy AddEnemy()
-        {
-            Console.WriteLine("Spawning new enemy.");
-            Texture2D tEnemyTex = Content.Load<Texture2D>("Graphics\\mine");
-
-            Enemy eneTemp = new Enemy();
-            Random rngGennie = new Random();
-
-            int iOffset = 100;  // Offset in Screen Space
-            int iMinVel = 100;    // Minimum Velocity for any axis
-            int iMaxVel = 200;    // Maximum Velocity for any axis
-
-            // RNG Enemy Pos
-            Vector2 v2EnePos = new Vector2(rngGennie.Next(-iOffset, (int)m_ptScreenSize.X + iOffset),
-                                           rngGennie.Next(-iOffset, (int)m_ptScreenSize.Y + iOffset));
-
-            // Correct Y Offset if it will spawn in the middle
-            if (v2EnePos.X > 0 &&
-                v2EnePos.X < m_ptScreenSize.X)
-            {
-                if (v2EnePos.Y > m_ptScreenSize.Y / 2)
-                {
-                    v2EnePos.Y = -iOffset;
-                }
-                else
-                {
-                    v2EnePos.Y = m_ptScreenSize.Y + iOffset;
-                }
-            }
-
-            // H-Speed
-            // If Left
-            if (v2EnePos.X < 0)
-            {
-                eneTemp.Velocity = new Vector2(rngGennie.Next(iMinVel, iMaxVel), eneTemp.Velocity.Y);
-            }
-            // Right
-            else
-            {
-                eneTemp.Velocity = new Vector2(rngGennie.Next(-iMaxVel, -iMinVel), eneTemp.Velocity.Y);
-            }
-            
-
-            // V-Speed
-            // If Top
-            if (v2EnePos.Y < 0)
-            {
-                eneTemp.Velocity = new Vector2(eneTemp.Velocity.X, rngGennie.Next(iMinVel, iMaxVel));
-            }
-            // RIght
-            else
-            {
-                eneTemp.Velocity = new Vector2(eneTemp.Velocity.X, rngGennie.Next(-iMaxVel, -iMinVel));
-            }
-
-            Debug.Assert(eneTemp.Velocity.Y != 0);
-
-            // Initialize Enemy
-            eneTemp.Initialize(tEnemyTex, v2EnePos);
-
-            // Add Enemy to List
-            lenEnemyList.Add(eneTemp);
-
-            // Return Added Enemy
-            return lenEnemyList.Last();
-        }
-
-        private void UpdateEnemies(GameTime gameTime)
-        {
+            //Max Number of Enemies
             int iMaxOnScreen = 5;
 
-            if (gameTime.TotalGameTime - tsPrevEnemySpawnTime > tsEnemySpawnTime &&
-                lenEnemyList.Count < iMaxOnScreen)
+            // Add enemy if enough time has passed
+            if (a_oContext.time.TotalGameTime - m_tsPrevEnemySpawnTime > m_tsEnemySpawnTime &&
+                m_oEnemies.Count < iMaxOnScreen)
             {
-                tsPrevEnemySpawnTime = gameTime.TotalGameTime;
-
-                // Add Enemy
-                AddEnemy();
+                m_tsPrevEnemySpawnTime = a_oContext.time.TotalGameTime;
+                Enemy.Spawn(a_oContext, m_tEnemyTex);
             }
 
-            // Prune dead enemies
-            for (int i = lenEnemyList.Count - 1; i >= 0; i--)
+            // Update current set of enemies (each enemy update could change set of enemies, so
+            // iterate over copy of set)
+            HashSet<Enemy> oCurrentEnemies = new HashSet<Enemy>(m_oEnemies);
+            foreach (Enemy oEnemy in oCurrentEnemies)
             {
-                lenEnemyList[i].Update(gameTime);
-
-                // If 
-                if (lenEnemyList[i].Alive == false)
-                {
-                    // Record number of children to spawn in place of dead parent
-                    int iChildren = lenEnemyList[i].FragmentCount;
-
-                    // If there are children to spawn
-                    if (iChildren != 0)
-                    {
-                        // Instance RNGgennies
-                        Random rngXOffset = new Random();
-                        Random rngYOffset = new Random();
-
-                        Vector2 v2OrigPos = lenEnemyList[i].Position;
-                        Vector2 v2OrigVel = lenEnemyList[i].Velocity;
-
-                        for (int j = 0; j < iChildren; j++)
-                        {
-                            Enemy eneNewFoe = AddEnemy();
-                            
-                            // Influence Child Position
-                            eneNewFoe.Position = v2OrigPos + new Vector2(rngXOffset.Next(-50, 45),
-                                                                        rngYOffset.Next(-50, 55));
-
-                            // Influence Child Velocity
-                            eneNewFoe.Velocity = v2OrigVel + new Vector2(rngXOffset.Next(-1, 1),
-                                                             rngYOffset.Next(-1, 1));
-
-                            // Decrement the number of children that will spawn from this child
-                            eneNewFoe.FragmentCount = iChildren - 1;
-                        }
-                    }
-
-                    /// Remove the dead enemy
-                    lenEnemyList.RemoveAt(i);
-                }
-            }
-        }
-
-        void UpdateCollision()
-        {
-            for (int i = 0; i < lenEnemyList.Count; i++)
-            {
-                // Check Against bullet
-                for (int j = 0; j < player.m_lbulBullets.Count; j++)
-                {
-                    // Only check if the bullet is active
-                    if (player.m_lbulBullets[j].Active)
-                    {
-                        if (Collision.CheckCollision(player.m_lbulBullets[j].Collider,
-                                                     lenEnemyList[i].Collider))
-                        {
-                            lenEnemyList[i].HitPoints = 0;
-                            player.m_lbulBullets[j].Active = false;
-                        }
-                    }
-                }
-
-                // If Player is still in play
-                if (player.Active)
-                {
-                    // If Player-Enemy Collision
-                    if (Collision.CheckCollision(player.Collider,
-                                                 lenEnemyList[i].Collider))
-                    {
-                        // If Not Invulnerable
-                        if (!player.m_bInvuln)
-                        {
-                            // Inflict damage on the player
-                            player.HitPoints -= lenEnemyList[i].Damage;
-                        }
-
-                        // Kill Enemy
-                        lenEnemyList[i].HitPoints = 0;
-                    }
-                }
+                oEnemy.Update(a_oContext);
             }
         }
         #endregion

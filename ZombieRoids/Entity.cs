@@ -12,10 +12,10 @@
 ///     Elizabeth Lowry
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 3, 2014
+///     June 4, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Refactoring Player and Bullet classes
+///     Refactoring Game1 class
 /// </description></item>
 /// </list>
 
@@ -31,7 +31,7 @@ namespace ZombieRoids
     /// <remarks>
     /// Represents a moving object with hitpoints
     /// </remarks>
-    class Entity : Sprite
+    public class Entity : Sprite
     {
         public RotatedBoxCollider Collider
         {
@@ -153,7 +153,7 @@ namespace ZombieRoids
         /// Update logic for this entity, if it needs updating each frame
         /// </summary>
         /// <param name="a_gtGameTime"></param>
-        public virtual void Update(GameTime a_gtGameTime)
+        public virtual void Update(Game1.Context a_oContext)
         {
 #if DEBUG
             // In debug mode, throw an exception if this is called before the
@@ -167,22 +167,24 @@ namespace ZombieRoids
             {
                 // Update Position
                 Position += Velocity *
-                            (float)a_gtGameTime.ElapsedGameTime.TotalSeconds;
+                            (float)a_oContext.time.ElapsedGameTime.TotalSeconds;
 
                 // Check for changes to OnScreen
                 if (OnScreen)
                 {
                     // If now Off, set onscreen to off
-                    if (CheckOffscreen(Game1.m_ptScreenSize))
+                    if (CheckOffscreen(a_oContext.viewport))
                     {
                         OnScreen = false;
+                        // TEMP, SEE OnScreenExit
+                        ScreenWrap(a_oContext.viewport);
                     }
                 }
                 else
                 {
 
                     // If now On, set Onscreen to on
-                    if (!CheckOffscreen(Game1.m_ptScreenSize))
+                    if (!CheckOffscreen(a_oContext.viewport))
                     {
                         OnScreen = true;
                     }
@@ -195,11 +197,9 @@ namespace ZombieRoids
         /// </summary>
         /// <param name="a_ptScreenSize">Screen size</param>
         /// <returns>True if entity is completely outside screen area</returns>
-        public bool CheckOffscreen(Point a_ptScreenSize)
+        public bool CheckOffscreen(Rectangle a_oDisplayArea)
         {
-            Rectangle rctScreen =
-                new Rectangle(0, 0, a_ptScreenSize.X, a_ptScreenSize.Y);
-            if (!rctScreen.Intersects(Boundary))
+            if (!a_oDisplayArea.Intersects(Boundary))
             {
                 return true;
             }
@@ -221,16 +221,16 @@ namespace ZombieRoids
             }
         }
 
-        private void ScreenWrap()
+        private void ScreenWrap(Rectangle a_oDisplayArea)
         {
             // Vertical Wrap
             // Top
             if (Position.Y < 0)
             {
-                Position = new Vector2(Position.X,Game1.m_ptScreenSize.Y);
+                Position = new Vector2(Position.X, new Vector2(a_oDisplayArea.Width, a_oDisplayArea.Height).Y);
             }
             // Below
-            else if (Position.Y > Game1.m_ptScreenSize.Y)
+            else if (Position.Y > new Vector2(a_oDisplayArea.Width, a_oDisplayArea.Height).Y)
             {
                 Position = new Vector2(Position.X,0);
             }
@@ -239,11 +239,11 @@ namespace ZombieRoids
             // Left
             if (Position.X < 0)
             {
-                Position = new Vector2(Game1.m_ptScreenSize.X, Position.Y);
+                Position = new Vector2(new Vector2(a_oDisplayArea.Width, a_oDisplayArea.Height).X, Position.Y);
             }
 
             // Right
-            else if (Position.X > Game1.m_ptScreenSize.X)
+            else if (Position.X > new Vector2(a_oDisplayArea.Width, a_oDisplayArea.Height).X)
             {
                 Position = new Vector2(0, Position.Y);
             }
@@ -269,7 +269,7 @@ namespace ZombieRoids
         /// </summary>
         public virtual void OnScreenExit()
         {
-            ScreenWrap();
+            //ScreenWrap(); - not sure how to pass viewport data into here atm
         }
     }
 }
