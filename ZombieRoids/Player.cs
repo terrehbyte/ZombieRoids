@@ -34,6 +34,7 @@ namespace ZombieRoids
     /// </remarks>
     public class Player : Entity
     {
+        private const int mc_iBaseHP = 100;
         private const int mc_iSpeed = 150;
         private const int mc_iBulletSpeed = 210;
 
@@ -120,7 +121,7 @@ namespace ZombieRoids
         public override void Initialize(Texture2D a_tTexture, Vector2 a_v2Position)
         {
             base.Initialize(a_tTexture, a_v2Position);
-            HitPoints = 100;
+            HitPoints = mc_iBaseHP;
             Active = true;
         }
 
@@ -154,14 +155,6 @@ namespace ZombieRoids
                         if (!(a_oContext.time.TotalGameTime < m_tsInvulnEnd))
                         {
                             m_bInvuln = false;
-                        }
-                    }
-                    else
-                    {
-                        // Declare dead if no hp left
-                        if (HitPoints <= 0)
-                        {
-                            Alive = false;
                         }
                     }
                 }
@@ -199,12 +192,11 @@ namespace ZombieRoids
                 {
                     if (Collision.CheckCollision(this, oEnemy))
                     {
+                        // If player not invulnerable, damage the player
                         if (!m_bInvuln)
                         {
                             HitPoints -= oEnemy.Damage;
                         }
-                        
-                        //oEnemy.Alive = false;
 
                         // Stop if the player isn't alive anymore
                         if (!Alive)
@@ -221,7 +213,10 @@ namespace ZombieRoids
         /// </summary>
         private void OtherActions(Game1.Context a_oContext)
         {
+            // Grab Keyboard State
             KeyboardState kbCurKeys = Keyboard.GetState();
+
+            // If Q is pressed, teleport
             if (kbCurKeys.IsKeyDown(Keys.Q))
             {
                 Teleport(a_oContext.viewport);
@@ -299,7 +294,7 @@ namespace ZombieRoids
         }
 
         /// <summary>
-        /// (Re)spawn the player in-place as alive and invulnerable
+        /// (Re)spawn the player in-place as alive and invulnerable with full health
         /// </summary>
         /// <param name="a_gtGameTime">GameTime</param>
         public void Spawn(GameTime a_gtGameTime)
@@ -309,6 +304,7 @@ namespace ZombieRoids
 
             Alive = true;
             m_bInvuln = true;
+            HitPoints = mc_iBaseHP;
         }
 
         /// <summary>

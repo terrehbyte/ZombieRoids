@@ -138,6 +138,7 @@ namespace ZombieRoids
             m_oPlayer = new Player();
             m_oPlayer.BulletTexture = tBulletTex;
             m_oPlayer.Initialize(tPlayerTex, v2PlayerPos);
+            m_oPlayer.m_iLives = iPlayerStartLives;
 
             // Load background images
             m_tMainBackground = Content.Load<Texture2D>("Graphics/mainbackground");
