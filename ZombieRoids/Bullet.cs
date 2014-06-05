@@ -77,22 +77,21 @@ namespace ZombieRoids
         /// <param name="a_oContext"></param>
         public override void Update(Game1.Context a_oContext)
         {
-            base.Update(a_oContext);
-
-            // Set death time 
-            // @terrehbyte: this isn't ideal but I don't want to break anything before
-            //              refactoring is complete
-            //              - Maybe make Time a global thing? static of Game1?
-            if (m_tsBulletDeathtime == TimeSpan.Zero)
-            {
-                m_tsBulletDeathtime = a_oContext.time.TotalGameTime + m_tsBulletLifetime;
-            }
-
-
-
             // If active, check for collision with an an enemy
             if (Active)
             {
+                base.Update(a_oContext);
+
+                // Set death time 
+                // @terrehbyte: this isn't ideal but I don't want to break anything before
+                //              refactoring is complete
+                //              - Maybe make Time a global thing? static of Game1?
+                if (m_tsBulletDeathtime == TimeSpan.Zero)
+                {
+                    m_tsBulletDeathtime = a_oContext.time.TotalGameTime + m_tsBulletLifetime;
+                }
+
+
                 foreach (Enemy oEnemy in a_oContext.enemies)
                 {
                     if (Collision.CheckCollision(this, oEnemy))

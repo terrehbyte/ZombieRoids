@@ -80,6 +80,14 @@ namespace ZombieRoids
         private TimeSpan m_tsPrevEnemySpawnTime;
         private HashSet<Enemy> m_oEnemies;
 
+        // Enemy Wave Count
+        private const int mc_iEnemyWaveBaseCount = 3;   // Initial number of enemies
+        private const int mc_iEnemyWaveIncrement = 2;
+        private int m_iEnemyWaveCurrent = 0;
+        private int m_iEnemyWaveQueue = 0;
+        private TimeSpan m_tsEnemyWaveDelay = TimeSpan.FromSeconds(5.0);
+        private TimeSpan m_tsEnemyWaveNext;
+
         // Player
         private Player m_oPlayer;
         int iPlayerStartLives = 3;
@@ -240,15 +248,25 @@ namespace ZombieRoids
         /// <param name="a_oContext">Current state of game</param>
         private void UpdateEnemies(Game1.Context a_oContext)
         {
-            //Max Number of Enemies
-            int iMaxOnScreen = 5;
+            // Calculate time since last spawn
+            TimeSpan tsEnemySpawnTimeElapsed = a_oContext.time.TotalGameTime - m_tsPrevEnemySpawnTime;
 
-            // Add enemy if enough time has passed
-            if (a_oContext.time.TotalGameTime - m_tsPrevEnemySpawnTime > m_tsEnemySpawnTime &&
-                m_oEnemies.Count < iMaxOnScreen)
+            // Has enough time passed to spawn another enemy?
+            if (tsEnemySpawnTimeElapsed > m_tsEnemySpawnTime)
             {
-                m_tsPrevEnemySpawnTime = a_oContext.time.TotalGameTime;
-                Enemy.Spawn(a_oContext, m_tEnemyTex);
+                // Are there any enemies left to spawn?
+                if (m_iEnemyWaveQueue > 0 &&
+                    a_oContext.time.TotalGameTime > m_tsEnemyWaveNext)
+                {
+                    m_tsPrevEnemySpawnTime = a_oContext.time.TotalGameTime;
+                    Enemy.Spawn(a_oContext, m_tEnemyTex);
+
+                    // Decrement queue
+                    m_iEnemyWaveQueue--;
+#if DEBUG
+                    Console.WriteLine(m_iEnemyWaveQueue + " enemies left in queue.");
+#endif
+                }
             }
 
             // Update current set of enemies (each enemy update could change set of enemies, so
@@ -264,6 +282,32 @@ namespace ZombieRoids
                 }
                 oEnemy.Update(a_oContext);
                 
+            }
+
+            // Check wave end conditions
+            //  - no more enemies
+            //  - no more queued enemies
+            // If so, assign the next wave time
+            if (m_oEnemies.Count == 0 && m_iEnemyWaveQueue == 0)
+            {
+                // Assign values for next wave
+                if (a_oContext.time.TotalGameTime > m_tsEnemyWaveNext)
+                {
+                    // Increment current wave
+                    m_iEnemyWaveCurrent++;
+
+                    // Calculate new queue
+                    // queue = base + (waves * incPerWave)
+                    m_iEnemyWaveQueue = mc_iEnemyWaveBaseCount + m_iEnemyWaveCurrent * mc_iEnemyWaveIncrement;
+
+                    // Assign time until next wave to start
+                    m_tsEnemyWaveNext = a_oContext.time.TotalGameTime + m_tsEnemyWaveDelay;
+
+#if DEBUG
+                    Console.WriteLine("ROUND " + m_iEnemyWaveCurrent);
+                    Console.WriteLine("QUEUED: " + m_iEnemyWaveQueue);
+#endif
+                }
             }
         }
         #endregion

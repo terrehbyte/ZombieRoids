@@ -42,7 +42,7 @@ namespace ZombieRoids
         private TimeSpan m_tsLastShot;
 
         // Time Delay Between Shots
-        private TimeSpan m_tsShotDelay = TimeSpan.FromSeconds(-1.0);
+        private TimeSpan m_tsShotDelay = TimeSpan.FromSeconds(0.2);
 
         // Time When Invuln Ends
         private TimeSpan m_tsInvulnEnd;
