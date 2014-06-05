@@ -37,9 +37,19 @@ namespace ZombieRoids
         private const int mc_iDamage = 10;
         private const int mc_iValue = 100;
 
-        const int mc_iOffset = 100;  // Offset in Screen Space
-        const int mc_iMinVel = 100;  // Minimum Velocity for any axis
-        const int mc_iMaxVel = 200;  // Maximum Velocity for any axis
+        // Velocity Caps
+
+        // Off-screen Spawning
+        private const int mc_iOffset = 100;  // Offset in Screen Space
+        private const int mc_iMinVel = 100;  // Minimum Velocity for any axis
+        private const int mc_iMaxVel = 200;  // Maximum Velocity for any axis
+
+        // Fragment Spawning Deltas
+        private const int mc_iXVelDelta = 100;
+        private const int mc_iYVelDelta = 100;
+
+        private const int mc_iXPosDelta = 50;
+        private const int mc_iYPosDelta = 50;
 
         /// <summary>
         /// Damage inflicted on things that collide with this enemy
@@ -172,17 +182,23 @@ namespace ZombieRoids
 
                 // New position randomly offset from this one
                 Vector2 v2Position =
-                    Position + new Vector2(a_oContext.random.Next(-50, 45),
-                                           a_oContext.random.Next(-50, 55));
+                    Position + new Vector2(a_oContext.random.Next(-mc_iXPosDelta, mc_iXPosDelta),
+                                           a_oContext.random.Next(-mc_iYPosDelta, mc_iYPosDelta));
                 
                 // New velocity randomly offset from this one
-                eneNewFoe.Velocity =
-                    Velocity + new Vector2(a_oContext.random.Next(-1, 1),
-                                a_oContext.random.Next(-2, 1));
+                Vector2 v2Velocity =
+                    Velocity + new Vector2(a_oContext.random.Next(-mc_iXVelDelta, mc_iXVelDelta),
+                                a_oContext.random.Next(-mc_iYVelDelta, mc_iYVelDelta));
 
-                Debug.Assert(eneNewFoe.Velocity.Y != 0, "Invalid Enemy Velocity = " + eneNewFoe.Velocity.Y);
+
+                // Cap Velocity
+                v2Velocity.X = MathHelper.Clamp(v2Velocity.X, -mc_fSpeed, mc_fSpeed);
+                v2Velocity.Y = MathHelper.Clamp(v2Velocity.Y, -mc_fSpeed, mc_fSpeed);
+
+                Debug.Assert(v2Velocity.Y != 0, "Invalid Enemy Velocity = " + eneNewFoe.Velocity.Y);
 
                 eneNewFoe.Initialize(Texture, v2Position);
+                eneNewFoe.Velocity = v2Velocity;
 
                 // New enemy breaks into fewer fragments than this one
                 eneNewFoe.FragmentCount = FragmentCount - 1;
