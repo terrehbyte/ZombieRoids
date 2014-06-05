@@ -15,7 +15,7 @@
 ///     June 5, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Fixed instantiation of enemy fragments
+///     Enemy fragments now decrease in size
 /// </description></item>
 /// </list>
 
@@ -50,6 +50,8 @@ namespace ZombieRoids
 
         private const int mc_iXPosDelta = 50;
         private const int mc_iYPosDelta = 50;
+
+        private const float mc_fFragmentMultiplier = 0.65f; // Scale of enemy fragments
 
         /// <summary>
         /// Damage inflicted on things that collide with this enemy
@@ -197,8 +199,10 @@ namespace ZombieRoids
 
                 Debug.Assert(v2Velocity.Y != 0, "Invalid Enemy Velocity = " + eneNewFoe.Velocity.Y);
 
+                // Initialize and assign other values
                 eneNewFoe.Initialize(Texture, v2Position);
                 eneNewFoe.Velocity = v2Velocity;
+                eneNewFoe.Scale = new Vector2(Scale.X * mc_fFragmentMultiplier, Scale.Y * mc_fFragmentMultiplier);
 
                 // New enemy breaks into fewer fragments than this one
                 eneNewFoe.FragmentCount = FragmentCount - 1;
