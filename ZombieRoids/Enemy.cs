@@ -12,10 +12,10 @@
 ///     Terry Nguyen
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 4, 2014
+///     June 5, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Merged with dev for @emlowry Refactoring Game1 class
+///     Fixed instantiation of enemy fragments
 /// </description></item>
 /// </list>
 
@@ -88,9 +88,10 @@ namespace ZombieRoids
                 // If dead
                 if (!Alive)
                 {
-                    a_oContext.enemies.Remove(this);
                     // Birth fragments if any
                     Spawn(a_oContext);
+
+                    a_oContext.enemies.Remove(this);
                 }
             }
         }
@@ -165,7 +166,6 @@ namespace ZombieRoids
         /// <param name="a_oContext"></param>
         public void Spawn(Game1.Context a_oContext)
         {
-            Console.WriteLine("Fragment Spawned.");
             for (int i = 0; i < FragmentCount; ++i)
             {
                 Enemy eneNewFoe = new Enemy();
@@ -177,7 +177,7 @@ namespace ZombieRoids
                 
                 // New velocity randomly offset from this one
                 eneNewFoe.Velocity =
-                    new Vector2(a_oContext.random.Next(-1, 1),
+                    Velocity + new Vector2(a_oContext.random.Next(-1, 1),
                                 a_oContext.random.Next(-2, 1));
 
                 Debug.Assert(eneNewFoe.Velocity.Y != 0, "Invalid Enemy Velocity = " + eneNewFoe.Velocity.Y);
