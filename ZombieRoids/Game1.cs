@@ -12,10 +12,10 @@
 ///     Terry Nguyen
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 4, 2014
+///     June 5, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Refactoring Game1 class
+///     Added refined placeholder art
 /// </description></item>
 /// </list>
 
@@ -143,8 +143,8 @@ namespace ZombieRoids
             m_oSpriteBatch = new SpriteBatch(GraphicsDevice);
 
             // Load player graphics
-            Texture2D tPlayerTex = Content.Load<Texture2D>("Graphics\\player");
-            Texture2D tBulletTex = Content.Load<Texture2D>("Graphics\\laser");
+            Texture2D tPlayerTex = Content.Load<Texture2D>("Graphics/Player/Player");
+            Texture2D tBulletTex = Content.Load<Texture2D>("Graphics/Player/Star");
             Vector2 v2PlayerPos = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X,
                                               GraphicsDevice.Viewport.TitleSafeArea.Y +
                                               GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
@@ -156,16 +156,16 @@ namespace ZombieRoids
             m_oPlayer.m_iLives = iPlayerStartLives;
 
             // Load background images
-            m_tMainBackground = Content.Load<Texture2D>("Graphics/mainbackground");
+            m_tMainBackground = Content.Load<Texture2D>("Graphics/World/Floor");
             m_pbgBGLayer1 = new ParallaxingBackground();
-            m_pbgBGLayer1.Initialize(Content, "Graphics/bgLayer1", GraphicsDevice.Viewport.Width,
+            m_pbgBGLayer1.Initialize(Content, "Graphics/World/Fog 1", GraphicsDevice.Viewport.Width,
                                      GraphicsDevice.Viewport.Height, -30);
             m_pbgBGLayer2 = new ParallaxingBackground();
-            m_pbgBGLayer2.Initialize(Content, "Graphics/bgLayer2", GraphicsDevice.Viewport.Width,
+            m_pbgBGLayer2.Initialize(Content, "Graphics/World/Fog 2", GraphicsDevice.Viewport.Width,
                                    GraphicsDevice.Viewport.Height, -60);
 
             // Load enemy texture
-            m_tEnemyTex = Content.Load<Texture2D>("Graphics\\mine");
+            m_tEnemyTex = Content.Load<Texture2D>("Graphics/Zombie/Zombie");
 
             // Load font
             scoreFont = Content.Load<SpriteFont>("GameFont");
@@ -217,8 +217,7 @@ namespace ZombieRoids
             
             // Draw background
             m_oSpriteBatch.Draw(m_tMainBackground, m_rctViewport, Color.White);
-            m_pbgBGLayer1.Draw(m_oSpriteBatch);
-            m_pbgBGLayer2.Draw(m_oSpriteBatch);
+
 
             // Draw player (which in turn draws bullets)
             m_oPlayer.Draw(m_oSpriteBatch);
@@ -231,6 +230,11 @@ namespace ZombieRoids
                     oEnemy.Draw(m_oSpriteBatch);
                 }
             }
+
+            m_pbgBGLayer1.Draw(m_oSpriteBatch);
+            m_pbgBGLayer2.Draw(m_oSpriteBatch);
+
+            // - DRAW UI -
 
             // Draw score
             m_oSpriteBatch.DrawString(scoreFont, "Score: " + m_iScore, new Vector2(25, 25), Color.Black);

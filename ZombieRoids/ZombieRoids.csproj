@@ -162,8 +162,32 @@
       <Link>Content\Graphics\player.xnb</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="..\ZombieRoidsContent\ZombieRoidsContent\bin\PSM\Content\Graphics\Player\Player.xnb">
+      <Link>Content\Graphics\Player\Player.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\ZombieRoidsContent\ZombieRoidsContent\bin\PSM\Content\Graphics\Player\Star.xnb">
+      <Link>Content\Graphics\Player\Star.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="..\ZombieRoidsContent\ZombieRoidsContent\bin\PSM\Content\Graphics\shipAnimation.xnb">
       <Link>Content\Graphics\shipAnimation.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\ZombieRoidsContent\ZombieRoidsContent\bin\PSM\Content\Graphics\World\Floor.xnb">
+      <Link>Content\Graphics\World\Floor.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\ZombieRoidsContent\ZombieRoidsContent\bin\PSM\Content\Graphics\World\Fog 1.xnb">
+      <Link>Content\Graphics\World\Fog 1.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\ZombieRoidsContent\ZombieRoidsContent\bin\PSM\Content\Graphics\World\Fog 2.xnb">
+      <Link>Content\Graphics\World\Fog 2.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\ZombieRoidsContent\ZombieRoidsContent\bin\PSM\Content\Graphics\Zombie\Zombie.xnb">
+      <Link>Content\Graphics\Zombie\Zombie.xnb</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="..\ZombieRoidsContent\ZombieRoidsContent\bin\PSM\Content\Sounds\explosion.xnb">
@@ -183,6 +207,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
