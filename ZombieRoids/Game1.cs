@@ -31,6 +31,8 @@ using Microsoft.Xna.Framework.Input.Touch;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
 using System.Diagnostics;
+
+using Utility;
 #endregion
 
 namespace ZombieRoids
@@ -52,7 +54,7 @@ namespace ZombieRoids
             public Rectangle viewport;
             public Random random;
             public HashSet<Enemy> enemies;
-            public int score;
+            public Ref<int> score;
         };
 
         // For generating random numbers
@@ -194,7 +196,9 @@ namespace ZombieRoids
             oContext.viewport = m_rctViewport;
             oContext.random = m_rngRandom;
             oContext.enemies = m_oEnemies;
-            oContext.score = m_iScore;
+            oContext.score =
+                new Ref<int>((() => m_iScore),
+                             ((int a_iScore) => m_iScore = a_iScore));
 
             // Update player and enemies
             m_oPlayer.Update(oContext);
@@ -277,13 +281,13 @@ namespace ZombieRoids
             // iterate over copy of set)
             HashSet<Enemy> oCurrentEnemies = new HashSet<Enemy>(m_oEnemies);
             foreach (Enemy oEnemy in oCurrentEnemies)
-            {
+            {/*
                 // temp fix
                 // @emlowry : how should we pass score up?
                 if (!oEnemy.Alive)
                 {
                     m_iScore += oEnemy.Value;
-                }
+                }/**/
                 oEnemy.Update(a_oContext);
                 
             }

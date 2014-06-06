@@ -36,7 +36,10 @@ namespace ZombieRoids
     {
         private const int mc_iBaseHP = 100;
         private const int mc_iSpeed = 150;
-        private const int mc_iBulletSpeed = 210;
+        private readonly Color mc_oInvulnerabilityTint = new Color(Color.Red, 0.75f);
+        private readonly Color mc_oNormalTint = Color.White;
+
+        private bool m_bTeleportKeyDown = false;
 
         // Time of Last Fire
         private TimeSpan m_tsLastShot;
@@ -50,7 +53,22 @@ namespace ZombieRoids
         // Time Duration of Invuln
         private TimeSpan m_tsInvulnDuration = TimeSpan.FromSeconds(2.0);
 
-        public bool m_bInvuln = false;
+        /// <summary>
+        /// Is the player currently immune to damage?
+        /// </summary>
+        public bool Invulnerable
+        {
+            get { return m_bInvulnerable; }
+            set
+            {
+                if (value != m_bInvulnerable)
+                {
+                    m_bInvulnerable = value;
+                    Tint = (value ? mc_oInvulnerabilityTint : mc_oNormalTint);
+                }
+            }
+        }
+        private bool m_bInvulnerable = false;
 
         // Number of Lives
         public int m_iLives;
@@ -139,22 +157,25 @@ namespace ZombieRoids
                 // Update Player
                 if (Alive)
                 {
+                    // Check for teleport
+                    OtherActions(a_oContext);
+
                     // Calculate aim rotation
                     FaceCursor();
 
                     // Fire if Left-Click
                     if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                     {
-                        Fire(a_oContext.time);
+                        Fire(a_oContext);
                     }
 
                     // Check for Invuln End
                     // refactor as property?
-                    if (m_bInvuln)
+                    if (Invulnerable)
                     {
                         if (!(a_oContext.time.TotalGameTime < m_tsInvulnEnd))
                         {
-                            m_bInvuln = false;
+                            Invulnerable = false;
                         }
                     }
                 }
@@ -193,7 +214,7 @@ namespace ZombieRoids
                     if (Collision.CheckCollision(this, oEnemy))
                     {
                         // If player not invulnerable, damage the player
-                        if (!m_bInvuln)
+                        if (!Invulnerable)
                         {
                             HitPoints -= oEnemy.Damage;
                         }
@@ -216,10 +237,18 @@ namespace ZombieRoids
             // Grab Keyboard State
             KeyboardState kbCurKeys = Keyboard.GetState();
 
-            // If Q is pressed, teleport
-            if (kbCurKeys.IsKeyDown(Keys.Q))
+            // If Q, Home, or 7 (Home) in the num pad is pressed, teleport when
+            // key is released
+            if (kbCurKeys.IsKeyDown(Keys.Q) ||
+                kbCurKeys.IsKeyDown(Keys.Home) ||
+                kbCurKeys.IsKeyDown(Keys.NumPad7))
             {
-                Teleport(a_oContext.viewport);
+                m_bTeleportKeyDown = true;
+            }
+            else if (m_bTeleportKeyDown)
+            {
+                m_bTeleportKeyDown = false;
+                Teleport(a_oContext);
             }
         }
 
@@ -243,13 +272,13 @@ namespace ZombieRoids
         /// Fire a bullet
         /// </summary>
         /// <param name="a_gtGameTime">Current/elapsed time</param>
-        private void Fire(GameTime a_gtGameTime)
+        private void Fire(Game1.Context a_oContext)
         {
             // If it's been long enough since the last shot,
-            if (a_gtGameTime.TotalGameTime - m_tsLastShot > m_tsShotDelay)
+            if (a_oContext.time.TotalGameTime - m_tsLastShot > m_tsShotDelay)
             {
                 // Record new threshold for firing a bullet
-                m_tsLastShot = a_gtGameTime.TotalGameTime;
+                m_tsLastShot = a_oContext.time.TotalGameTime;
                 
                 Bullet bulTemp = null;
 
@@ -266,14 +295,13 @@ namespace ZombieRoids
                 if (bulTemp == null)
                 {
                     // If a bullet couldn't be found, create a new one
-                    bulTemp = new Bullet(this, BulletTexture, mc_iBulletSpeed);
+                    bulTemp = new Bullet(this, BulletTexture, a_oContext);
                     m_lbulBullets.Add(bulTemp);
                 }
-
                 else
                 {
                     // Otherwise, fire the preexisting bullet
-                    bulTemp.Fire(this, mc_iBulletSpeed);
+                    bulTemp.Fire(this, a_oContext);
                 }
             }
         }
@@ -281,16 +309,15 @@ namespace ZombieRoids
         /// <summary>
         /// Randomly dumps the player somewhere on-screen
         /// </summary>
-        void Teleport(Rectangle a_oDisplayArea)
+        /// <param name="a_oContext">Current game context</param>
+        private void Teleport(Game1.Context a_oContext)
         {
-            Random rngGennie = new Random();
-
-            // Obtain randomized position
-            Vector2 v2NewPos = new Vector2(rngGennie.Next(0, (int)new Vector2(a_oDisplayArea.Width, a_oDisplayArea.Height).X),
-                                           rngGennie.Next(0, (int)new Vector2(a_oDisplayArea.Width, a_oDisplayArea.Height).Y));
-
             // Reassign position to randomized location
-            Position = v2NewPos;
+            Position =
+                new Vector2(a_oContext.random.Next(a_oContext.viewport.Left,
+                                                   a_oContext.viewport.Right),
+                            a_oContext.random.Next(a_oContext.viewport.Top,
+                                                   a_oContext.viewport.Bottom));
         }
 
         /// <summary>
@@ -303,7 +330,7 @@ namespace ZombieRoids
             m_tsInvulnEnd = a_gtGameTime.TotalGameTime + m_tsInvulnDuration;
 
             Alive = true;
-            m_bInvuln = true;
+            Invulnerable = true;
             HitPoints = mc_iBaseHP;
         }
 
