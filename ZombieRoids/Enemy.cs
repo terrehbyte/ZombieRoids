@@ -90,7 +90,7 @@ namespace ZombieRoids
         /// <summary>
         /// Enemy becomes inactive if it leaves the screen
         /// </summary>
-        /// <param name="gameTime"></param>
+        /// <param name="a_oContext"></param>
         public override void Update(Game1.Context a_oContext)
         {
             base.Update(a_oContext);
@@ -116,59 +116,71 @@ namespace ZombieRoids
         public static void Spawn(Game1.Context a_oContext, Texture2D a_tTexture)
         {
             // Random position offscreen
-            Vector2 v2Position = new Vector2(a_oContext.random.Next(-mc_iOffset, (int)a_oContext.viewport.Width + mc_iOffset),
-                                             a_oContext.random.Next(-mc_iOffset, (int)a_oContext.viewport.Height + mc_iOffset));
+            Vector2 v2Position =
+                new Vector2((float)(a_oContext.random.NextDouble() * 2 - 1),
+                            (float)(a_oContext.random.NextDouble() * 2 - 1));
+            if (0f == v2Position.X)
+            {
+                v2Position.Y = (v2Position.Y < 0 ? -1 : 1);
+            }
+            else if (0f == v2Position.Y)
+            {
+                v2Position.X = (v2Position.X < 0 ? -1 : 1);
+            }
+            else
+            {
+                v2Position /= Math.Min(Math.Abs(v2Position.X),
+                                       Math.Abs(v2Position.Y));
+            }
+            v2Position.X *= (a_oContext.viewport.Width + a_tTexture.Width) / 2;
+            v2Position.Y *= (a_oContext.viewport.Height + a_tTexture.Height) / 2;
+            v2Position.X += a_oContext.viewport.Left;
+            v2Position.Y += a_oContext.viewport.Top;
 
             // Create enemy
             Enemy oEnemy = new Enemy();
-
-            // Correct Y Offset if it will spawn in the middle
-            if (v2Position.X > 0 &&
-                v2Position.X < a_oContext.viewport.Width)
-            {
-                if (v2Position.Y > a_oContext.viewport.Height / 2)
-                {
-                    v2Position.Y = -mc_iOffset;
-                }
-                else
-                {
-                    v2Position.Y = a_oContext.viewport.Height + mc_iOffset;
-                }
-            }
 
             // - Determine Velocity -
 
             // Horizontal Speed
             // If Left of Screen
-            if (v2Position.X < 0)
+            if (v2Position.X < a_oContext.viewport.Left)
             {
-                oEnemy.Velocity = new Vector2(a_oContext.random.Next(mc_iMinVel, mc_iMaxVel), oEnemy.Velocity.Y);
+                oEnemy.Velocity =
+                    new Vector2(a_oContext.random.Next(mc_iMinVel, mc_iMaxVel),
+                                oEnemy.Velocity.Y);
             }
             // Right of Screen
             else
             {
-                oEnemy.Velocity = new Vector2(a_oContext.random.Next(-mc_iMaxVel, -mc_iMinVel), oEnemy.Velocity.Y);
+                oEnemy.Velocity =
+                    new Vector2(a_oContext.random.Next(-mc_iMaxVel, -mc_iMinVel),
+                                oEnemy.Velocity.Y);
             }
 
             // Vertical Speed
             // If Above
-            if (v2Position.Y < 0)
+            if (v2Position.Y < a_oContext.viewport.Top)
             {
-                oEnemy.Velocity = new Vector2(oEnemy.Velocity.X, a_oContext.random.Next(mc_iMinVel, mc_iMaxVel));
+                oEnemy.Velocity =
+                    new Vector2(oEnemy.Velocity.X,
+                                a_oContext.random.Next(mc_iMinVel, mc_iMaxVel));
             }
             // If Below
             else
             {
-                oEnemy.Velocity = new Vector2(oEnemy.Velocity.X, a_oContext.random.Next(-mc_iMaxVel, -mc_iMinVel));
+                oEnemy.Velocity =
+                    new Vector2(oEnemy.Velocity.X,
+                                a_oContext.random.Next(-mc_iMaxVel, -mc_iMinVel));
             }
 
-            // Assure that it isn't moving perfectly straight horizontall
+            // Assure that it isn't moving perfectly straight horizontally
             Debug.Assert(oEnemy.Velocity.Y != 0, "Invalid Enemy Velocity = " + oEnemy.Velocity.Y);
 
             // Initialize the Enemy
             oEnemy.Initialize(a_tTexture, v2Position);
 
-            // 
+            // Add the enemy to the list
             a_oContext.enemies.Add(oEnemy);
         }
 

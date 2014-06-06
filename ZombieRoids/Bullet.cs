@@ -35,26 +35,29 @@ namespace ZombieRoids
     public class Bullet : Entity
     {
         // Duration of Bullet Life
-        TimeSpan m_tsBulletLifetime = TimeSpan.FromSeconds(1.0);
+        private TimeSpan m_tsBulletLifetime = TimeSpan.FromSeconds(2.0);
 
         // Time to Cull Bullet
-        TimeSpan m_tsBulletDeathtime;
+        private TimeSpan m_tsBulletDeathtime;
 
         // Rotation applied per second in radians
-        const float mc_fRotationSpeed = 0.15f;   
+        private const float mc_fRotationSpeed = 10f;
+
+        // bullet speed
+        private const int mc_iBulletSpeed = 250;
 
         /// <summary>
-        /// Constructs a new bullet fired by the given entity at the given speed
+        /// Constructs a new bullet fired by the given entity
         /// </summary>
         /// <param name="a_oShooter">Entity firing the bullet</param>
         /// <param name="a_tTexture">Bullet image</param>
-        /// <param name="a_fSpeed">Bullet speed</param>
-        public Bullet(Entity a_oShooter, Texture2D a_tTexture, float a_fSpeed)
+        /// <param name="a_oContext">Current game context</param>
+        public Bullet(Entity a_oShooter, Texture2D a_tTexture, Game1.Context a_oContext)
         {
             Initialize(a_tTexture, a_oShooter.Position);
             if (null != a_oShooter)
             {
-                Fire(a_oShooter, a_fSpeed);
+                Fire(a_oShooter, a_oContext);
             }
         }
 
@@ -62,14 +65,16 @@ namespace ZombieRoids
         /// Fires the bullet from the given entity at the given speed
         /// </summary>
         /// <param name="a_oShooter">Entity firing the bullet</param>
-        /// <param name="a_fSpeed">Bullet speed</param>
-        public void Fire(Entity a_oShooter, float a_fSpeed)
+        /// <param name="a_oContext">Current game context</param>
+        public void Fire(Entity a_oShooter, Game1.Context a_oContext)
         {
             Active = true;
             Alive = true;
             Position = a_oShooter.Position;
             Rotation = a_oShooter.Rotation;
-            Velocity = a_oShooter.Forward * a_fSpeed;
+            AngularVelocity = mc_fRotationSpeed;
+            Velocity = a_oShooter.Forward * mc_iBulletSpeed;
+            m_tsBulletDeathtime = a_oContext.time.TotalGameTime + m_tsBulletLifetime;
         }
 
 
@@ -80,28 +85,17 @@ namespace ZombieRoids
         /// <param name="a_oContext"></param>
         public override void Update(Game1.Context a_oContext)
         {
-            // If active, check for collision with an an enemy
+            // Only update if active
             if (Active)
             {
-                // Add rotation
-                Rotation += mc_iRotSpeed;
-
                 base.Update(a_oContext);
 
-                // Set death time 
-                // @terrehbyte: this isn't ideal but I don't want to break anything before
-                //              refactoring is complete
-                //              - Maybe make Time a global thing? static of Game1?
-                if (m_tsBulletDeathtime == TimeSpan.Zero)
-                {
-                    m_tsBulletDeathtime = a_oContext.time.TotalGameTime + m_tsBulletLifetime;
-                }
-
-
-                foreach (Enemy oEnemy in a_oContext.enemies)
+                // Check for collision with enemy
+                foreach (Enemy oEnemy in a_oContext.enemies.Where(enemy => enemy.Alive))
                 {
                     if (Collision.CheckCollision(this, oEnemy))
                     {
+                        a_oContext.score.Value += oEnemy.Value;
                         oEnemy.Alive = false;
                         Active = false;
                         break;
@@ -114,14 +108,6 @@ namespace ZombieRoids
                     Active = false;
                 }
             }
-        }
-
-        public override void OnInactive()
-        {
-            base.OnInactive();
-
-            // Reset deathtime to zero so it can be set again later
-            m_tsBulletDeathtime = TimeSpan.Zero;
         }
     }
 }
