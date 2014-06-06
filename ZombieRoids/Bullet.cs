@@ -12,10 +12,10 @@
 ///     Terry Nguyen
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 4, 2014
+///     June 5, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Merged with dev for @emlowry Refactoring Game1 class
+///     Added constant rotation speed applied every frame
 /// </description></item>
 /// </list>
 
@@ -39,6 +39,9 @@ namespace ZombieRoids
 
         // Time to Cull Bullet
         TimeSpan m_tsBulletDeathtime;
+
+        // Rotation applied per second in radians
+        const float mc_fRotationSpeed = 0.15f;   
 
         /// <summary>
         /// Constructs a new bullet fired by the given entity at the given speed
@@ -80,6 +83,9 @@ namespace ZombieRoids
             // If active, check for collision with an an enemy
             if (Active)
             {
+                // Add rotation
+                Rotation += mc_iRotSpeed;
+
                 base.Update(a_oContext);
 
                 // Set death time 
