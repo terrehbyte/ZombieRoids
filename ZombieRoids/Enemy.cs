@@ -66,12 +66,8 @@ namespace ZombieRoids
         /// <summary>
         /// Number of fragments this enemy breaks into
         /// </summary>
-        public int FragmentCount
-        {
-            get { return m_iFragmentCount; }
-            set { m_iFragmentCount = value; }
-        }
-        private int m_iFragmentCount = 2;
+        public int FragmentCount { get; set; }
+        private const int mc_iInitialFragmentCount = 2;
 
         /// <summary>
         /// Sets up the enemy
@@ -129,7 +125,7 @@ namespace ZombieRoids
             }
             else
             {
-                v2Position /= Math.Min(Math.Abs(v2Position.X),
+                v2Position /= Math.Max(Math.Abs(v2Position.X),
                                        Math.Abs(v2Position.Y));
             }
             v2Position.X *= (a_oContext.viewport.Width + a_tTexture.Width) / 2;
@@ -139,6 +135,7 @@ namespace ZombieRoids
 
             // Create enemy
             Enemy oEnemy = new Enemy();
+            oEnemy.FragmentCount = mc_iInitialFragmentCount;
 
             // - Determine Velocity -
 
