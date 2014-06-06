@@ -84,7 +84,7 @@ namespace ZombieRoids
             if (Active)
             {
                 // Add rotation
-                Rotation += mc_iRotSpeed;
+                Rotation += mc_fRotationSpeed;
 
                 base.Update(a_oContext);
 
