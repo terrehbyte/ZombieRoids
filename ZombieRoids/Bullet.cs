@@ -46,6 +46,9 @@ namespace ZombieRoids
         // bullet speed
         private const int mc_iBulletSpeed = 250;
 
+        // damage done to enemies
+        private const int mc_iDamage = 10;
+
         /// <summary>
         /// Constructs a new bullet fired by the given entity
         /// </summary>
@@ -77,8 +80,6 @@ namespace ZombieRoids
             m_tsBulletDeathtime = a_oContext.time.TotalGameTime + m_tsBulletLifetime;
         }
 
-
-
         /// <summary>
         /// Updates bullet position and recycles bullets that leave the screen
         /// </summary>
@@ -96,7 +97,7 @@ namespace ZombieRoids
                     if (Collision.CheckCollision(this, oEnemy))
                     {
                         a_oContext.score.Value += oEnemy.Value;
-                        oEnemy.Alive = false;
+                        oEnemy.HitPoints -= mc_iDamage;
                         Active = false;
                         break;
                     }

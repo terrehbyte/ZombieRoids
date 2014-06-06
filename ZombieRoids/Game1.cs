@@ -155,7 +155,7 @@ namespace ZombieRoids
             m_oPlayer = new Player();
             m_oPlayer.BulletTexture = tBulletTex;
             m_oPlayer.Initialize(tPlayerTex, v2PlayerPos);
-            m_oPlayer.m_iLives = iPlayerStartLives;
+            m_oPlayer.Lives = iPlayerStartLives;
 
             // Load background images
             m_tMainBackground = Content.Load<Texture2D>("Graphics/World/Floor");
@@ -242,6 +242,9 @@ namespace ZombieRoids
 
             // Draw score
             m_oSpriteBatch.DrawString(scoreFont, "Score: " + m_iScore, new Vector2(25, 25), Color.Black);
+
+            // Draw lives
+            m_oSpriteBatch.DrawString(scoreFont, "Lives: " + m_iScore, new Vector2(25, 50), Color.Black);
 
             // Finish drawing
             m_oSpriteBatch.End();

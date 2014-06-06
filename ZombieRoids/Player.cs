@@ -71,7 +71,7 @@ namespace ZombieRoids
         private bool m_bInvulnerable = false;
 
         // Number of Lives
-        public int m_iLives;
+        public int Lives { get; set; }
 
         public List<Bullet> m_lbulBullets = new List<Bullet>();
         public Texture2D BulletTexture { get; set; }
@@ -183,11 +183,11 @@ namespace ZombieRoids
                 else
                 {
                     // Respawn if lives remaining
-                    if (m_iLives > 0)
+                    if (Lives > 0)
                     {
                         Spawn(a_oContext.time);
-                        m_iLives--;
-                        Console.WriteLine("Lives Remaining " + m_iLives);
+                        Lives--;
+                        Console.WriteLine("Lives Remaining " + Lives);
                     }
                     // Otherwise deactive player
                     else
