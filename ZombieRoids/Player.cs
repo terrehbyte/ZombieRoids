@@ -340,12 +340,6 @@ namespace ZombieRoids
         /// <param name="a_sbSpriteBatch">SpriteBatch</param>
         public override void Draw(SpriteBatch a_sbSpriteBatch)
         {
-            // Only draw if alive
-            if (Alive)
-            {
-                base.Draw(a_sbSpriteBatch);
-            }
-
             // Draw bullets
             for (int i = 0; i < m_lbulBullets.Count; i++)
             {
@@ -353,6 +347,12 @@ namespace ZombieRoids
                 {
                     m_lbulBullets[i].Draw(a_sbSpriteBatch);
                 }
+            }
+
+            // Only draw if alive
+            if (Alive)
+            {
+                base.Draw(a_sbSpriteBatch);
             }
         }
     }
