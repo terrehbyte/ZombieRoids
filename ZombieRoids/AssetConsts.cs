@@ -24,88 +24,63 @@ using System.Xml;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace ZombieRoids
 {
     /// <summary>
     /// Loads, saves, and provides access to consts loaded from XML document
     /// </summary>
-    class AssetConsts
+    public static class GameAssets
     {
-        public static XmlDocument m_oXMLDoc;        // XmlDocument loaded for reading
-        private static AssetConsts m_oInstance;     // Instance to be distributed
-
-        // Made private due to access only via .Instance
-        private AssetConsts() { }
-
-        /// <summary>
-        /// Obtain the global instance of the AssetConsts
-        /// </summary>
-        public static AssetConsts Instance
-        {
-            get
-            {
-                if (m_oInstance == null)
-                {
-                    m_oInstance = new AssetConsts();
-                }
-                return m_oInstance;
-            }
-        }
-
         /// <summary>
         /// Reloads the variables with data from the XML document
         /// </summary>
         /// <param name="a_oXMLDoc">Source XML Document</param>
-        public void Reload(XmlDocument a_oXMLDoc)
+        public static void Reload(ContentManager a_oContent)
         {
-            throw new System.NotImplementedException();
-        }
-        
-        /// <summary>
-        /// Reloads the variables with data from the XML document
-        /// </summary>
-        /// <param name="a_sXMLDoc">File path of the XML Document</param>
-        public void Reload(string a_sXMLDoc)
-        {
-            throw new System.NotImplementedException();
-        }
-        
-        /// <summary>
-        /// Writes the current variables back into the XML document
-        /// </summary>
-        public void Save()
-        {
-            throw new System.NotImplementedException();
+            // Load textures
+            PlayerTexture = a_oContent.Load<Texture2D>(GameConsts.PlayerTextureName);
+            BulletTexture = a_oContent.Load<Texture2D>(GameConsts.BulletTextureName);
+            ZombieTexture = a_oContent.Load<Texture2D>(GameConsts.ZombieTextureName);
+            BackgroundTexture = a_oContent.Load<Texture2D>(GameConsts.BackgroundTextureName);
+            ParallaxTextureOne = a_oContent.Load<Texture2D>(GameConsts.Overlay1TextureName);
+            ParallaxTextureTwo = a_oContent.Load<Texture2D>(GameConsts.Overlay2TextureName);
+            ScoreFont = a_oContent.Load<SpriteFont>(GameConsts.FontName);
+
+            // Load sounds
+            // TODO
         }
 
-#region Variables
+        #region Variables
         // Entities
-        public string m_sPlayerTex;         // Player Texture Path
-        public string m_sBulletTex;         // Bullet Texture Path
-        public string m_sZombieTex;         // Zombie Texture Path
-        
-        // Background
-        public string m_sMainBackgroundTex; // Background Tex Path
-        public string m_sParallaxOneTex;    // Parallax One Tex Path
-        public string m_sParallaxTwoTex;    // Parallax Two Tex Path
+        public static Texture2D PlayerTexture { get; private set; }
+        public static Texture2D BulletTexture { get; private set; }
+        public static Texture2D ZombieTexture { get; private set; }
 
-        // Music
-        public string m_sUIBGM;             // BGM Path
+        // Background
+        public static Texture2D BackgroundTexture { get; private set; }
+        public static Texture2D ParallaxTextureOne { get; private set; }
+        public static Texture2D ParallaxTextureTwo { get; private set; }
 
         // UI
-        public string m_sScoreFont;         // Font Path
+        public static SpriteFont ScoreFont { get; private set; }
+
+        // Music
+        //public static ? BackgroundMusic { get; private set; }   // BGM Path
 
         // Sounds
-        public string m_sPlayerThrowSnd;    // Player Throw Sound Path
-        public string m_sPlayerDeathSnd;    // Player Death Sound Path
-        public string m_sPlayerSpawnSnd;    // Player Spawn Sound Path
+        //public static ? PlayerShootSound { get; private set; }    // Player Throw Sound Path
+        //public static ? PlayerDeathSound { get; private set; }    // Player Death Sound Path
+        //public static ? PlayerSpawnSound { get; private set; }    // Player Spawn Sound Path
 
-        public string m_sZombieDeathSnd;    // Zombie Death Sound Path
+        //public static ? ZombieDeathSound { get; private set; }    // Zombie Death Sound Path
 
-        public string m_sUISelectSnd;       // UI Select Sound Path
-        public string m_sUIConfirmSnd;      // UI Confirm Sound Path
-        public string m_sUILifeGainSnd;     // UI Life Gain Sound Path
-#endregion
+        //public static ? SelectSound { get; private set; }     // UI Select Sound Path
+        //public static ? ConfirmSound { get; private set; }    // UI Confirm Sound Path
+        //public static ? LifeGainSound { get; private set; }   // UI Life Gain Sound Path
+        #endregion
     }
 }
