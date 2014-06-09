@@ -90,6 +90,14 @@
       <Link>SDL.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="..\ZombieRoidsContent\ZombieRoidsContent\bin\PSM\Content\Sounds\gameMusic.wma">
+      <Link>Content\Sounds\gameMusic.wma</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="..\ZombieRoidsContent\ZombieRoidsContent\bin\PSM\Content\Sounds\menuMusic.wma">
+      <Link>Content\Sounds\menuMusic.wma</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>
@@ -191,8 +199,20 @@
       <Link>Content\Graphics\Zombie\Zombie.xnb</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="..\ZombieRoidsContent\ZombieRoidsContent\bin\PSM\Content\Sounds\Background.xnb">
+      <Link>Content\Sounds\Background.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\ZombieRoidsContent\ZombieRoidsContent\bin\PSM\Content\Sounds\Censor.xnb">
+      <Link>Content\Sounds\Censor.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Include="..\ZombieRoidsContent\ZombieRoidsContent\bin\PSM\Content\Sounds\explosion.xnb">
       <Link>Content\Sounds\explosion.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\ZombieRoidsContent\ZombieRoidsContent\bin\PSM\Content\Sounds\ExtraLife.xnb">
+      <Link>Content\Sounds\ExtraLife.xnb</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Include="..\ZombieRoidsContent\ZombieRoidsContent\bin\PSM\Content\Sounds\gameMusic.xnb">
@@ -205,6 +225,30 @@
     </None>
     <None Include="..\ZombieRoidsContent\ZombieRoidsContent\bin\PSM\Content\Sounds\menuMusic.xnb">
       <Link>Content\Sounds\menuMusic.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\ZombieRoidsContent\ZombieRoidsContent\bin\PSM\Content\Sounds\PauseMenu.xnb">
+      <Link>Content\Sounds\PauseMenu.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\ZombieRoidsContent\ZombieRoidsContent\bin\PSM\Content\Sounds\PlayerDeath.xnb">
+      <Link>Content\Sounds\PlayerDeath.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\ZombieRoidsContent\ZombieRoidsContent\bin\PSM\Content\Sounds\StarThrow.xnb">
+      <Link>Content\Sounds\StarThrow.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\ZombieRoidsContent\ZombieRoidsContent\bin\PSM\Content\Sounds\Teleport.xnb">
+      <Link>Content\Sounds\Teleport.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\ZombieRoidsContent\ZombieRoidsContent\bin\PSM\Content\Sounds\Title.xnb">
+      <Link>Content\Sounds\Title.xnb</Link>
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="..\ZombieRoidsContent\ZombieRoidsContent\bin\PSM\Content\Sounds\WaveStart.xnb">
+      <Link>Content\Sounds\WaveStart.xnb</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>

@@ -30,6 +30,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Input.Touch;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
+using Microsoft.Xna.Framework.Audio;
 using System.Diagnostics;
 
 using Utility;
@@ -96,6 +97,9 @@ namespace ZombieRoids
 
         // Score
         SpriteFont scoreFont;
+
+        //Sound varibles
+        SoundEffect background;
 
         #endregion
 
@@ -171,6 +175,12 @@ namespace ZombieRoids
 
             // Load font
             scoreFont = Content.Load<SpriteFont>("GameFont");
+
+            //Load background sound
+            background = Content.Load<SoundEffect>("Sounds/Background");
+            SoundEffectInstance instance = background.CreateInstance();
+            instance.IsLooped = true;
+            instance.Play();
         }
 
         /// <summary>
@@ -207,6 +217,7 @@ namespace ZombieRoids
             // Update parallaxing background
             m_pbgBGLayer1.Update(gameTime);
             m_pbgBGLayer2.Update(gameTime);
+            
         }
 
         /// <summary>
