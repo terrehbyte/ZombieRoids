@@ -25,6 +25,7 @@ using System.Linq;
 using System.Text;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace ZombieRoids
@@ -59,6 +60,7 @@ namespace ZombieRoids
         /// <param name="a_oContext">Current game context</param>
         public void Fire(Entity a_oShooter, Game1.Context a_oContext)
         {
+            // Set up bullet
             Active = true;
             Alive = true;
             Position = a_oShooter.Position;
@@ -66,6 +68,9 @@ namespace ZombieRoids
             AngularVelocity = GameConsts.BulletSpin;
             Velocity = a_oShooter.Forward * GameConsts.BulletSpeed;
             m_tsBulletDeathtime = a_oContext.time.TotalGameTime + GameConsts.BulletLifetime;
+
+            // Play firing sound
+            GameAssets.PlayerShootSound.Play();
         }
 
         /// <summary>

@@ -22,6 +22,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 using System.Diagnostics;
 
 namespace ZombieRoids
@@ -75,8 +76,10 @@ namespace ZombieRoids
                 {
                     // Birth fragments if any
                     Spawn(a_oContext);
-
                     a_oContext.enemies.Remove(this);
+
+                    // Play death sound
+                    GameAssets.ZombieDeathSound.Play();
                 }
             }
         }

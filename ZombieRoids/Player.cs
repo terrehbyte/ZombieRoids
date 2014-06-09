@@ -24,6 +24,7 @@ using System.Linq;
 using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -213,6 +214,7 @@ namespace ZombieRoids
                         // Stop if the player isn't alive anymore
                         if (!Alive)
                         {
+                            GameAssets.PlayerDeathSound.Play();
                             break;
                         }
                     }
@@ -311,6 +313,9 @@ namespace ZombieRoids
                                                    a_oContext.viewport.Right),
                             a_oContext.random.Next(a_oContext.viewport.Top,
                                                    a_oContext.viewport.Bottom));
+
+            // Play Sound
+            GameAssets.PlayerTeleportSound.Play();
         }
 
         /// <summary>
@@ -322,10 +327,13 @@ namespace ZombieRoids
             // Set time to be invulnerable
             m_tsInvulnEnd = a_gtGameTime.TotalGameTime +
                 GameConsts.PlayerInvulnerabilityDuration;
-
-            Alive = true;
             Invulnerable = true;
+
+            // Reset HP
             HitPoints = GameConsts.PlayerHP;
+
+            // Play sound
+            GameAssets.PlayerSpawnSound.Play();
         }
 
         /// <summary>

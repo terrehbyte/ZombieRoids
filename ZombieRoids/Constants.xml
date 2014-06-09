@@ -4,20 +4,20 @@
                   LifeGainPoints="10000" ScoreX="25" ScoreY="25" LivesX="25" LivesY="50"
                   Overlay1Texture="Graphics/World/Fog 1" Overlay1Speed="-30"
                   Overlay2Texture="Graphics/World/Fog 2" Overlay2Speed="-60"
-                  SelectSound="Sound/TODO" ConfirmSound="Sound/TODO"
-                  BackgroundMusic="Music/TODO" LifeGainSound="Sound/TODO" />
+                  SelectSound="Sounds/StarThrow" ConfirmSound="Sounds/StarThrow"
+                  BackgroundMusic="Sounds/Background" LifeGainSound="Sounds/ExtraLife" />
   <PlayerConstants BaseHP="100" Speed="150" ShotDelay="0.2" NormalTint="#FFFFFFFF"
                    InvulnerableTint="#D0FF0000" InvulnerabilityPeriod="2.0"
                    InitialLives="3" Texture="Graphics/Player/Player"
-                   ShootSound="Sound/TODO" DeathSound="Sound/TODO"
-                   SpawnSound="Sound/TODO" />
+                   ShootSound="Sounds/StarThrow" DeathSound="Sounds/PlayerDeath"
+                   SpawnSound="Sounds/Teleport" TeleportSound="Sounds/Teleport" />
   <BulletConstants LifeTime="2.0" Speed="250" Spin="10" Damage="10"
                    Texture="Graphics/Player/Star" />
   <ZombieConstants BaseHP="10" Speed="120" Damage="10" Value="100"
                    InitialFragmentCount="2" FragmentMinSpeed="100" FragmentMaxSpeed="200"
                    FragmentDeltaSpeed="100" FragmentDeltaPosition="50"
                    FragmentScale="0.65" Texture="Graphics/Zombie/Zombie"
-                   DeathSound="Sound/TODO" />
+                   DeathSound="Sounds/explosion" />
   <WaveConstants InitialWaveSize="3" WaveIncrement="2"
                  WaveInterval="5" EnemySpawnTime="1.0" />
 </GameConstants>

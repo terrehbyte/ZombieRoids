@@ -158,6 +158,11 @@ namespace ZombieRoids
             get { return GetIfLoaded(m_sPlayerSpawnSnd); }
         }
         private static string m_sPlayerSpawnSnd;    // Player Spawn Sound Path
+        public static string PlayerTeleportSoundName
+        {
+            get { return GetIfLoaded(m_sPlayerTeleportSnd); }
+        }
+        private static string m_sPlayerTeleportSnd; // Player Teleport Sound Path
 
         #endregion
 
@@ -516,6 +521,7 @@ namespace ZombieRoids
                 Reload(a_oPlayerNode, "ShootSound", ref m_sPlayerThrowSnd);
                 Reload(a_oPlayerNode, "DeathSound", ref m_sPlayerDeathSnd);
                 Reload(a_oPlayerNode, "SpawnSound", ref m_sPlayerSpawnSnd);
+                Reload(a_oPlayerNode, "TeleportSound", ref m_sPlayerTeleportSnd);
             }
         }
 

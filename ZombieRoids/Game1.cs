@@ -73,12 +73,10 @@ namespace ZombieRoids
         private SpriteBatch m_oSpriteBatch;
 
         // Background images
-        private Texture2D m_tMainBackground;
         private ParallaxingBackground m_pbgBGLayer1;
         private ParallaxingBackground m_pbgBGLayer2;
 
         // Enemies
-        private Texture2D m_tEnemyTex;
         private TimeSpan m_tsPrevEnemySpawnTime;
         private HashSet<Enemy> m_oEnemies;
 
@@ -90,11 +88,8 @@ namespace ZombieRoids
         // Player
         private Player m_oPlayer;
 
-        // Score
-        SpriteFont scoreFont;
-
-        //Sound varibles
-        SoundEffect background;
+        // Background music loop
+        private SoundEffectInstance m_oBGM;
 
         #endregion
 
@@ -146,8 +141,8 @@ namespace ZombieRoids
             GameAssets.Reload(Content);
 
             // Load player graphics
-            Texture2D tPlayerTex = Content.Load<Texture2D>("Graphics/Player/Player");
-            Texture2D tBulletTex = Content.Load<Texture2D>("Graphics/Player/Star");
+            Texture2D tPlayerTex = GameAssets.PlayerTexture;
+            Texture2D tBulletTex = GameAssets.BulletTexture;
             m_rctViewport = GraphicsDevice.Viewport.TitleSafeArea;
             Vector2 v2PlayerPos = new Vector2(m_rctViewport.Center.X, m_rctViewport.Center.Y);
 
@@ -158,8 +153,7 @@ namespace ZombieRoids
             m_oPlayer.Lives = GameConsts.PlayerLives;
             m_iNextLifeScore = m_iScore + GameConsts.LifeGainPoints;
 
-            // Load background images
-            m_tMainBackground = GameAssets.BackgroundTexture;
+            // Create parallaxing overlays
             m_pbgBGLayer1 = new ParallaxingBackground();
             m_pbgBGLayer1.Initialize(GameAssets.ParallaxTextureOne, GraphicsDevice.Viewport.Width,
                                      GraphicsDevice.Viewport.Height, GameConsts.Overlay1Speed);
@@ -167,21 +161,10 @@ namespace ZombieRoids
             m_pbgBGLayer2.Initialize(GameAssets.ParallaxTextureTwo, GraphicsDevice.Viewport.Width,
                                    GraphicsDevice.Viewport.Height, GameConsts.Overlay2Speed);
 
-            // Load enemy texture
-            m_tEnemyTex = GameAssets.ZombieTexture;
-
-            // Load font
-
-            scoreFont = GameAssets.ScoreFont;
-
             //Load background sound
-            background = Content.Load<SoundEffect>("Sounds/Background");
-            SoundEffectInstance instance = background.CreateInstance();
-            instance.IsLooped = true;
-            instance.Play();
-
-            
-
+            m_oBGM = GameAssets.BackgroundMusic.CreateInstance();
+            m_oBGM.IsLooped = true;
+            m_oBGM.Play();
         }
 
         /// <summary>
@@ -214,10 +197,18 @@ namespace ZombieRoids
             // Update player and enemies
             m_oPlayer.Update(oContext);
             UpdateEnemies(oContext);
+
+            // If the new life point threshold has been passed,
             if (m_iScore == m_iNextLifeScore)
             {
+                // add a life,
                 ++m_oPlayer.Lives;
+
+                /// set a new threshold,
                 m_iNextLifeScore += GameConsts.LifeGainPoints;
+
+                // and play the new life sound
+                GameAssets.LifeGainSound.Play();
             }
 
             // Update parallaxing background
@@ -237,7 +228,7 @@ namespace ZombieRoids
             m_oSpriteBatch.Begin();
             
             // Draw background
-            m_oSpriteBatch.Draw(m_tMainBackground, m_rctViewport, Color.White);
+            m_oSpriteBatch.Draw(GameAssets.BackgroundTexture, m_rctViewport, Color.White);
 
 
             // Draw player (which in turn draws bullets)
@@ -258,11 +249,11 @@ namespace ZombieRoids
             // - DRAW UI -
 
             // Draw score
-            m_oSpriteBatch.DrawString(scoreFont, "Score: " + m_iScore,
+            m_oSpriteBatch.DrawString(GameAssets.ScoreFont, "Score: " + m_iScore,
                                       GameConsts.ScorePosition, Color.Black);
 
             // Draw lives
-            m_oSpriteBatch.DrawString(scoreFont, "Lives: " + m_oPlayer.Lives,
+            m_oSpriteBatch.DrawString(GameAssets.ScoreFont, "Lives: " + m_oPlayer.Lives,
                                       GameConsts.LivesPosition, Color.Black);
 
             // Finish drawing
@@ -289,7 +280,7 @@ namespace ZombieRoids
                     a_oContext.time.TotalGameTime > m_tsEnemyWaveNext)
                 {
                     m_tsPrevEnemySpawnTime = a_oContext.time.TotalGameTime;
-                    Enemy.Spawn(a_oContext, m_tEnemyTex);
+                    Enemy.Spawn(a_oContext, GameAssets.ZombieTexture);
 
                     // Decrement queue
                     m_iEnemyWaveQueue--;
