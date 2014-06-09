@@ -73,6 +73,11 @@ namespace ZombieRoids
             get { return GetIfLoaded(m_v2LivesPosition); }
         }
         private static Vector2 m_v2LivesPosition;
+        public static Vector2 EnemiesPosition
+        {
+            get { return GetIfLoaded(m_v2EnemiesPosition); }
+        }
+        private static Vector2 m_v2EnemiesPosition;
         public static string Overlay1TextureName
         {
             get { return GetIfLoaded(m_sOverlay1TextureName); }
@@ -501,6 +506,8 @@ namespace ZombieRoids
                 Reload(a_oWorldNode, "ScoreY", ref m_v2ScorePosition.Y);
                 Reload(a_oWorldNode, "LivesX", ref m_v2LivesPosition.X);
                 Reload(a_oWorldNode, "LivesY", ref m_v2LivesPosition.Y);
+                Reload(a_oWorldNode, "EnemiesX", ref m_v2EnemiesPosition.X);
+                Reload(a_oWorldNode, "EnemiesY", ref m_v2EnemiesPosition.Y);
                 Reload(a_oWorldNode, "Overlay1Texture", ref m_sOverlay1TextureName);
                 Reload(a_oWorldNode, "Overlay1Speed", ref m_iOverlay1Speed);
                 Reload(a_oWorldNode, "Overlay2Texture", ref m_sOverlay2TextureName);

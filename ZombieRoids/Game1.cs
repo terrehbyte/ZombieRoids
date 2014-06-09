@@ -245,7 +245,7 @@ namespace ZombieRoids
                                       GameConsts.LivesPosition, Color.Black);
 
             // Draw enemy count
-            m_oSpriteBatch.DrawString(scoreFont, "Enemies Remaining: " + m_oEnemies.Count, new Vector2(25, 50), Color.Black);
+            m_oSpriteBatch.DrawString(scoreFont, "Enemies Remaining: " + m_oEnemies.Count, GameConsts.EnemiesPosition, Color.Black);
             
 
             // Finish drawing
