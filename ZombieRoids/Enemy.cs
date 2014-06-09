@@ -174,8 +174,8 @@ namespace ZombieRoids
                                 a_oContext.random.Next(-mc_iMaxVel, -mc_iMinVel));
             }
 
-            // Assure that it isn't moving perfectly straight horizontally
-            Debug.Assert(oEnemy.Velocity.Y != 0, "Invalid Enemy Velocity = " + oEnemy.Velocity.Y);
+            Debug.Assert(Math.Abs(oEnemy.Position.X) < a_oContext.viewport.Width &&
+                         Math.Abs(oEnemy.Position.Y) < a_oContext.viewport.Height, "Invalid Enemy Position = " + oEnemy.Position);
 
             // Initialize the Enemy
             oEnemy.Initialize(a_tTexture, v2Position);
@@ -208,8 +208,6 @@ namespace ZombieRoids
                 // Cap Velocity
                 v2Velocity.X = MathHelper.Clamp(v2Velocity.X, -mc_fSpeed, mc_fSpeed);
                 v2Velocity.Y = MathHelper.Clamp(v2Velocity.Y, -mc_fSpeed, mc_fSpeed);
-
-                Debug.Assert(v2Velocity.Y != 0, "Invalid Enemy Velocity = " + eneNewFoe.Velocity.Y);
 
                 // Initialize and assign other values
                 eneNewFoe.Initialize(Texture, v2Position);
