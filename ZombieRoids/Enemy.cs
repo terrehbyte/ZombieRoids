@@ -31,28 +31,6 @@ namespace ZombieRoids
     /// </remarks>
     public class Enemy : Entity
     {
-        // initial values
-        private const float mc_fSpeed = 120f;
-        private const int mc_iHP = 10;
-        private const int mc_iDamage = 10;
-        private const int mc_iValue = 100;
-
-        // Velocity Caps
-
-        // Off-screen Spawning
-        private const int mc_iOffset = 100;  // Offset in Screen Space
-        private const int mc_iMinVel = 100;  // Minimum Velocity for any axis
-        private const int mc_iMaxVel = 200;  // Maximum Velocity for any axis
-
-        // Fragment Spawning Deltas
-        private const int mc_iXVelDelta = 100;
-        private const int mc_iYVelDelta = 100;
-
-        private const int mc_iXPosDelta = 50;
-        private const int mc_iYPosDelta = 50;
-
-        private const float mc_fFragmentMultiplier = 0.65f; // Scale of enemy fragments
-
         /// <summary>
         /// Damage inflicted on things that collide with this enemy
         /// </summary>
@@ -67,7 +45,6 @@ namespace ZombieRoids
         /// Number of fragments this enemy breaks into
         /// </summary>
         public int FragmentCount { get; set; }
-        private const int mc_iInitialFragmentCount = 2;
 
         /// <summary>
         /// Sets up the enemy
@@ -78,9 +55,9 @@ namespace ZombieRoids
         {
             base.Initialize(a_tTex, a_v2Pos);
             Active = true;
-            HitPoints = mc_iHP;
-            Damage = mc_iDamage;
-            Value = mc_iValue;
+            HitPoints = GameConsts.ZombieHP;
+            Damage = GameConsts.ZombieDamage;
+            Value = GameConsts.ZombieValue;
         }
 
         /// <summary>
@@ -130,46 +107,45 @@ namespace ZombieRoids
             }
             v2Position.X *= (a_oContext.viewport.Width + a_tTexture.Width) / 2;
             v2Position.Y *= (a_oContext.viewport.Height + a_tTexture.Height) / 2;
-            v2Position.X += a_oContext.viewport.Left;
-            v2Position.Y += a_oContext.viewport.Top;
+            v2Position.X += a_oContext.viewport.Left + a_oContext.viewport.Width / 2;
+            v2Position.Y += a_oContext.viewport.Top + a_oContext.viewport.Height / 2;
 
             // Create enemy
             Enemy oEnemy = new Enemy();
-            oEnemy.FragmentCount = mc_iInitialFragmentCount;
+            oEnemy.FragmentCount = GameConsts.InitialFragments;
 
             // - Determine Velocity -
 
             // Horizontal Speed
             // If Left of Screen
-            if (v2Position.X < a_oContext.viewport.Left)
+            if (v2Position.X < a_oContext.viewport.Center.X)
             {
-                oEnemy.Velocity =
-                    new Vector2(a_oContext.random.Next(mc_iMinVel, mc_iMaxVel),
-                                oEnemy.Velocity.Y);
+                if (v2Position.Y < a_oContext.viewport.Center.Y)
+                {
+                    oEnemy.Rotation =
+                        (float)((2 - a_oContext.random.NextDouble() / 2) * Math.PI);
+                }
+                else
+                {
+                    oEnemy.Rotation =
+                        (float)(a_oContext.random.NextDouble() * Math.PI / 2);
+                }
             }
             // Right of Screen
             else
             {
-                oEnemy.Velocity =
-                    new Vector2(a_oContext.random.Next(-mc_iMaxVel, -mc_iMinVel),
-                                oEnemy.Velocity.Y);
+                if (v2Position.Y < a_oContext.viewport.Center.Y)
+                {
+                    oEnemy.Rotation =
+                        (float)((1 + a_oContext.random.NextDouble() / 2) * Math.PI);
+                }
+                else
+                {
+                    oEnemy.Rotation =
+                        (float)((1 + a_oContext.random.NextDouble()) * Math.PI / 2);
+                }
             }
-
-            // Vertical Speed
-            // If Above
-            if (v2Position.Y < a_oContext.viewport.Top)
-            {
-                oEnemy.Velocity =
-                    new Vector2(oEnemy.Velocity.X,
-                                a_oContext.random.Next(mc_iMinVel, mc_iMaxVel));
-            }
-            // If Below
-            else
-            {
-                oEnemy.Velocity =
-                    new Vector2(oEnemy.Velocity.X,
-                                a_oContext.random.Next(-mc_iMaxVel, -mc_iMinVel));
-            }
+            oEnemy.Velocity = oEnemy.Forward * GameConsts.ZombieSpeed;
 
             // Assure that it isn't moving perfectly straight horizontally
             Debug.Assert(oEnemy.Velocity.Y != 0, "Invalid Enemy Velocity = " + oEnemy.Velocity.Y);
@@ -193,25 +169,44 @@ namespace ZombieRoids
 
                 // New position randomly offset from this one
                 Vector2 v2Position =
-                    Position + new Vector2(a_oContext.random.Next(-mc_iXPosDelta, mc_iXPosDelta),
-                                           a_oContext.random.Next(-mc_iYPosDelta, mc_iYPosDelta));
+                    Position + new Vector2(
+                        a_oContext.random.Next(-GameConsts.FragmentDeltaPosition,
+                                               GameConsts.FragmentDeltaPosition),
+                        a_oContext.random.Next(-GameConsts.FragmentDeltaPosition,
+                                               GameConsts.FragmentDeltaPosition));
                 
                 // New velocity randomly offset from this one
                 Vector2 v2Velocity =
-                    Velocity + new Vector2(a_oContext.random.Next(-mc_iXVelDelta, mc_iXVelDelta),
-                                a_oContext.random.Next(-mc_iYVelDelta, mc_iYVelDelta));
+                    Velocity + new Vector2(
+                        a_oContext.random.Next(-GameConsts.FragmentDeltaSpeed,
+                                               GameConsts.FragmentDeltaSpeed),
+                        a_oContext.random.Next(-GameConsts.FragmentDeltaSpeed,
+                                               GameConsts.FragmentDeltaSpeed));
 
 
                 // Cap Velocity
-                v2Velocity.X = MathHelper.Clamp(v2Velocity.X, -mc_fSpeed, mc_fSpeed);
-                v2Velocity.Y = MathHelper.Clamp(v2Velocity.Y, -mc_fSpeed, mc_fSpeed);
+                if (v2Velocity.LengthSquared() == 0)
+                {
+                    v2Velocity = Velocity * GameConsts.FragmentMinSpeed / Velocity.Length();
+                }
+                else if (v2Velocity.LengthSquared() >
+                    GameConsts.FragmentMaxSpeed * GameConsts.FragmentMaxSpeed)
+                {
+                    v2Velocity *= GameConsts.FragmentMaxSpeed / v2Velocity.Length();
+                }
+                else if (v2Velocity.LengthSquared() <
+                    GameConsts.FragmentMinSpeed * GameConsts.FragmentMinSpeed)
+                {
+                    v2Velocity *= GameConsts.FragmentMinSpeed / v2Velocity.Length();
+                }
 
                 Debug.Assert(v2Velocity.Y != 0, "Invalid Enemy Velocity = " + eneNewFoe.Velocity.Y);
 
                 // Initialize and assign other values
                 eneNewFoe.Initialize(Texture, v2Position);
                 eneNewFoe.Velocity = v2Velocity;
-                eneNewFoe.Scale = new Vector2(Scale.X * mc_fFragmentMultiplier, Scale.Y * mc_fFragmentMultiplier);
+                eneNewFoe.Forward = v2Velocity;
+                eneNewFoe.Scale *= GameConsts.FragmentScale;
 
                 // New enemy breaks into fewer fragments than this one
                 eneNewFoe.FragmentCount = FragmentCount - 1;
