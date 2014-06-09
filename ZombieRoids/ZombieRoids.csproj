@@ -54,6 +54,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Animation.cs" />
+    <Compile Include="AssetConsts.cs" />
     <Compile Include="Bullet.cs" />
     <Compile Include="BulletManager.cs" />
     <Compile Include="Collision.cs" />
@@ -61,6 +62,7 @@
     <Compile Include="Engine.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="GameConsts.cs" />
     <Compile Include="ParallaxingBackground.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
@@ -97,6 +99,9 @@
     <Content Include="..\ZombieRoidsContent\ZombieRoidsContent\bin\PSM\Content\Sounds\menuMusic.wma">
       <Link>Content\Sounds\menuMusic.wma</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Constants.xml">
+      <SubType>Designer</SubType>
     </Content>
     <Content Include="Icon.ico" />
   </ItemGroup>
@@ -254,6 +259,9 @@
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(SolutionDir)$(ProjectName)\Constants.xml" "$(TargetDir)Constants.xml"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

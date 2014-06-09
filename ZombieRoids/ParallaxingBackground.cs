@@ -53,7 +53,7 @@ namespace ZombieRoids
         /// <param name="a_iScreenWidth">Screen width</param>
         /// <param name="a_iScreenHeight">Screen Height</param>
         /// <param name="a_iSpeed">Scroll speed</param>
-        public void Initialize(ContentManager a_cmContent, String a_sTexturePath,
+        public void Initialize(Texture2D a_tTexture,
                                int a_iScreenWidth, int a_iScreenHeight, int a_iSpeed)
         {
             // Save screen size
@@ -61,7 +61,7 @@ namespace ZombieRoids
             m_iWidth = a_iScreenWidth;
 
             // Load BG Tex
-            m_tTexture = a_cmContent.Load<Texture2D>(a_sTexturePath);
+            m_tTexture = a_tTexture;
 
             // Set Scroll Speed
             m_iSpeed = a_iSpeed;

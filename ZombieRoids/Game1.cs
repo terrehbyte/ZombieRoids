@@ -78,17 +78,12 @@ namespace ZombieRoids
 
         // Enemies
         private Texture2D m_tEnemyTex;
-        private float mc_fEnemySpawnTimeSeconds = 1.0f;
-        private TimeSpan m_tsEnemySpawnTime;
         private TimeSpan m_tsPrevEnemySpawnTime;
         private HashSet<Enemy> m_oEnemies;
 
         // Enemy Wave Count
-        private const int mc_iEnemyWaveBaseCount = 3;   // Initial number of enemies
-        private const int mc_iEnemyWaveIncrement = 2;
         private int m_iEnemyWaveCurrent = 0;
         private int m_iEnemyWaveQueue = 0;
-        private TimeSpan m_tsEnemyWaveDelay = TimeSpan.FromSeconds(5.0);
         private TimeSpan m_tsEnemyWaveNext;
 
         // Player
@@ -129,14 +124,12 @@ namespace ZombieRoids
             Engine.Instance.m_Game = this;
 
             // Initialize basic game properties
-            m_rctViewport = new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height);
             IsMouseVisible = true;
             m_rngRandom = new Random();
 
             // Track enemies
             m_oEnemies = new HashSet<Enemy>();
             m_tsPrevEnemySpawnTime = TimeSpan.Zero;
-            m_tsEnemySpawnTime = TimeSpan.FromSeconds(mc_fEnemySpawnTimeSeconds);
         }
 
         /// <summary>
@@ -148,39 +141,46 @@ namespace ZombieRoids
             // Create a new SpriteBatch, which can be used to draw textures.
             m_oSpriteBatch = new SpriteBatch(GraphicsDevice);
 
+            // Load game constants and assets
+            GameConsts.Reload("Constants.xml");
+            GameAssets.Reload(Content);
+
             // Load player graphics
             Texture2D tPlayerTex = Content.Load<Texture2D>("Graphics/Player/Player");
             Texture2D tBulletTex = Content.Load<Texture2D>("Graphics/Player/Star");
-            Vector2 v2PlayerPos = new Vector2(GraphicsDevice.Viewport.TitleSafeArea.X,
-                                              GraphicsDevice.Viewport.TitleSafeArea.Y +
-                                              GraphicsDevice.Viewport.TitleSafeArea.Height / 2);
+            m_rctViewport = GraphicsDevice.Viewport.TitleSafeArea;
+            Vector2 v2PlayerPos = new Vector2(m_rctViewport.Center.X, m_rctViewport.Center.Y);
 
             // Create player object
             m_oPlayer = new Player();
             m_oPlayer.BulletTexture = tBulletTex;
-            m_oPlayer.Initialize(tPlayerTex, v2PlayerPos);
-            m_oPlayer.m_iLives = iPlayerStartLives;
+            m_oPlayer.Initialize(GameAssets.PlayerTexture, v2PlayerPos);
+            m_oPlayer.Lives = iPlayerStartLives;
 
             // Load background images
-            m_tMainBackground = Content.Load<Texture2D>("Graphics/World/Floor");
+            m_tMainBackground = GameAssets.BackgroundTexture;
             m_pbgBGLayer1 = new ParallaxingBackground();
-            m_pbgBGLayer1.Initialize(Content, "Graphics/World/Fog 1", GraphicsDevice.Viewport.Width,
-                                     GraphicsDevice.Viewport.Height, -30);
+            m_pbgBGLayer1.Initialize(GameAssets.ParallaxTextureOne, GraphicsDevice.Viewport.Width,
+                                     GraphicsDevice.Viewport.Height, GameConsts.Overlay1Speed);
             m_pbgBGLayer2 = new ParallaxingBackground();
-            m_pbgBGLayer2.Initialize(Content, "Graphics/World/Fog 2", GraphicsDevice.Viewport.Width,
-                                   GraphicsDevice.Viewport.Height, -60);
+            m_pbgBGLayer2.Initialize(GameAssets.ParallaxTextureTwo, GraphicsDevice.Viewport.Width,
+                                   GraphicsDevice.Viewport.Height, GameConsts.Overlay2Speed);
 
             // Load enemy texture
-            m_tEnemyTex = Content.Load<Texture2D>("Graphics/Zombie/Zombie");
+            m_tEnemyTex = GameAssets.ZombieTexture;
 
             // Load font
-            scoreFont = Content.Load<SpriteFont>("GameFont");
+
+            scoreFont = GameAssets.ScoreFont;
 
             //Load background sound
             background = Content.Load<SoundEffect>("Sounds/Background");
             SoundEffectInstance instance = background.CreateInstance();
             instance.IsLooped = true;
             instance.Play();
+
+            
+
         }
 
         /// <summary>
@@ -252,7 +252,12 @@ namespace ZombieRoids
             // - DRAW UI -
 
             // Draw score
-            m_oSpriteBatch.DrawString(scoreFont, "Score: " + m_iScore, new Vector2(25, 25), Color.Black);
+            m_oSpriteBatch.DrawString(scoreFont, "Score: " + m_iScore,
+                                      GameConsts.ScorePosition, Color.Black);
+
+            // Draw lives
+            m_oSpriteBatch.DrawString(scoreFont, "Lives: " + m_oPlayer.Lives,
+                                      GameConsts.LivesPosition, Color.Black);
 
             // Finish drawing
             m_oSpriteBatch.End();
@@ -271,7 +276,7 @@ namespace ZombieRoids
             TimeSpan tsEnemySpawnTimeElapsed = a_oContext.time.TotalGameTime - m_tsPrevEnemySpawnTime;
 
             // Has enough time passed to spawn another enemy?
-            if (tsEnemySpawnTimeElapsed > m_tsEnemySpawnTime)
+            if (tsEnemySpawnTimeElapsed > GameConsts.SpawnDelay)
             {
                 // Are there any enemies left to spawn?
                 if (m_iEnemyWaveQueue > 0 &&
@@ -312,15 +317,16 @@ namespace ZombieRoids
                 // Assign values for next wave
                 if (a_oContext.time.TotalGameTime > m_tsEnemyWaveNext)
                 {
+                    // Calculate new queue
+                    // queue = base + (waves * incPerWave)
+                    m_iEnemyWaveQueue = GameConsts.InitialWaveSize +
+                        m_iEnemyWaveCurrent * GameConsts.WaveSizeIncrement;
+
                     // Increment current wave
                     m_iEnemyWaveCurrent++;
 
-                    // Calculate new queue
-                    // queue = base + (waves * incPerWave)
-                    m_iEnemyWaveQueue = mc_iEnemyWaveBaseCount + m_iEnemyWaveCurrent * mc_iEnemyWaveIncrement;
-
                     // Assign time until next wave to start
-                    m_tsEnemyWaveNext = a_oContext.time.TotalGameTime + m_tsEnemyWaveDelay;
+                    m_tsEnemyWaveNext = a_oContext.time.TotalGameTime + GameConsts.WaveDelay;
 
 #if DEBUG
                     Console.WriteLine("ROUND " + m_iEnemyWaveCurrent);

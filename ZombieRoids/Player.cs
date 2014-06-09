@@ -34,24 +34,14 @@ namespace ZombieRoids
     /// </remarks>
     public class Player : Entity
     {
-        private const int mc_iBaseHP = 100;
-        private const int mc_iSpeed = 150;
-        private readonly Color mc_oInvulnerabilityTint = new Color(Color.Red, 0.75f);
-        private readonly Color mc_oNormalTint = Color.White;
-
+        // Is the teleport key being pressed?
         private bool m_bTeleportKeyDown = false;
 
         // Time of Last Fire
         private TimeSpan m_tsLastShot;
 
-        // Time Delay Between Shots
-        private TimeSpan m_tsShotDelay = TimeSpan.FromSeconds(0.2);
-
         // Time When Invuln Ends
         private TimeSpan m_tsInvulnEnd;
-
-        // Time Duration of Invuln
-        private TimeSpan m_tsInvulnDuration = TimeSpan.FromSeconds(2.0);
 
         /// <summary>
         /// Is the player currently immune to damage?
@@ -64,14 +54,15 @@ namespace ZombieRoids
                 if (value != m_bInvulnerable)
                 {
                     m_bInvulnerable = value;
-                    Tint = (value ? mc_oInvulnerabilityTint : mc_oNormalTint);
+                    Tint = (value ? GameConsts.PlayerInvulnerableTint
+                                  : GameConsts.PlayerNormalTint);
                 }
             }
         }
         private bool m_bInvulnerable = false;
 
         // Number of Lives
-        public int m_iLives;
+        public int Lives { get; set; }
 
         public List<Bullet> m_lbulBullets = new List<Bullet>();
         public Texture2D BulletTexture { get; set; }
@@ -95,7 +86,7 @@ namespace ZombieRoids
                         kbCurKeys.IsKeyDown(Keys.Up) ||
                         kbCurKeys.IsKeyDown(Keys.NumPad8))
                     {
-                        v2Input.Y -= mc_iSpeed;
+                        v2Input.Y -= GameConsts.PlayerSpeed;
                     }
 
                     // To move down, press S, Down, or 2 (Down) on the number
@@ -104,7 +95,7 @@ namespace ZombieRoids
                         kbCurKeys.IsKeyDown(Keys.Down) ||
                         kbCurKeys.IsKeyDown(Keys.NumPad2))
                     {
-                        v2Input.Y += mc_iSpeed;
+                        v2Input.Y += GameConsts.PlayerSpeed;
                     }
 
                     // To move left, press A, Left, or 4 (Left) on the number
@@ -113,7 +104,7 @@ namespace ZombieRoids
                         kbCurKeys.IsKeyDown(Keys.Left) ||
                         kbCurKeys.IsKeyDown(Keys.NumPad4))
                     {
-                        v2Input.X -= mc_iSpeed;
+                        v2Input.X -= GameConsts.PlayerSpeed;
                     }
 
                     // To move right, press D, Right, or 6 (Right) on the number
@@ -122,7 +113,7 @@ namespace ZombieRoids
                         kbCurKeys.IsKeyDown(Keys.Right) ||
                         kbCurKeys.IsKeyDown(Keys.NumPad6))
                     {
-                        v2Input.X += mc_iSpeed;
+                        v2Input.X += GameConsts.PlayerSpeed;
                     }
                 }
 
@@ -139,7 +130,7 @@ namespace ZombieRoids
         public override void Initialize(Texture2D a_tTexture, Vector2 a_v2Position)
         {
             base.Initialize(a_tTexture, a_v2Position);
-            HitPoints = mc_iBaseHP;
+            HitPoints = GameConsts.PlayerHP;
             Active = true;
         }
 
@@ -183,11 +174,11 @@ namespace ZombieRoids
                 else
                 {
                     // Respawn if lives remaining
-                    if (m_iLives > 0)
+                    if (Lives > 0)
                     {
                         Spawn(a_oContext.time);
-                        m_iLives--;
-                        Console.WriteLine("Lives Remaining " + m_iLives);
+                        Lives--;
+                        Console.WriteLine("Lives Remaining " + Lives);
                     }
                     // Otherwise deactive player
                     else
@@ -259,7 +250,8 @@ namespace ZombieRoids
         {
             // Get the mouse position
             MouseState mCurState = Mouse.GetState();
-            Vector2 v2Input = new Vector2(mCurState.Position.X, mCurState.Position.Y);
+            Vector2 v2Input = new Vector2(mCurState.Position.X,
+                                          mCurState.Position.Y);
 
             // Rotate to face the cursor position
             if (v2Input != Position)
@@ -275,7 +267,8 @@ namespace ZombieRoids
         private void Fire(Game1.Context a_oContext)
         {
             // If it's been long enough since the last shot,
-            if (a_oContext.time.TotalGameTime - m_tsLastShot > m_tsShotDelay)
+            if (a_oContext.time.TotalGameTime - m_tsLastShot >
+                GameConsts.PlayerFireInterval)
             {
                 // Record new threshold for firing a bullet
                 m_tsLastShot = a_oContext.time.TotalGameTime;
@@ -327,11 +320,12 @@ namespace ZombieRoids
         public void Spawn(GameTime a_gtGameTime)
         {
             // Set time to be invulnerable
-            m_tsInvulnEnd = a_gtGameTime.TotalGameTime + m_tsInvulnDuration;
+            m_tsInvulnEnd = a_gtGameTime.TotalGameTime +
+                GameConsts.PlayerInvulnerabilityDuration;
 
             Alive = true;
             Invulnerable = true;
-            HitPoints = mc_iBaseHP;
+            HitPoints = GameConsts.PlayerHP;
         }
 
         /// <summary>
@@ -340,12 +334,6 @@ namespace ZombieRoids
         /// <param name="a_sbSpriteBatch">SpriteBatch</param>
         public override void Draw(SpriteBatch a_sbSpriteBatch)
         {
-            // Only draw if alive
-            if (Alive)
-            {
-                base.Draw(a_sbSpriteBatch);
-            }
-
             // Draw bullets
             for (int i = 0; i < m_lbulBullets.Count; i++)
             {
@@ -353,6 +341,12 @@ namespace ZombieRoids
                 {
                     m_lbulBullets[i].Draw(a_sbSpriteBatch);
                 }
+            }
+
+            // Only draw if alive
+            if (Alive)
+            {
+                base.Draw(a_sbSpriteBatch);
             }
         }
     }
