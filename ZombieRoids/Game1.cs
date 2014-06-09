@@ -302,13 +302,13 @@ namespace ZombieRoids
                 // Assign values for next wave
                 if (a_oContext.time.TotalGameTime > m_tsEnemyWaveNext)
                 {
-                    // Increment current wave
-                    m_iEnemyWaveCurrent++;
-
                     // Calculate new queue
                     // queue = base + (waves * incPerWave)
                     m_iEnemyWaveQueue = GameConsts.InitialWaveSize +
                         m_iEnemyWaveCurrent * GameConsts.WaveSizeIncrement;
+
+                    // Increment current wave
+                    m_iEnemyWaveCurrent++;
 
                     // Assign time until next wave to start
                     m_tsEnemyWaveNext = a_oContext.time.TotalGameTime + GameConsts.WaveDelay;
