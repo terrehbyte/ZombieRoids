@@ -66,6 +66,7 @@ namespace ZombieRoids
 
         // Score varible
         private int m_iScore = 0;
+        private int m_iNextLifeScore;
 
         // Used for handling graphics
         private GraphicsDeviceManager m_oGraphics;
@@ -88,7 +89,6 @@ namespace ZombieRoids
 
         // Player
         private Player m_oPlayer;
-        int iPlayerStartLives = 3;
 
         // Score
         SpriteFont scoreFont;
@@ -155,7 +155,8 @@ namespace ZombieRoids
             m_oPlayer = new Player();
             m_oPlayer.BulletTexture = tBulletTex;
             m_oPlayer.Initialize(GameAssets.PlayerTexture, v2PlayerPos);
-            m_oPlayer.Lives = iPlayerStartLives;
+            m_oPlayer.Lives = GameConsts.PlayerLives;
+            m_iNextLifeScore = m_iScore + GameConsts.LifeGainPoints;
 
             // Load background images
             m_tMainBackground = GameAssets.BackgroundTexture;
@@ -213,6 +214,11 @@ namespace ZombieRoids
             // Update player and enemies
             m_oPlayer.Update(oContext);
             UpdateEnemies(oContext);
+            if (m_iScore == m_iNextLifeScore)
+            {
+                ++m_oPlayer.Lives;
+                m_iNextLifeScore += GameConsts.LifeGainPoints;
+            }
 
             // Update parallaxing background
             m_pbgBGLayer1.Update(gameTime);
