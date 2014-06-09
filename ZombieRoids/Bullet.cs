@@ -34,20 +34,8 @@ namespace ZombieRoids
     /// </remarks>
     public class Bullet : Entity
     {
-        // Duration of Bullet Life
-        private TimeSpan m_tsBulletLifetime = TimeSpan.FromSeconds(2.0);
-
         // Time to Cull Bullet
         private TimeSpan m_tsBulletDeathtime;
-
-        // Rotation applied per second in radians
-        private const float mc_fRotationSpeed = 10f;
-
-        // bullet speed
-        private const int mc_iBulletSpeed = 250;
-
-        // damage done to enemies
-        private const int mc_iDamage = 10;
 
         /// <summary>
         /// Constructs a new bullet fired by the given entity
@@ -75,9 +63,9 @@ namespace ZombieRoids
             Alive = true;
             Position = a_oShooter.Position;
             Rotation = a_oShooter.Rotation;
-            AngularVelocity = mc_fRotationSpeed;
-            Velocity = a_oShooter.Forward * mc_iBulletSpeed;
-            m_tsBulletDeathtime = a_oContext.time.TotalGameTime + m_tsBulletLifetime;
+            AngularVelocity = GameConsts.BulletSpin;
+            Velocity = a_oShooter.Forward * GameConsts.BulletSpeed;
+            m_tsBulletDeathtime = a_oContext.time.TotalGameTime + GameConsts.BulletLifetime;
         }
 
         /// <summary>
@@ -97,7 +85,7 @@ namespace ZombieRoids
                     if (Collision.CheckCollision(this, oEnemy))
                     {
                         a_oContext.score.Value += oEnemy.Value;
-                        oEnemy.HitPoints -= mc_iDamage;
+                        oEnemy.HitPoints -= GameConsts.BulletDamage;
                         Active = false;
                         break;
                     }

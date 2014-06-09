@@ -1,31 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <GameConstants>
-  <WorldConstants Background="Graphics/World/Floor" UIFont="GameFont"
-                  ScoreX="25" ScoreY="25" LivesX="25" LivesY="25" >
-    <Overlay Texture="Graphics/World/Fog 1" Speed="-30" />
-    <Overlay Texture="Graphics/World/Fog 2" Speed="-60" />
-  </WorldConstants>
+  <WorldConstants Background="Graphics/World/Floor" ScoreFont="GameFont"
+                  ScoreX="25" ScoreY="25" LivesX="25" LivesY="50"
+                  Overlay1Texture="Graphics/World/Fog 1" Overlay1Speed="-30"
+                  Overlay2Texture="Graphics/World/Fog 2" Overlay2Speed="-60"
+                  SelectSound="Sound/TODO" ConfirmSound="Sound/TODO"
+                  BackgroundMusic="Music/TODO" LifeGainSound="Sound/TODO" />
   <PlayerConstants BaseHP="100" Speed="150" ShotDelay="0.2" NormalTint="#FFFFFFFF"
-                   InvulnerabilityTint="#FF0000D0" InvulnerabilityPeriod="2.0"
-                   InitialLives="3" Texture="Graphics/Player/Player" />
+                   InvulnerableTint="#D0FF0000" InvulnerabilityPeriod="2.0"
+                   InitialLives="3" Texture="Graphics/Player/Player"
+                   ShootSound="Sound/TODO" DeathSound="Sound/TODO"
+                   SpawnSound="Sound/TODO" />
   <BulletConstants LifeTime="2.0" Speed="250" Spin="10" Damage="10"
                    Texture="Graphics/Player/Star" />
-  <WaveConstants>
-    <Wave Type="FullZombie" InitialWaveSize="3" WaveIncrement="2" WaveInterval="5"
-          DeltaInterval="0" EnemySpawnTime="1.0" DeltaSpawnTime="0" />
-  </WaveConstants>
-  <ZombieConstants Name="FullZombie" BaseHP="10" Speed="120" Damage="10"
-                   Value="100" Scale="1.0" MinSpeed="100" MaxSpeed="200"
-                   Texture="Graphics/Zombie/Zombie" >
-    <Fragment Type="HalfZombie" DeltaP="50" DeltaV="100"/>
-    <Fragment Type="HalfZombie" DeltaP="50" DeltaV="100" />
-  </ZombieConstants>
-  <ZombieConstants Name="HalfZombie" BaseHP="10" Speed="120" Damage="10"
-                   Value="100" Scale="0.65" MinSpeed="100" MaxSpeed="200"
-                   Texture="Graphics/Zombie/Zombie">
-    <Fragment Type="QuarterZombie" DeltaP="50" DeltaV="100" />
-  </ZombieConstants>
-  <ZombieConstants Name="QuarterZombie" BaseHP="10" Speed="120" Damage="10"
-                   Value="100" Scale="0.4225" MinSpeed="100" MaxSpeed="200"
-                   Texture="Graphics/Zombie/Zombie" />
+  <ZombieConstants BaseHP="10" Speed="120" Damage="10" Value="100"
+                   InitialFragmentCount="2" FragmentMinSpeed="100" FragmentMaxSpeed="200"
+                   FragmentDeltaSpeed="100" FragmentDeltaPosition="50"
+                   FragmentScale="0.65" Texture="Graphics/Zombie/Zombie"
+                   DeathSound="Sound/TODO" />
+  <WaveConstants InitialWaveSize="3" WaveIncrement="2"
+                 WaveInterval="5" EnemySpawnTime="1.0" />
 </GameConstants>
