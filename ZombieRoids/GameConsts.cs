@@ -42,6 +42,11 @@ namespace ZombieRoids
             get { return GetIfLoaded(m_sFontName); }
         }
         private static string m_sFontName;
+        public static int LifeGainPoints
+        {
+            get { return GetIfLoaded(m_iLifeGainPoints); }
+        }
+        private static int m_iLifeGainPoints;
         public static Vector2 ScorePosition
         {
             get { return GetIfLoaded(m_v2ScorePosition); }
@@ -476,6 +481,7 @@ namespace ZombieRoids
             {
                 Reload(a_oWorldNode, "Background", ref m_sBackgroundTextureName);
                 Reload(a_oWorldNode, "ScoreFont", ref m_sFontName);
+                Reload(a_oWorldNode, "LifeGainPoints", ref m_iLifeGainPoints);
                 Reload(a_oWorldNode, "ScoreX", ref m_v2ScorePosition.X);
                 Reload(a_oWorldNode, "ScoreY", ref m_v2ScorePosition.Y);
                 Reload(a_oWorldNode, "LivesX", ref m_v2LivesPosition.X);

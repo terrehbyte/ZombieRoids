@@ -123,12 +123,12 @@ namespace ZombieRoids
                 if (v2Position.Y < a_oContext.viewport.Center.Y)
                 {
                     oEnemy.Rotation =
-                        (float)((2 - a_oContext.random.NextDouble() / 2) * Math.PI);
+                        (float)(a_oContext.random.NextDouble() * Math.PI / 2);
                 }
                 else
                 {
                     oEnemy.Rotation =
-                        (float)(a_oContext.random.NextDouble() * Math.PI / 2);
+                        (float)((2 - a_oContext.random.NextDouble() / 2) * Math.PI);
                 }
             }
             // Right of Screen
@@ -137,12 +137,12 @@ namespace ZombieRoids
                 if (v2Position.Y < a_oContext.viewport.Center.Y)
                 {
                     oEnemy.Rotation =
-                        (float)((1 + a_oContext.random.NextDouble() / 2) * Math.PI);
+                        (float)((1 + a_oContext.random.NextDouble()) * Math.PI / 2);
                 }
                 else
                 {
                     oEnemy.Rotation =
-                        (float)((1 + a_oContext.random.NextDouble()) * Math.PI / 2);
+                        (float)((1 + a_oContext.random.NextDouble() / 2) * Math.PI);
                 }
             }
             oEnemy.Velocity = oEnemy.Forward * GameConsts.ZombieSpeed;
@@ -206,7 +206,7 @@ namespace ZombieRoids
                 eneNewFoe.Initialize(Texture, v2Position);
                 eneNewFoe.Velocity = v2Velocity;
                 eneNewFoe.Forward = v2Velocity;
-                eneNewFoe.Scale *= GameConsts.FragmentScale;
+                eneNewFoe.Scale = Scale * GameConsts.FragmentScale;
 
                 // New enemy breaks into fewer fragments than this one
                 eneNewFoe.FragmentCount = FragmentCount - 1;
