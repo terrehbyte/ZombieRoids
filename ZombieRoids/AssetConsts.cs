@@ -1,4 +1,25 @@
-﻿using System;
+﻿/// <list type="table">
+/// <listheader><term>GameConsts.cs</term><description>
+///     Class providing access to consts pertaining to gameplay
+/// </description></listheader>
+/// <item><term>Author</term><description>
+///     Terry Nguyen
+/// </description></item>
+/// <item><term>Date Created</term><description>
+///     June 6, 2014
+/// </description></item>
+/// <item><term>Last Modified By</term><description>
+///     Elizabeth Lowry
+/// </description></item>
+/// <item><term>Last Modified</term><description>
+///     June 9, 2014
+/// </description></item>
+/// <item><term>Last Modification</term><description>
+///     Adding sound effects
+/// </description></item>
+/// </list>
+
+using System;
 using System.Xml;
 using System.Collections.Generic;
 using System.Linq;

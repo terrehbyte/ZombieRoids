@@ -1,4 +1,25 @@
-﻿using System;
+﻿/// <list type="table">
+/// <listheader><term>GameConsts.cs</term><description>
+///     Class providing access to consts pertaining to gameplay
+/// </description></listheader>
+/// <item><term>Author</term><description>
+///     Terry Nguyen
+/// </description></item>
+/// <item><term>Date Created</term><description>
+///     June 6, 2014
+/// </description></item>
+/// <item><term>Last Modified By</term><description>
+///     Elizabeth Lowry
+/// </description></item>
+/// <item><term>Last Modified</term><description>
+///     June 9, 2014
+/// </description></item>
+/// <item><term>Last Modification</term><description>
+///     Refactoring
+/// </description></item>
+/// </list>
+
+using System;
 using System.Xml;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -57,6 +78,11 @@ namespace ZombieRoids
             get { return GetIfLoaded(m_v2LivesPosition); }
         }
         private static Vector2 m_v2LivesPosition;
+        public static Vector2 EnemyCountPosition
+        {
+            get { return GetIfLoaded(m_v2EnemyCountPosition); }
+        }
+        private static Vector2 m_v2EnemyCountPosition;
         public static string Overlay1TextureName
         {
             get { return GetIfLoaded(m_sOverlay1TextureName); }
@@ -491,6 +517,8 @@ namespace ZombieRoids
                 Reload(a_oWorldNode, "ScoreY", ref m_v2ScorePosition.Y);
                 Reload(a_oWorldNode, "LivesX", ref m_v2LivesPosition.X);
                 Reload(a_oWorldNode, "LivesY", ref m_v2LivesPosition.Y);
+                Reload(a_oWorldNode, "EnemyCountX", ref m_v2EnemyCountPosition.X);
+                Reload(a_oWorldNode, "EnemyCountY", ref m_v2EnemyCountPosition.Y);
                 Reload(a_oWorldNode, "Overlay1Texture", ref m_sOverlay1TextureName);
                 Reload(a_oWorldNode, "Overlay1Speed", ref m_iOverlay1Speed);
                 Reload(a_oWorldNode, "Overlay2Texture", ref m_sOverlay2TextureName);

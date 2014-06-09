@@ -223,6 +223,9 @@ namespace ZombieRoids
             // Assign Position
             Position = a_v2Position;
 
+            // Assign OnScreen
+            OnScreen = true;
+
 #if DEBUG
             // In debug mode, note that the entity has been initialized
             m_bInitialized = true;

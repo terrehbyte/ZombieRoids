@@ -1,7 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <GameConstants>
   <WorldConstants Background="Graphics/World/Floor" ScoreFont="GameFont"
-                  LifeGainPoints="10000" ScoreX="25" ScoreY="25" LivesX="25" LivesY="50"
+                  LifeGainPoints="10000" ScoreX="25" ScoreY="25" LivesX="25"
+                  LivesY="50" EnemyCountX="25" EnemyCount="75"
                   Overlay1Texture="Graphics/World/Fog 1" Overlay1Speed="-30"
                   Overlay2Texture="Graphics/World/Fog 2" Overlay2Speed="-60"
                   SelectSound="Sounds/StarThrow" ConfirmSound="Sounds/StarThrow"

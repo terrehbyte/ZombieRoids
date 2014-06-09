@@ -197,6 +197,11 @@ namespace ZombieRoids
             // Update player and enemies
             m_oPlayer.Update(oContext);
             UpdateEnemies(oContext);
+            if (m_iScore == m_iNextLifeScore)
+            {
+                ++m_oPlayer.Lives;
+                m_iNextLifeScore += GameConsts.LifeGainPoints;
+            }
 
             // If the new life point threshold has been passed,
             if (m_iScore == m_iNextLifeScore)
@@ -255,6 +260,10 @@ namespace ZombieRoids
             // Draw lives
             m_oSpriteBatch.DrawString(GameAssets.ScoreFont, "Lives: " + m_oPlayer.Lives,
                                       GameConsts.LivesPosition, Color.Black);
+
+            // Draw enemy count
+            m_oSpriteBatch.DrawString(scoreFont, "Enemies Remaining: " + m_oEnemies.Count, GameConsts.EnemyCountPosition, Color.Black);
+            
 
             // Finish drawing
             m_oSpriteBatch.End();
