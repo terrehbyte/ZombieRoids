@@ -63,6 +63,7 @@
     <Compile Include="Entity.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameConsts.cs" />
+    <Compile Include="GameState.cs" />
     <Compile Include="ParallaxingBackground.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="Program.cs" />
@@ -70,6 +71,7 @@
     <Compile Include="Ref.cs" />
     <Compile Include="RotatedRectangle.cs" />
     <Compile Include="Sprite.cs" />
+    <Compile Include="StateStack.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="OpenTK">
