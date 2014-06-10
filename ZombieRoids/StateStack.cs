@@ -8,10 +8,32 @@ namespace ZombieRoids
 {
     public static class StateStack
     {
+        public static int StackCount
+        {
+            get
+            {
+                return m_oStates.Count;
+            }
+        }
 
+        public static void RegisterGame(Game1 a_oGame)
+        {
+            m_oGame = a_oGame;
+        }
+
+        public enum State
+        {
+            MAINMENU,
+            GAMEPLAY,
+            GAMEOVER,
+            PAUSE
+        }
 
         // Stack of GameStates
         private static Stack<GameState> m_oStates = new Stack<GameState>();
+
+        // Game
+        private static Game1 m_oGame;
 
         /// <summary>
         /// Pushes a new GameState to the top of the stack
@@ -21,6 +43,37 @@ namespace ZombieRoids
         {
             m_oStates.Push(a_oState);
             m_oStates.Peek().Start();
+        }
+
+        public static void AddState(State a_oNewState)
+        {
+            switch (a_oNewState)
+            {
+                case (State.MAINMENU):
+                    {
+                        throw new System.NotImplementedException("Main Menu not implemented!");
+                        break;
+                    }
+                case (State.GAMEPLAY):
+                    {
+                        AddState(new PlayState(m_oGame));
+                        break;
+                    }
+                case (State.GAMEOVER):
+                    {
+                        throw new System.NotImplementedException("Game Over not implemented!");
+                        break;
+                    }
+                case (State.PAUSE):
+                    {
+                        throw new System.NotImplementedException("Pause not implemented!");
+                        break;
+                    }
+                default:
+                    {
+                        throw new Exception("Invalid State Added!");
+                    }
+            }
         }
 
         /// <summary>

@@ -72,8 +72,10 @@ namespace ZombieRoids
         {
             base.Initialize();
 
+            StateStack.RegisterGame(this);
+
             // Initialize Any Global Data
-            StateStack.AddState(new PlayState(this));
+            StateStack.AddState(StateStack.State.GAMEPLAY);
         }
 
         /// <summary>
@@ -105,7 +107,10 @@ namespace ZombieRoids
             // Update State
             StateStack.Update(gameTime);
 
-
+            if (StateStack.StackCount <= 0)
+            {
+                Exit();
+            }
         }
 
         /// <summary>
