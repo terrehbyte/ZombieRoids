@@ -51,7 +51,7 @@ namespace ZombieRoids
             {
                 case (State.MAINMENU):
                     {
-                        throw new System.NotImplementedException("Main Menu not implemented!");
+                        AddState(new MainMenuState(m_oGame));
                         break;
                     }
                 case (State.GAMEPLAY):
