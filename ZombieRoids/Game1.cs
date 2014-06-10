@@ -75,7 +75,7 @@ namespace ZombieRoids
             StateStack.RegisterGame(this);
 
             // Initialize Any Global Data
-            StateStack.AddState(StateStack.State.GAMEPLAY);
+            StateStack.AddState(StateStack.State.MAINMENU);
         }
 
         /// <summary>
