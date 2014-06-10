@@ -51,6 +51,9 @@ namespace ZombieRoids
             ParallaxTextureTwo = a_oContent.Load<Texture2D>(GameConsts.Overlay2TextureName);
             PauseOverlayTexture = a_oContent.Load<Texture2D>(GameConsts.PauseOverlayTextureName);
             GameOverOverlayTexture = a_oContent.Load<Texture2D>(GameConsts.GameOverOverlayTextureName);
+            TitleScreenTexture = a_oContent.Load<Texture2D>(GameConsts.TitleScreenTextureName);
+            NewGameButtonTexture = a_oContent.Load<Texture2D>(GameConsts.NewGameButtonTextureName);
+            ExitButtonTexture = a_oContent.Load<Texture2D>(GameConsts.ExitButtonTextureName);
             ScoreFont = a_oContent.Load<SpriteFont>(GameConsts.FontName);
 
             // Load sounds
@@ -63,7 +66,6 @@ namespace ZombieRoids
             SelectSound = a_oContent.Load<SoundEffect>(GameConsts.SelectSoundName);
             ConfirmSound = a_oContent.Load<SoundEffect>(GameConsts.ConfirmSoundName);
             LifeGainSound = a_oContent.Load<SoundEffect>(GameConsts.LifeGainSoundName);
-            // TODO
         }
 
         #region Variables
@@ -81,6 +83,9 @@ namespace ZombieRoids
         public static Texture2D PauseOverlayTexture { get; private set; }
         public static Texture2D GameOverOverlayTexture { get; private set; }
         public static SpriteFont ScoreFont { get; private set; }
+        public static Texture2D TitleScreenTexture { get; private set; }
+        public static Texture2D NewGameButtonTexture { get; private set; }
+        public static Texture2D ExitButtonTexture { get; private set; }
 
         // Music
         public static SoundEffect BackgroundMusic { get; private set; } // BGM Path
