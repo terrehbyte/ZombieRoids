@@ -78,7 +78,7 @@ namespace ZombieRoids
 
         // Enemies
         private TimeSpan m_tsTimeSinceEnemySpawn;
-        private HashSet<Enemy> m_oEnemies;
+        private HashSet<Enemy> m_oEnemies = new HashSet<Enemy>();
 
         // Enemy Wave Count
         private int m_iEnemyWaveCurrent = 0;
@@ -93,10 +93,13 @@ namespace ZombieRoids
 
         // Game is paused
         public bool Paused { get; set; }
+
+        // Game over
         public bool GameOver
         {
             get { return !m_oPlayer.Alive && 0 == m_oPlayer.Lives; }
         }
+        private TimeSpan m_tsTimeUntilOnGameOver;
 
         // Pause key is pressed
         private bool m_bPauseKeyDown = false;
@@ -131,11 +134,6 @@ namespace ZombieRoids
             // Initialize basic game properties
             IsMouseVisible = true;
             m_rngRandom = new Random();
-
-            // Track enemies
-            m_oEnemies = new HashSet<Enemy>();
-            m_tsTimeSinceEnemySpawn = TimeSpan.Zero;
-            m_tsTimeUntilNextWave = GameConsts.WaveDelay;
         }
 
         /// <summary>
@@ -159,8 +157,6 @@ namespace ZombieRoids
             m_oPlayer = new Player();
             m_oPlayer.BulletTexture = GameAssets.BulletTexture;
             m_oPlayer.Initialize(GameAssets.PlayerTexture, v2PlayerPos);
-            m_oPlayer.Lives = GameConsts.PlayerLives;
-            m_iNextLifeScore = m_iScore + GameConsts.LifeGainPoints;
 
             // Create parallaxing overlays
             m_pbgBGLayer1 = new ParallaxingBackground();
@@ -174,6 +170,9 @@ namespace ZombieRoids
             m_oBGM = GameAssets.BackgroundMusic.CreateInstance();
             m_oBGM.IsLooped = true;
             m_oBGM.Play();
+
+            // Now that everything is loaded, start playing
+            NewGame();
         }
 
         /// <summary>
@@ -192,20 +191,14 @@ namespace ZombieRoids
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // Check for pause/unpause
-            if (!GameOver)
+            CheckPauseKey();
+
+            if (GameOver)
             {
-                KeyboardState kbCurKeys = Keyboard.GetState();
-                if (kbCurKeys.IsKeyDown(Keys.P) ||
-                    kbCurKeys.IsKeyDown(Keys.Space) ||
-                    kbCurKeys.IsKeyDown(Keys.NumLock))
+                m_tsTimeUntilOnGameOver -= gameTime.ElapsedGameTime;
+                if (TimeSpan.Zero >= m_tsTimeUntilOnGameOver)
                 {
-                    m_bPauseKeyDown = true;
-                }
-                else if (m_bPauseKeyDown)
-                {
-                    m_bPauseKeyDown = false;
-                    Paused = !Paused;
+                    OnGameOver(gameTime);
                 }
             }
 
@@ -243,6 +236,35 @@ namespace ZombieRoids
                 // Update parallaxing background
                 m_pbgBGLayer1.Update(gameTime);
                 m_pbgBGLayer2.Update(gameTime);
+            }
+        }
+
+        /// <summary>
+        /// Checks to see if the pause key has been pressed and reacts appropriately
+        /// </summary>
+        protected void CheckPauseKey()
+        {
+            // Check for pause/unpause
+            KeyboardState kbCurKeys = Keyboard.GetState();
+            if (kbCurKeys.IsKeyDown(Keys.P) ||
+                kbCurKeys.IsKeyDown(Keys.Space) ||
+                kbCurKeys.IsKeyDown(Keys.NumLock))
+            {
+                m_bPauseKeyDown = true;
+            }
+            else if (m_bPauseKeyDown)
+            {
+                m_bPauseKeyDown = false;
+                if (GameOver)
+                {
+                    // On GameOver screen, exits the GameOver screen
+                    m_tsTimeUntilOnGameOver = TimeSpan.Zero;
+                }
+                else
+                {
+                    // Otherwise, toggle pause state
+                    Paused = !Paused;
+                }
             }
         }
 
@@ -373,6 +395,33 @@ namespace ZombieRoids
 #endif
                 }
             }
+        }
+
+        /// <summary>
+        /// Reset variables to start a new game
+        /// </summary>
+        public void NewGame()
+        {
+            m_iScore = 0;
+            m_iNextLifeScore = GameConsts.LifeGainPoints;
+            m_tsTimeUntilOnGameOver = GameConsts.GameOverDuration;
+            m_tsTimeSinceEnemySpawn = TimeSpan.Zero;
+            m_tsTimeUntilNextWave = GameConsts.WaveDelay;
+            m_iEnemyWaveCurrent = 0;
+            m_iEnemyWaveQueue = 0;
+            m_oEnemies.Clear();
+            m_oPlayer.Reset(new Vector2(m_rctViewport.Center.X,
+                                        m_rctViewport.Center.Y));
+            Paused = false;
+        }
+
+        /// <summary>
+        /// After showing the GameOver screen, call this
+        /// </summary>
+        /// <param name="gameTime"></param>
+        protected void OnGameOver(GameTime gameTime)
+        {
+            NewGame();
         }
         #endregion
     }

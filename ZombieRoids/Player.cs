@@ -131,8 +131,27 @@ namespace ZombieRoids
         public override void Initialize(Texture2D a_tTexture, Vector2 a_v2Position)
         {
             base.Initialize(a_tTexture, a_v2Position);
+            Reset(a_v2Position);
+        }
+
+        /// <summary>
+        /// Sets up the player at the start of a new game
+        /// </summary>
+        /// <param name="a_v2Position">Position to put the player in</param>
+        public void Reset(Vector2 a_v2Position)
+        {
+            foreach (Bullet oBullet in m_lbulBullets)
+            {
+                oBullet.Active = false;
+            }
+            Position = a_v2Position;
             HitPoints = GameConsts.PlayerHP;
+            Lives = GameConsts.PlayerLives;
+            Invulnerable = false;
+            m_tsInvulnTimeRemaining = TimeSpan.Zero;
+            m_tsTimeSinceLastShot = GameConsts.PlayerFireInterval;
             Active = true;
+            m_bTeleportKeyDown = false;
         }
 
         /// <summary>
