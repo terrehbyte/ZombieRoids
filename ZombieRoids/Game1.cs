@@ -93,6 +93,10 @@ namespace ZombieRoids
 
         // Game is paused
         public bool Paused { get; set; }
+        public bool GameOver
+        {
+            get { return !m_oPlayer.Alive && 0 == m_oPlayer.Lives; }
+        }
 
         // Pause key is pressed
         private bool m_bPauseKeyDown = false;
@@ -147,15 +151,13 @@ namespace ZombieRoids
             GameConsts.Reload("Constants.xml");
             GameAssets.Reload(Content);
 
-            // Load player graphics
-            Texture2D tPlayerTex = GameAssets.PlayerTexture;
-            Texture2D tBulletTex = GameAssets.BulletTexture;
+            // Save screen size
             m_rctViewport = GraphicsDevice.Viewport.TitleSafeArea;
             Vector2 v2PlayerPos = new Vector2(m_rctViewport.Center.X, m_rctViewport.Center.Y);
 
             // Create player object
             m_oPlayer = new Player();
-            m_oPlayer.BulletTexture = tBulletTex;
+            m_oPlayer.BulletTexture = GameAssets.BulletTexture;
             m_oPlayer.Initialize(GameAssets.PlayerTexture, v2PlayerPos);
             m_oPlayer.Lives = GameConsts.PlayerLives;
             m_iNextLifeScore = m_iScore + GameConsts.LifeGainPoints;
@@ -191,17 +193,20 @@ namespace ZombieRoids
         protected override void Update(GameTime gameTime)
         {
             // Check for pause/unpause
-            KeyboardState kbCurKeys = Keyboard.GetState();
-            if (kbCurKeys.IsKeyDown(Keys.P) ||
-                kbCurKeys.IsKeyDown(Keys.Space) ||
-                kbCurKeys.IsKeyDown(Keys.NumLock))
+            if (!GameOver)
             {
-                m_bPauseKeyDown = true;
-            }
-            else if (m_bPauseKeyDown)
-            {
-                m_bPauseKeyDown = false;
-                Paused = !Paused;
+                KeyboardState kbCurKeys = Keyboard.GetState();
+                if (kbCurKeys.IsKeyDown(Keys.P) ||
+                    kbCurKeys.IsKeyDown(Keys.Space) ||
+                    kbCurKeys.IsKeyDown(Keys.NumLock))
+                {
+                    m_bPauseKeyDown = true;
+                }
+                else if (m_bPauseKeyDown)
+                {
+                    m_bPauseKeyDown = false;
+                    Paused = !Paused;
+                }
             }
 
             // If not paused, update game state
@@ -285,8 +290,14 @@ namespace ZombieRoids
                                       "Enemies Remaining: " + m_oEnemies.Count,
                                       GameConsts.EnemyCountPosition, Color.Black);
 
+            // If game over, draw game over overlay
+            if (GameOver)
+            {
+                m_oSpriteBatch.Draw(GameAssets.GameOverOverlayTexture,
+                                    m_rctViewport, GameConsts.GameOverOverlayTint);
+            }
             // If paused, draw pause overlay
-            if (Paused)
+            else if (Paused)
             {
                 m_oSpriteBatch.Draw(GameAssets.PauseOverlayTexture,
                                     m_rctViewport, GameConsts.PauseOverlayTint);

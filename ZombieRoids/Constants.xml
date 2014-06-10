@@ -7,7 +7,8 @@
                   Overlay2Texture="Graphics/World/Fog 2" Overlay2Speed="-60"
                   SelectSound="Sounds/StarThrow" ConfirmSound="Sounds/StarThrow"
                   BackgroundMusic="Sounds/Background" LifeGainSound="Sounds/ExtraLife"
-                  PauseOverlay="Graphics/World/PausedOverlay" PauseOverlayTint="80FF0000" />
+                  PauseOverlay="Graphics/World/PausedOverlay" PauseOverlayTint="80FF0000"
+                  GameOverOverlay="Graphics/World/GameOverOverlay" GameOverOverlayTint="80FF0000" />
   <PlayerConstants BaseHP="100" Speed="150" ShotDelay="0.2" NormalTint="#FFFFFFFF"
                    InvulnerableTint="#D0FF0000" InvulnerabilityPeriod="2.0"
                    InitialLives="3" Texture="Graphics/Player/Player"

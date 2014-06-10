@@ -50,6 +50,7 @@ namespace ZombieRoids
             ParallaxTextureOne = a_oContent.Load<Texture2D>(GameConsts.Overlay1TextureName);
             ParallaxTextureTwo = a_oContent.Load<Texture2D>(GameConsts.Overlay2TextureName);
             PauseOverlayTexture = a_oContent.Load<Texture2D>(GameConsts.PauseOverlayTextureName);
+            GameOverOverlayTexture = a_oContent.Load<Texture2D>(GameConsts.GameOverOverlayTextureName);
             ScoreFont = a_oContent.Load<SpriteFont>(GameConsts.FontName);
 
             // Load sounds
@@ -78,6 +79,7 @@ namespace ZombieRoids
 
         // UI
         public static Texture2D PauseOverlayTexture { get; private set; }
+        public static Texture2D GameOverOverlayTexture { get; private set; }
         public static SpriteFont ScoreFont { get; private set; }
 
         // Music

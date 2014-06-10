@@ -133,6 +133,16 @@ namespace ZombieRoids
             get { return GetIfLoaded(m_oPauseOverlayTint); }
         }
         private static Color m_oPauseOverlayTint;
+        public static string GameOverOverlayTextureName
+        {
+            get { return GetIfLoaded(m_sGameOverOverlayTextureName); }
+        }
+        private static string m_sGameOverOverlayTextureName;
+        public static Color GameOverOverlayTint
+        {
+            get { return GetIfLoaded(m_oGameOverOverlayTint); }
+        }
+        private static Color m_oGameOverOverlayTint;
 
         #endregion
 
@@ -539,6 +549,8 @@ namespace ZombieRoids
                 Reload(a_oWorldNode, "LifeGainSound", ref m_sUILifeGainSnd);
                 Reload(a_oWorldNode, "PauseOverlay", ref m_sPauseOverlayTextureName);
                 Reload(a_oWorldNode, "PauseOverlayTint", ref m_oPauseOverlayTint);
+                Reload(a_oWorldNode, "GameOverOverlay", ref m_sGameOverOverlayTextureName);
+                Reload(a_oWorldNode, "GameOverOverlayTint", ref m_oGameOverOverlayTint);
             }
         }
 
