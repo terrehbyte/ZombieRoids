@@ -38,11 +38,11 @@ namespace ZombieRoids
         // Is the teleport key being pressed?
         private bool m_bTeleportKeyDown = false;
 
-        // Time of Last Fire
-        private TimeSpan m_tsLastShot;
+        // Time since Last Fire
+        private TimeSpan m_tsTimeSinceLastShot;
 
-        // Time When Invuln Ends
-        private TimeSpan m_tsInvulnEnd;
+        // Time Until Invuln Ends
+        private TimeSpan m_tsInvulnTimeRemaining;
 
         /// <summary>
         /// Is the player currently immune to damage?
@@ -156,6 +156,7 @@ namespace ZombieRoids
                     FaceCursor();
 
                     // Fire if Left-Click
+                    m_tsTimeSinceLastShot += a_oContext.time.ElapsedGameTime;
                     if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                     {
                         Fire(a_oContext);
@@ -165,7 +166,8 @@ namespace ZombieRoids
                     // refactor as property?
                     if (Invulnerable)
                     {
-                        if (!(a_oContext.time.TotalGameTime < m_tsInvulnEnd))
+                        m_tsInvulnTimeRemaining -= a_oContext.time.ElapsedGameTime;
+                        if (TimeSpan.Zero >= m_tsInvulnTimeRemaining)
                         {
                             Invulnerable = false;
                         }
@@ -269,11 +271,10 @@ namespace ZombieRoids
         private void Fire(Game1.Context a_oContext)
         {
             // If it's been long enough since the last shot,
-            if (a_oContext.time.TotalGameTime - m_tsLastShot >
-                GameConsts.PlayerFireInterval)
+            if (m_tsTimeSinceLastShot > GameConsts.PlayerFireInterval)
             {
                 // Record new threshold for firing a bullet
-                m_tsLastShot = a_oContext.time.TotalGameTime;
+                m_tsTimeSinceLastShot = TimeSpan.Zero;
                 
                 Bullet bulTemp = null;
 
@@ -325,8 +326,7 @@ namespace ZombieRoids
         public void Spawn(GameTime a_gtGameTime)
         {
             // Set time to be invulnerable
-            m_tsInvulnEnd = a_gtGameTime.TotalGameTime +
-                GameConsts.PlayerInvulnerabilityDuration;
+            m_tsInvulnTimeRemaining = GameConsts.PlayerInvulnerabilityDuration;
             Invulnerable = true;
 
             // Reset HP

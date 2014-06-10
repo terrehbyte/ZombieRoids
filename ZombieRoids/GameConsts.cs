@@ -123,6 +123,16 @@ namespace ZombieRoids
             get { return GetIfLoaded(m_sUILifeGainSnd); }
         }
         private static string m_sUILifeGainSnd;     // UI Life Gain Sound Path
+        public static string PauseOverlayTextureName
+        {
+            get { return GetIfLoaded(m_sPauseOverlayTextureName); }
+        }
+        private static string m_sPauseOverlayTextureName;
+        public static Color PauseOverlayTint
+        {
+            get { return GetIfLoaded(m_oPauseOverlayTint); }
+        }
+        private static Color m_oPauseOverlayTint;
 
         #endregion
 
@@ -527,6 +537,8 @@ namespace ZombieRoids
                 Reload(a_oWorldNode, "SelectSound", ref m_sUISelectSnd);
                 Reload(a_oWorldNode, "ConfirmSound", ref m_sUIConfirmSnd);
                 Reload(a_oWorldNode, "LifeGainSound", ref m_sUILifeGainSnd);
+                Reload(a_oWorldNode, "PauseOverlay", ref m_sPauseOverlayTextureName);
+                Reload(a_oWorldNode, "PauseOverlayTint", ref m_oPauseOverlayTint);
             }
         }
 

@@ -36,7 +36,7 @@ namespace ZombieRoids
     public class Bullet : Entity
     {
         // Time to Cull Bullet
-        private TimeSpan m_tsBulletDeathtime;
+        private TimeSpan m_tsLifeRemaining;
 
         /// <summary>
         /// Constructs a new bullet fired by the given entity
@@ -67,7 +67,7 @@ namespace ZombieRoids
             Rotation = a_oShooter.Rotation;
             AngularVelocity = GameConsts.BulletSpin;
             Velocity = a_oShooter.Forward * GameConsts.BulletSpeed;
-            m_tsBulletDeathtime = a_oContext.time.TotalGameTime + GameConsts.BulletLifetime;
+            m_tsLifeRemaining = GameConsts.BulletLifetime;
 
             // Play firing sound
             GameAssets.PlayerShootSound.Play();
@@ -97,7 +97,8 @@ namespace ZombieRoids
                 }
 
                 // If passed culling time, then cull/deactivate
-                if (a_oContext.time.TotalGameTime > m_tsBulletDeathtime)
+                m_tsLifeRemaining -= a_oContext.time.ElapsedGameTime;
+                if (TimeSpan.Zero >= m_tsLifeRemaining)
                 {
                     Active = false;
                 }

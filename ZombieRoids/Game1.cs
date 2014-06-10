@@ -77,19 +77,25 @@ namespace ZombieRoids
         private ParallaxingBackground m_pbgBGLayer2;
 
         // Enemies
-        private TimeSpan m_tsPrevEnemySpawnTime;
+        private TimeSpan m_tsTimeSinceEnemySpawn;
         private HashSet<Enemy> m_oEnemies;
 
         // Enemy Wave Count
         private int m_iEnemyWaveCurrent = 0;
         private int m_iEnemyWaveQueue = 0;
-        private TimeSpan m_tsEnemyWaveNext;
+        private TimeSpan m_tsTimeUntilNextWave;
 
         // Player
         private Player m_oPlayer;
 
         // Background music loop
         private SoundEffectInstance m_oBGM;
+
+        // Game is paused
+        public bool Paused { get; set; }
+
+        // Pause key is pressed
+        private bool m_bPauseKeyDown = false;
 
         #endregion
 
@@ -124,7 +130,8 @@ namespace ZombieRoids
 
             // Track enemies
             m_oEnemies = new HashSet<Enemy>();
-            m_tsPrevEnemySpawnTime = TimeSpan.Zero;
+            m_tsTimeSinceEnemySpawn = TimeSpan.Zero;
+            m_tsTimeUntilNextWave = GameConsts.WaveDelay;
         }
 
         /// <summary>
@@ -183,38 +190,55 @@ namespace ZombieRoids
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // Make a game context object for passing game state information to
-            // entity Update functions
-            Context oContext;
-            oContext.time = gameTime;
-            oContext.viewport = m_rctViewport;
-            oContext.random = m_rngRandom;
-            oContext.enemies = m_oEnemies;
-            oContext.score =
-                new Ref<int>((() => m_iScore),
-                             ((int a_iScore) => m_iScore = a_iScore));
-
-            // Update player and enemies
-            m_oPlayer.Update(oContext);
-            UpdateEnemies(oContext);
-
-            // If the new life point threshold has been passed,
-            if (m_iScore == m_iNextLifeScore)
+            // Check for pause/unpause
+            KeyboardState kbCurKeys = Keyboard.GetState();
+            if (kbCurKeys.IsKeyDown(Keys.P) ||
+                kbCurKeys.IsKeyDown(Keys.Space) ||
+                kbCurKeys.IsKeyDown(Keys.NumLock))
             {
-                // add a life,
-                ++m_oPlayer.Lives;
-
-                /// set a new threshold,
-                m_iNextLifeScore += GameConsts.LifeGainPoints;
-
-                // and play the new life sound
-                GameAssets.LifeGainSound.Play();
+                m_bPauseKeyDown = true;
+            }
+            else if (m_bPauseKeyDown)
+            {
+                m_bPauseKeyDown = false;
+                Paused = !Paused;
             }
 
-            // Update parallaxing background
-            m_pbgBGLayer1.Update(gameTime);
-            m_pbgBGLayer2.Update(gameTime);
-            
+            // If not paused, update game state
+            if (!Paused)
+            {
+                // Make a game context object for passing game state information to
+                // entity Update functions
+                Context oContext;
+                oContext.time = gameTime;
+                oContext.viewport = m_rctViewport;
+                oContext.random = m_rngRandom;
+                oContext.enemies = m_oEnemies;
+                oContext.score =
+                    new Ref<int>((() => m_iScore),
+                                 ((int a_iScore) => m_iScore = a_iScore));
+
+                // Update player and enemies
+                m_oPlayer.Update(oContext);
+                UpdateEnemies(oContext);
+
+                // If the new life point threshold has been passed,
+                if (m_iScore == m_iNextLifeScore)
+                {
+                    // add a life,
+                    ++m_oPlayer.Lives;
+
+                    /// set a new threshold,
+                    m_iNextLifeScore += GameConsts.LifeGainPoints;
+
+                    // and play the new life sound
+                    GameAssets.LifeGainSound.Play();
+                }
+
+                // Update parallaxing background
+                m_pbgBGLayer1.Update(gameTime);
+                m_pbgBGLayer2.Update(gameTime);
+            }
         }
 
         /// <summary>
@@ -260,7 +284,13 @@ namespace ZombieRoids
             m_oSpriteBatch.DrawString(GameAssets.ScoreFont,
                                       "Enemies Remaining: " + m_oEnemies.Count,
                                       GameConsts.EnemyCountPosition, Color.Black);
-            
+
+            // If paused, draw pause overlay
+            if (Paused)
+            {
+                m_oSpriteBatch.Draw(GameAssets.PauseOverlayTexture,
+                                    m_rctViewport, GameConsts.PauseOverlayTint);
+            }
 
             // Finish drawing
             m_oSpriteBatch.End();
@@ -276,16 +306,17 @@ namespace ZombieRoids
         private void UpdateEnemies(Game1.Context a_oContext)
         {
             // Calculate time since last spawn
-            TimeSpan tsEnemySpawnTimeElapsed = a_oContext.time.TotalGameTime - m_tsPrevEnemySpawnTime;
+            m_tsTimeSinceEnemySpawn += a_oContext.time.ElapsedGameTime;
+            m_tsTimeUntilNextWave -= a_oContext.time.ElapsedGameTime;
 
             // Has enough time passed to spawn another enemy?
-            if (tsEnemySpawnTimeElapsed > GameConsts.SpawnDelay)
+            if (m_tsTimeSinceEnemySpawn > GameConsts.SpawnDelay)
             {
                 // Are there any enemies left to spawn?
                 if (m_iEnemyWaveQueue > 0 &&
-                    a_oContext.time.TotalGameTime > m_tsEnemyWaveNext)
+                    TimeSpan.Zero > m_tsTimeUntilNextWave)
                 {
-                    m_tsPrevEnemySpawnTime = a_oContext.time.TotalGameTime;
+                    m_tsTimeSinceEnemySpawn = TimeSpan.Zero;
                     Enemy.Spawn(a_oContext, GameAssets.ZombieTexture);
 
                     // Decrement queue
@@ -312,7 +343,7 @@ namespace ZombieRoids
             if (m_oEnemies.Count == 0 && m_iEnemyWaveQueue == 0)
             {
                 // Assign values for next wave
-                if (a_oContext.time.TotalGameTime > m_tsEnemyWaveNext)
+                if (TimeSpan.Zero > m_tsTimeUntilNextWave)
                 {
                     // Calculate new queue
                     // queue = base + (waves * incPerWave)
@@ -323,7 +354,7 @@ namespace ZombieRoids
                     m_iEnemyWaveCurrent++;
 
                     // Assign time until next wave to start
-                    m_tsEnemyWaveNext = a_oContext.time.TotalGameTime + GameConsts.WaveDelay;
+                    m_tsTimeUntilNextWave = GameConsts.WaveDelay;
 
 #if DEBUG
                     Console.WriteLine("ROUND " + m_iEnemyWaveCurrent);
