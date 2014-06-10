@@ -91,19 +91,6 @@ namespace ZombieRoids
         // Background music loop
         private SoundEffectInstance m_oBGM;
 
-        // Quick n' dirty states
-        // @all: I briefly went through the effort
-        // of attempting to stuff 'Game' instances into
-        // a new class called 'GameState' but there's too
-        // much to the MonoGame/XNA initialization process
-        // for me to try to go through w/o stepping through
-        // the source.
-
-        private bool m_bAtStartScreen;
-        private Texture2D m_tStartTex;
-        private bool m_bAtEndScreen;
-        private Texture2D m_tEndTex;
-
         #endregion
 
         #region FrameworkMethods
@@ -207,37 +194,27 @@ namespace ZombieRoids
                 new Ref<int>((() => m_iScore),
                              ((int a_iScore) => m_iScore = a_iScore));
 
-            if (m_bAtStartScreen)
+
+            // Update player and enemies
+            m_oPlayer.Update(oContext);
+            UpdateEnemies(oContext);
+
+            // If the new life point threshold has been passed,
+            if (m_iScore == m_iNextLifeScore)
             {
+                // add a life,
+                ++m_oPlayer.Lives;
+
+                /// set a new threshold,
+                m_iNextLifeScore += GameConsts.LifeGainPoints;
+
+                // and play the new life sound
+                GameAssets.LifeGainSound.Play();
             }
 
-            if (m_bAtStartScreen)
-            {
-            }
-
-            else
-            {
-                // Update player and enemies
-                m_oPlayer.Update(oContext);
-                UpdateEnemies(oContext);
-
-                // If the new life point threshold has been passed,
-                if (m_iScore == m_iNextLifeScore)
-                {
-                    // add a life,
-                    ++m_oPlayer.Lives;
-
-                    /// set a new threshold,
-                    m_iNextLifeScore += GameConsts.LifeGainPoints;
-
-                    // and play the new life sound
-                    GameAssets.LifeGainSound.Play();
-                }
-
-                // Update parallaxing background
-                m_pbgBGLayer1.Update(gameTime);
-                m_pbgBGLayer2.Update(gameTime);
-            }
+            // Update parallaxing background
+            m_pbgBGLayer1.Update(gameTime);
+            m_pbgBGLayer2.Update(gameTime);
         }
 
         /// <summary>

@@ -14,7 +14,7 @@ namespace ZombieRoids
         /// Pushes a new GameState to the top of the stack
         /// </summary>
         /// <param name="a_oState"></param>
-        public void AddState(GameState a_oState)
+        public static  void AddState(GameState a_oState)
         {
             m_oStates.Push(a_oState);
         }
@@ -22,7 +22,7 @@ namespace ZombieRoids
         /// <summary>
         /// Pops the topmost GameState from the stack
         /// </summary>
-        public void PopState()
+        public static void PopState()
         {
             m_oStates.Pop();
         }
@@ -30,7 +30,7 @@ namespace ZombieRoids
         /// <summary>
         /// Calls update on the topmost GameState
         /// </summary>
-        public void Update()
+        public static void Update()
         {
             m_oStates.Peek().Update();
         }   
