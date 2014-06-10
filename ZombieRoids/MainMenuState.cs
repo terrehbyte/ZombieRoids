@@ -28,6 +28,9 @@ namespace ZombieRoids
 {
     class MainMenuState : GameState
     {
+        private Button m_oStartButton = new Button();
+        private Button m_oExitButton = new Button();
+
         private MainMenuState()
         {
         }
@@ -43,16 +46,36 @@ namespace ZombieRoids
             // Load game constants and assets
             GameConsts.Reload("Constants.xml");
             GameAssets.Reload(m_oContentManager);
+
+            // Start Button
+            m_oStartButton.Position = GameConsts.NewGameButtonPosition;
+            m_oStartButton.Texture = GameAssets.NewGameButtonTexture;
+
+            // End Button
+            m_oExitButton.Position = GameConsts.ExitButtonPosition;
+            m_oExitButton.Texture = GameAssets.ExitButtonTexture;
         }
         public override void Start()
         {
             base.Start();
 
+            m_oGame.IsMouseVisible = true;
 
+            // Subscribe to button events
+            m_oStartButton.OnClick += new Button.EventHandler(StartClick);
         }
         public override void Update(GameTime a_oGameTime)
         {
-            //throw new NotImplementedException();
+            // Make a game context object for passing game state information to
+            // entity Update functions
+            Context oContext;
+            oContext.time = a_oGameTime;
+            oContext.viewport = m_rctViewport;
+            oContext.random = m_rngRandom;
+            oContext.state = this;
+
+            m_oStartButton.Update(oContext);
+            m_oExitButton.Update(oContext);
         }
         public override void Draw(GameTime a_oGameTime)
         {
@@ -61,6 +84,10 @@ namespace ZombieRoids
             // Draw background
             m_oSpriteBatch.Draw(GameAssets.TitleScreenTexture, m_rctViewport, Color.White);
             
+            // Draw new game button
+            m_oStartButton.Draw(m_oSpriteBatch);
+            m_oExitButton.Draw(m_oSpriteBatch);
+
             m_oSpriteBatch.End();
         }
         protected override void UnloadContent()
@@ -72,5 +99,16 @@ namespace ZombieRoids
         {
             base.End();
         }
+
+        #region Logic Members
+        void StartClick(Button a_oControl, Context a_oContext)
+        {
+            Console.WriteLine("Start Triggered");
+        }
+        void ExitClick(Button a_oControl, Context a_oContext)
+        {
+            Console.WriteLine("Exit Triggered");
+        }
+        #endregion
     }
 }

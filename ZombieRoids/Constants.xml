@@ -5,9 +5,9 @@
                  GameOverDuration="5" GameOverOverlay="Graphics/Menu/GameOverOverlay"
                  GameOverOverlayTint="#80FF0000" TitleScreen="Graphics/Menu/TitleScreen"
                  ButtonClickTint="#FFFF0000" ButtonHoverTint="#C0FF0000"
-                 ButtonNormalTint="#80FFFFF" ButtonSelectedTint="#80FF0000"
+                 ButtonNormalTint="#80FFFFFF" ButtonSelectedTint="#80FF0000"
                  NewGameButton="Graphics/Menu/NewGameButton" NewGameButtonX="240" NewGameButtonY="360"
-                 ExitButton="Graphics/Menu/ExitButton" ExitButtonButtonX="740" ExitButtonButtonY="360" />
+                 ExitButton="Graphics/Menu/ExitButton" ExitButtonX="600" ExitButtonY="360" />
   <WorldConstants Background="Graphics/World/Floor" ScoreFont="GameFont"
                   LifeGainPoints="10000" ScoreX="25" ScoreY="25" LivesX="25"
                   LivesY="50" EnemyCountX="25" EnemyCount="75"
