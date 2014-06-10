@@ -37,6 +37,9 @@ namespace ZombieRoids
         // Time to Cull Bullet
         private TimeSpan m_tsBulletDeathtime;
 
+        // Bullet sound effect
+        SoundEffect bulletSound;
+
         /// <summary>
         /// Constructs a new bullet fired by the given entity
         /// </summary>
@@ -66,6 +69,7 @@ namespace ZombieRoids
             AngularVelocity = GameConsts.BulletSpin;
             Velocity = a_oShooter.Forward * GameConsts.BulletSpeed;
             m_tsBulletDeathtime = a_oContext.time.TotalGameTime + GameConsts.BulletLifetime;
+            bulletSound = a_oContent.Load<SoundEffect>(GameConsts.PlayerShootSoundName);
         }
 
         /// <summary>
