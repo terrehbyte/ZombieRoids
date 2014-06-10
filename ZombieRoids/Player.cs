@@ -139,7 +139,7 @@ namespace ZombieRoids
         /// Perform Player game logic
         /// </summary>
         /// <param name="gameTime">GameTime</param>
-        public override void Update(Game1.Context a_oContext)
+        public override void Update(GameState.Context a_oContext)
         {
             // Update position
             base.Update(a_oContext);
@@ -225,7 +225,7 @@ namespace ZombieRoids
         /// <summary>
         /// Process input for other actions performed by player
         /// </summary>
-        private void OtherActions(Game1.Context a_oContext)
+        private void OtherActions(GameState.Context a_oContext)
         {
             // Grab Keyboard State
             KeyboardState kbCurKeys = Keyboard.GetState();
@@ -266,7 +266,7 @@ namespace ZombieRoids
         /// Fire a bullet
         /// </summary>
         /// <param name="a_gtGameTime">Current/elapsed time</param>
-        private void Fire(Game1.Context a_oContext)
+        private void Fire(GameState.Context a_oContext)
         {
             // If it's been long enough since the last shot,
             if (a_oContext.time.TotalGameTime - m_tsLastShot >
@@ -305,7 +305,7 @@ namespace ZombieRoids
         /// Randomly dumps the player somewhere on-screen
         /// </summary>
         /// <param name="a_oContext">Current game context</param>
-        private void Teleport(Game1.Context a_oContext)
+        private void Teleport(GameState.Context a_oContext)
         {
             // Reassign position to randomized location
             Position =

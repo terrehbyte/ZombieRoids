@@ -65,7 +65,7 @@ namespace ZombieRoids
         /// Enemy becomes inactive if it leaves the screen
         /// </summary>
         /// <param name="a_oContext"></param>
-        public override void Update(Game1.Context a_oContext)
+        public override void Update(GameState.Context a_oContext)
         {
             base.Update(a_oContext);
 
@@ -89,7 +89,7 @@ namespace ZombieRoids
         /// </summary>
         /// <param name="a_oContext"></param>
         /// <param name="a_tTexture"></param>
-        public static void Spawn(Game1.Context a_oContext, Texture2D a_tTexture)
+        public static void Spawn(GameState.Context a_oContext, Texture2D a_tTexture)
         {
             // Random position offscreen
             Vector2 v2Position =
@@ -164,7 +164,7 @@ namespace ZombieRoids
         /// Create enemies from fragments of this enemy
         /// </summary>
         /// <param name="a_oContext"></param>
-        public void Spawn(Game1.Context a_oContext)
+        public void Spawn(GameState.Context a_oContext)
         {
             for (int i = 0; i < FragmentCount; ++i)
             {

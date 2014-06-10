@@ -44,7 +44,7 @@ namespace ZombieRoids
         /// <param name="a_oShooter">Entity firing the bullet</param>
         /// <param name="a_tTexture">Bullet image</param>
         /// <param name="a_oContext">Current game context</param>
-        public Bullet(Entity a_oShooter, Texture2D a_tTexture, Game1.Context a_oContext)
+        public Bullet(Entity a_oShooter, Texture2D a_tTexture, GameState.Context a_oContext)
         {
             Initialize(a_tTexture, a_oShooter.Position);
             if (null != a_oShooter)
@@ -58,7 +58,7 @@ namespace ZombieRoids
         /// </summary>
         /// <param name="a_oShooter">Entity firing the bullet</param>
         /// <param name="a_oContext">Current game context</param>
-        public void Fire(Entity a_oShooter, Game1.Context a_oContext)
+        public void Fire(Entity a_oShooter, GameState.Context a_oContext)
         {
             // Set up bullet
             Active = true;
@@ -77,7 +77,7 @@ namespace ZombieRoids
         /// Updates bullet position and recycles bullets that leave the screen
         /// </summary>
         /// <param name="a_oContext"></param>
-        public override void Update(Game1.Context a_oContext)
+        public override void Update(GameState.Context a_oContext)
         {
             // Only update if active
             if (Active)

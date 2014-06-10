@@ -238,7 +238,7 @@ namespace ZombieRoids
         /// Update logic for this entity, if it needs updating each frame
         /// </summary>
         /// <param name="a_oContext"></param>
-        public virtual void Update(Game1.Context a_oContext)
+        public virtual void Update(GameState.Context a_oContext)
         {
 #if DEBUG
             // In debug mode, throw an exception if this is called before the

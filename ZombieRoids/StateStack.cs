@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.Xna.Framework;
 
 namespace ZombieRoids
 {
     public static class StateStack
     {
+
+
         // Stack of GameStates
         private static Stack<GameState> m_oStates = new Stack<GameState>();
 
@@ -17,6 +20,7 @@ namespace ZombieRoids
         public static  void AddState(GameState a_oState)
         {
             m_oStates.Push(a_oState);
+            m_oStates.Peek().Start();
         }
 
         /// <summary>
@@ -30,9 +34,14 @@ namespace ZombieRoids
         /// <summary>
         /// Calls update on the topmost GameState
         /// </summary>
-        public static void Update()
+        public static void Update(GameTime a_oGameTime)
         {
-            m_oStates.Peek().Update();
-        }   
+            m_oStates.Peek().Update(a_oGameTime);
+        }
+
+        public static void Draw(GameTime a_oGameTime)
+        {
+            m_oStates.Peek().Draw(a_oGameTime);
+        }
     }
 }
