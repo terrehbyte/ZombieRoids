@@ -1,4 +1,25 @@
-﻿using System;
+﻿/// <list type="table">
+/// <listheader><term>GameConsts.cs</term><description>
+///     Class providing access to consts pertaining to gameplay
+/// </description></listheader>
+/// <item><term>Author</term><description>
+///     Terry Nguyen
+/// </description></item>
+/// <item><term>Date Created</term><description>
+///     June 6, 2014
+/// </description></item>
+/// <item><term>Last Modified By</term><description>
+///     Elizabeth Lowry
+/// </description></item>
+/// <item><term>Last Modified</term><description>
+///     June 9, 2014
+/// </description></item>
+/// <item><term>Last Modification</term><description>
+///     Adding sound effects
+/// </description></item>
+/// </list>
+
+using System;
 using System.Xml;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +27,7 @@ using System.Text;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 
 namespace ZombieRoids
 {
@@ -27,9 +49,20 @@ namespace ZombieRoids
             BackgroundTexture = a_oContent.Load<Texture2D>(GameConsts.BackgroundTextureName);
             ParallaxTextureOne = a_oContent.Load<Texture2D>(GameConsts.Overlay1TextureName);
             ParallaxTextureTwo = a_oContent.Load<Texture2D>(GameConsts.Overlay2TextureName);
+            PauseOverlayTexture = a_oContent.Load<Texture2D>(GameConsts.PauseOverlayTextureName);
+            GameOverOverlayTexture = a_oContent.Load<Texture2D>(GameConsts.GameOverOverlayTextureName);
             ScoreFont = a_oContent.Load<SpriteFont>(GameConsts.FontName);
 
             // Load sounds
+            BackgroundMusic = a_oContent.Load<SoundEffect>(GameConsts.BackgroundMusicName);
+            PlayerShootSound = a_oContent.Load<SoundEffect>(GameConsts.PlayerShootSoundName);
+            PlayerDeathSound = a_oContent.Load<SoundEffect>(GameConsts.PlayerDeathSoundName);
+            PlayerSpawnSound = a_oContent.Load<SoundEffect>(GameConsts.PlayerSpawnSoundName);
+            PlayerTeleportSound = a_oContent.Load<SoundEffect>(GameConsts.PlayerTeleportSoundName);
+            ZombieDeathSound = a_oContent.Load<SoundEffect>(GameConsts.ZombieDeathSoundName);
+            SelectSound = a_oContent.Load<SoundEffect>(GameConsts.SelectSoundName);
+            ConfirmSound = a_oContent.Load<SoundEffect>(GameConsts.ConfirmSoundName);
+            LifeGainSound = a_oContent.Load<SoundEffect>(GameConsts.LifeGainSoundName);
             // TODO
         }
 
@@ -45,21 +78,24 @@ namespace ZombieRoids
         public static Texture2D ParallaxTextureTwo { get; private set; }
 
         // UI
+        public static Texture2D PauseOverlayTexture { get; private set; }
+        public static Texture2D GameOverOverlayTexture { get; private set; }
         public static SpriteFont ScoreFont { get; private set; }
 
         // Music
-        //public static ? BackgroundMusic { get; private set; }   // BGM Path
+        public static SoundEffect BackgroundMusic { get; private set; } // BGM Path
 
         // Sounds
-        //public static ? PlayerShootSound { get; private set; }    // Player Throw Sound Path
-        //public static ? PlayerDeathSound { get; private set; }    // Player Death Sound Path
-        //public static ? PlayerSpawnSound { get; private set; }    // Player Spawn Sound Path
+        public static SoundEffect PlayerShootSound { get; private set; }    // Player Throw Sound Path
+        public static SoundEffect PlayerDeathSound { get; private set; }    // Player Death Sound Path
+        public static SoundEffect PlayerSpawnSound { get; private set; }    // Player Spawn Sound Path
+        public static SoundEffect PlayerTeleportSound { get; private set; } // Player Teleport Sound Path
 
-        //public static ? ZombieDeathSound { get; private set; }    // Zombie Death Sound Path
+        public static SoundEffect ZombieDeathSound { get; private set; }    // Zombie Death Sound Path
 
-        //public static ? SelectSound { get; private set; }     // UI Select Sound Path
-        //public static ? ConfirmSound { get; private set; }    // UI Confirm Sound Path
-        //public static ? LifeGainSound { get; private set; }   // UI Life Gain Sound Path
+        public static SoundEffect SelectSound { get; private set; }     // UI Select Sound Path
+        public static SoundEffect ConfirmSound { get; private set; }    // UI Confirm Sound Path
+        public static SoundEffect LifeGainSound { get; private set; }   // UI Life Gain Sound Path
         #endregion
     }
 }

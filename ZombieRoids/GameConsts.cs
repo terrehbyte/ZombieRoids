@@ -1,4 +1,25 @@
-﻿using System;
+﻿/// <list type="table">
+/// <listheader><term>GameConsts.cs</term><description>
+///     Class providing access to consts pertaining to gameplay
+/// </description></listheader>
+/// <item><term>Author</term><description>
+///     Terry Nguyen
+/// </description></item>
+/// <item><term>Date Created</term><description>
+///     June 6, 2014
+/// </description></item>
+/// <item><term>Last Modified By</term><description>
+///     Elizabeth Lowry
+/// </description></item>
+/// <item><term>Last Modified</term><description>
+///     June 9, 2014
+/// </description></item>
+/// <item><term>Last Modification</term><description>
+///     Refactoring
+/// </description></item>
+/// </list>
+
+using System;
 using System.Xml;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -42,6 +63,11 @@ namespace ZombieRoids
             get { return GetIfLoaded(m_sFontName); }
         }
         private static string m_sFontName;
+        public static int LifeGainPoints
+        {
+            get { return GetIfLoaded(m_iLifeGainPoints); }
+        }
+        private static int m_iLifeGainPoints;
         public static Vector2 ScorePosition
         {
             get { return GetIfLoaded(m_v2ScorePosition); }
@@ -52,6 +78,11 @@ namespace ZombieRoids
             get { return GetIfLoaded(m_v2LivesPosition); }
         }
         private static Vector2 m_v2LivesPosition;
+        public static Vector2 EnemyCountPosition
+        {
+            get { return GetIfLoaded(m_v2EnemyCountPosition); }
+        }
+        private static Vector2 m_v2EnemyCountPosition;
         public static string Overlay1TextureName
         {
             get { return GetIfLoaded(m_sOverlay1TextureName); }
@@ -92,6 +123,26 @@ namespace ZombieRoids
             get { return GetIfLoaded(m_sUILifeGainSnd); }
         }
         private static string m_sUILifeGainSnd;     // UI Life Gain Sound Path
+        public static string PauseOverlayTextureName
+        {
+            get { return GetIfLoaded(m_sPauseOverlayTextureName); }
+        }
+        private static string m_sPauseOverlayTextureName;
+        public static Color PauseOverlayTint
+        {
+            get { return GetIfLoaded(m_oPauseOverlayTint); }
+        }
+        private static Color m_oPauseOverlayTint;
+        public static string GameOverOverlayTextureName
+        {
+            get { return GetIfLoaded(m_sGameOverOverlayTextureName); }
+        }
+        private static string m_sGameOverOverlayTextureName;
+        public static Color GameOverOverlayTint
+        {
+            get { return GetIfLoaded(m_oGameOverOverlayTint); }
+        }
+        private static Color m_oGameOverOverlayTint;
 
         #endregion
 
@@ -153,6 +204,11 @@ namespace ZombieRoids
             get { return GetIfLoaded(m_sPlayerSpawnSnd); }
         }
         private static string m_sPlayerSpawnSnd;    // Player Spawn Sound Path
+        public static string PlayerTeleportSoundName
+        {
+            get { return GetIfLoaded(m_sPlayerTeleportSnd); }
+        }
+        private static string m_sPlayerTeleportSnd; // Player Teleport Sound Path
 
         #endregion
 
@@ -476,10 +532,13 @@ namespace ZombieRoids
             {
                 Reload(a_oWorldNode, "Background", ref m_sBackgroundTextureName);
                 Reload(a_oWorldNode, "ScoreFont", ref m_sFontName);
+                Reload(a_oWorldNode, "LifeGainPoints", ref m_iLifeGainPoints);
                 Reload(a_oWorldNode, "ScoreX", ref m_v2ScorePosition.X);
                 Reload(a_oWorldNode, "ScoreY", ref m_v2ScorePosition.Y);
                 Reload(a_oWorldNode, "LivesX", ref m_v2LivesPosition.X);
                 Reload(a_oWorldNode, "LivesY", ref m_v2LivesPosition.Y);
+                Reload(a_oWorldNode, "EnemyCountX", ref m_v2EnemyCountPosition.X);
+                Reload(a_oWorldNode, "EnemyCountY", ref m_v2EnemyCountPosition.Y);
                 Reload(a_oWorldNode, "Overlay1Texture", ref m_sOverlay1TextureName);
                 Reload(a_oWorldNode, "Overlay1Speed", ref m_iOverlay1Speed);
                 Reload(a_oWorldNode, "Overlay2Texture", ref m_sOverlay2TextureName);
@@ -488,6 +547,10 @@ namespace ZombieRoids
                 Reload(a_oWorldNode, "SelectSound", ref m_sUISelectSnd);
                 Reload(a_oWorldNode, "ConfirmSound", ref m_sUIConfirmSnd);
                 Reload(a_oWorldNode, "LifeGainSound", ref m_sUILifeGainSnd);
+                Reload(a_oWorldNode, "PauseOverlay", ref m_sPauseOverlayTextureName);
+                Reload(a_oWorldNode, "PauseOverlayTint", ref m_oPauseOverlayTint);
+                Reload(a_oWorldNode, "GameOverOverlay", ref m_sGameOverOverlayTextureName);
+                Reload(a_oWorldNode, "GameOverOverlayTint", ref m_oGameOverOverlayTint);
             }
         }
 
@@ -510,6 +573,7 @@ namespace ZombieRoids
                 Reload(a_oPlayerNode, "ShootSound", ref m_sPlayerThrowSnd);
                 Reload(a_oPlayerNode, "DeathSound", ref m_sPlayerDeathSnd);
                 Reload(a_oPlayerNode, "SpawnSound", ref m_sPlayerSpawnSnd);
+                Reload(a_oPlayerNode, "TeleportSound", ref m_sPlayerTeleportSnd);
             }
         }
 

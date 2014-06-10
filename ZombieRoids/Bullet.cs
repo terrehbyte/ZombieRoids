@@ -25,6 +25,7 @@ using System.Linq;
 using System.Text;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace ZombieRoids
@@ -35,7 +36,7 @@ namespace ZombieRoids
     public class Bullet : Entity
     {
         // Time to Cull Bullet
-        private TimeSpan m_tsBulletDeathtime;
+        private TimeSpan m_tsLifeRemaining;
 
         // Bullet sound effect
         SoundEffect bulletSound;
@@ -62,14 +63,18 @@ namespace ZombieRoids
         /// <param name="a_oContext">Current game context</param>
         public void Fire(Entity a_oShooter, Game1.Context a_oContext)
         {
+            // Set up bullet
             Active = true;
             Alive = true;
             Position = a_oShooter.Position;
             Rotation = a_oShooter.Rotation;
             AngularVelocity = GameConsts.BulletSpin;
             Velocity = a_oShooter.Forward * GameConsts.BulletSpeed;
-            m_tsBulletDeathtime = a_oContext.time.TotalGameTime + GameConsts.BulletLifetime;
-            bulletSound = a_oContent.Load<SoundEffect>(GameConsts.PlayerShootSoundName);
+
+            m_tsLifeRemaining = GameConsts.BulletLifetime;
+
+            // Play firing sound
+            GameAssets.PlayerShootSound.Play();
         }
 
         /// <summary>
@@ -96,7 +101,8 @@ namespace ZombieRoids
                 }
 
                 // If passed culling time, then cull/deactivate
-                if (a_oContext.time.TotalGameTime > m_tsBulletDeathtime)
+                m_tsLifeRemaining -= a_oContext.time.ElapsedGameTime;
+                if (TimeSpan.Zero >= m_tsLifeRemaining)
                 {
                     Active = false;
                 }

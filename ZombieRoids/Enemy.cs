@@ -22,6 +22,7 @@
 using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Audio;
 using System.Diagnostics;
 
 namespace ZombieRoids
@@ -75,8 +76,10 @@ namespace ZombieRoids
                 {
                     // Birth fragments if any
                     Spawn(a_oContext);
-
                     a_oContext.enemies.Remove(this);
+
+                    // Play death sound
+                    GameAssets.ZombieDeathSound.Play();
                 }
             }
         }
@@ -123,12 +126,12 @@ namespace ZombieRoids
                 if (v2Position.Y < a_oContext.viewport.Center.Y)
                 {
                     oEnemy.Rotation =
-                        (float)((2 - a_oContext.random.NextDouble() / 2) * Math.PI);
+                        (float)(a_oContext.random.NextDouble() * Math.PI / 2);
                 }
                 else
                 {
                     oEnemy.Rotation =
-                        (float)(a_oContext.random.NextDouble() * Math.PI / 2);
+                        (float)((2 - a_oContext.random.NextDouble() / 2) * Math.PI);
                 }
             }
             // Right of Screen
@@ -137,18 +140,18 @@ namespace ZombieRoids
                 if (v2Position.Y < a_oContext.viewport.Center.Y)
                 {
                     oEnemy.Rotation =
-                        (float)((1 + a_oContext.random.NextDouble() / 2) * Math.PI);
+                        (float)((1 + a_oContext.random.NextDouble()) * Math.PI / 2);
                 }
                 else
                 {
                     oEnemy.Rotation =
-                        (float)((1 + a_oContext.random.NextDouble()) * Math.PI / 2);
+                        (float)((1 + a_oContext.random.NextDouble() / 2) * Math.PI);
                 }
             }
             oEnemy.Velocity = oEnemy.Forward * GameConsts.ZombieSpeed;
 
-            // Assure that it isn't moving perfectly straight horizontally
-            Debug.Assert(oEnemy.Velocity.Y != 0, "Invalid Enemy Velocity = " + oEnemy.Velocity.Y);
+            Debug.Assert(Math.Abs(oEnemy.Position.X) < a_oContext.viewport.Width &&
+                         Math.Abs(oEnemy.Position.Y) < a_oContext.viewport.Height, "Invalid Enemy Position = " + oEnemy.Position);
 
             // Initialize the Enemy
             oEnemy.Initialize(a_tTexture, v2Position);
@@ -200,13 +203,11 @@ namespace ZombieRoids
                     v2Velocity *= GameConsts.FragmentMinSpeed / v2Velocity.Length();
                 }
 
-                Debug.Assert(v2Velocity.Y != 0, "Invalid Enemy Velocity = " + eneNewFoe.Velocity.Y);
-
                 // Initialize and assign other values
                 eneNewFoe.Initialize(Texture, v2Position);
                 eneNewFoe.Velocity = v2Velocity;
                 eneNewFoe.Forward = v2Velocity;
-                eneNewFoe.Scale *= GameConsts.FragmentScale;
+                eneNewFoe.Scale = Scale * GameConsts.FragmentScale;
 
                 // New enemy breaks into fewer fragments than this one
                 eneNewFoe.FragmentCount = FragmentCount - 1;
