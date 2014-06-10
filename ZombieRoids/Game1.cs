@@ -12,10 +12,10 @@
 ///     Terry Nguyen
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 5, 2014
+///     June 10, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Added refined placeholder art
+///     Merging 'dev' into 'feature-terry'
 /// </description></item>
 /// </list>
 
@@ -105,7 +105,7 @@ namespace ZombieRoids
             // Update State
             StateStack.Update(gameTime);
 
-            
+
         }
 
         /// <summary>

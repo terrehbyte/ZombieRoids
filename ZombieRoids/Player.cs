@@ -12,10 +12,10 @@
 ///     Terry Nguyen
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 4, 2014
+///     June 10, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Refactoring Game1 class
+///     Merging 'dev' into 'feature-terry'
 /// </description></item>
 /// </list>
 
@@ -38,11 +38,11 @@ namespace ZombieRoids
         // Is the teleport key being pressed?
         private bool m_bTeleportKeyDown = false;
 
-        // Time of Last Fire
-        private TimeSpan m_tsLastShot;
+        // Time since Last Fire
+        private TimeSpan m_tsTimeSinceLastShot;
 
-        // Time When Invuln Ends
-        private TimeSpan m_tsInvulnEnd;
+        // Time Until Invuln Ends
+        private TimeSpan m_tsInvulnTimeRemaining;
 
         /// <summary>
         /// Is the player currently immune to damage?
@@ -131,8 +131,27 @@ namespace ZombieRoids
         public override void Initialize(Texture2D a_tTexture, Vector2 a_v2Position)
         {
             base.Initialize(a_tTexture, a_v2Position);
+            Reset(a_v2Position);
+        }
+
+        /// <summary>
+        /// Sets up the player at the start of a new game
+        /// </summary>
+        /// <param name="a_v2Position">Position to put the player in</param>
+        public void Reset(Vector2 a_v2Position)
+        {
+            foreach (Bullet oBullet in m_lbulBullets)
+            {
+                oBullet.Active = false;
+            }
+            Position = a_v2Position;
             HitPoints = GameConsts.PlayerHP;
+            Lives = GameConsts.PlayerLives;
+            Invulnerable = false;
+            m_tsInvulnTimeRemaining = TimeSpan.Zero;
+            m_tsTimeSinceLastShot = GameConsts.PlayerFireInterval;
             Active = true;
+            m_bTeleportKeyDown = false;
         }
 
         /// <summary>
@@ -156,6 +175,7 @@ namespace ZombieRoids
                     FaceCursor();
 
                     // Fire if Left-Click
+                    m_tsTimeSinceLastShot += a_oContext.time.ElapsedGameTime;
                     if (Mouse.GetState().LeftButton == ButtonState.Pressed)
                     {
                         Fire(a_oContext);
@@ -165,7 +185,8 @@ namespace ZombieRoids
                     // refactor as property?
                     if (Invulnerable)
                     {
-                        if (!(a_oContext.time.TotalGameTime < m_tsInvulnEnd))
+                        m_tsInvulnTimeRemaining -= a_oContext.time.ElapsedGameTime;
+                        if (TimeSpan.Zero >= m_tsInvulnTimeRemaining)
                         {
                             Invulnerable = false;
                         }
@@ -269,11 +290,10 @@ namespace ZombieRoids
         private void Fire(GameState.Context a_oContext)
         {
             // If it's been long enough since the last shot,
-            if (a_oContext.time.TotalGameTime - m_tsLastShot >
-                GameConsts.PlayerFireInterval)
+            if (m_tsTimeSinceLastShot > GameConsts.PlayerFireInterval)
             {
                 // Record new threshold for firing a bullet
-                m_tsLastShot = a_oContext.time.TotalGameTime;
+                m_tsTimeSinceLastShot = TimeSpan.Zero;
                 
                 Bullet bulTemp = null;
 
@@ -325,8 +345,7 @@ namespace ZombieRoids
         public void Spawn(GameTime a_gtGameTime)
         {
             // Set time to be invulnerable
-            m_tsInvulnEnd = a_gtGameTime.TotalGameTime +
-                GameConsts.PlayerInvulnerabilityDuration;
+            m_tsInvulnTimeRemaining = GameConsts.PlayerInvulnerabilityDuration;
             Invulnerable = true;
 
             // Reset HP

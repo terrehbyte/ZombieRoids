@@ -1,4 +1,24 @@
-﻿using System;
+﻿/// <list type="table">
+/// <listheader><term>GameConsts.cs</term><description>
+///     Class containing base abstract class for game states
+/// </description></listheader>
+/// <item><term>Author</term><description>
+///     Terry Nguyen
+/// </description></item>
+/// <item><term>Date Created</term><description>
+///     June 9, 2014
+/// </description></item>
+/// <item><term>Last Modified By</term><description>
+///     Terry Nguyen
+/// </description></item>
+/// <item><term>Last Modified</term><description>
+///     June 10, 2014
+/// </description></item>
+/// <item><term>Last Modification</term><description>
+///     Merging 'dev' into 'feature-terry'
+/// </description></item>
+/// </list>
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -22,6 +42,7 @@ namespace ZombieRoids
         protected Random m_rngRandom;
         protected Rectangle m_rctViewport;
 
+        // Legacy Access to Game
         protected Game m_oGame;
 
         public struct Context
