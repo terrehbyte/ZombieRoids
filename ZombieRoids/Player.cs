@@ -9,13 +9,13 @@
 ///     May 27, 2014
 /// </description></item>
 /// <item><term>Last Modified By</term><description>
-///     Terry Nguyen
+///     Elizabeth Lowry
 /// </description></item>
 /// <item><term>Last Modified</term><description>
 ///     June 10, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Merging 'dev' into 'feature-terry'
+///     Refactoring GameState.Context
 /// </description></item>
 /// </list>
 
@@ -220,9 +220,9 @@ namespace ZombieRoids
             }
 
             // Check for collision with enemies
-            if (Alive)
+            if (Alive && a_oContext.state is PlayState)
             {
-                foreach (Enemy oEnemy in a_oContext.enemies)
+                foreach (Enemy oEnemy in (a_oContext.state as PlayState).Enemies)
                 {
                     if (Collision.CheckCollision(this, oEnemy))
                     {

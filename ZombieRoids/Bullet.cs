@@ -9,13 +9,13 @@
 ///     June 2, 2014
 /// </description></item>
 /// <item><term>Last Modified By</term><description>
-///     Terry Nguyen
+///     Elizabeth Lowry
 /// </description></item>
 /// <item><term>Last Modified</term><description>
 ///     June 10, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Merging 'dev' into 'feature-terry'
+///     Refactoring GameState.Context
 /// </description></item>
 /// </list>
 
@@ -85,14 +85,18 @@ namespace ZombieRoids
                 base.Update(a_oContext);
 
                 // Check for collision with enemy
-                foreach (Enemy oEnemy in a_oContext.enemies.Where(enemy => enemy.Alive))
+                if (a_oContext.state is PlayState)
                 {
-                    if (Collision.CheckCollision(this, oEnemy))
+                    PlayState oState = a_oContext.state as PlayState;
+                    foreach (Enemy oEnemy in oState.Enemies.Where(enemy => enemy.Alive))
                     {
-                        a_oContext.score.Value += oEnemy.Value;
-                        oEnemy.HitPoints -= GameConsts.BulletDamage;
-                        Active = false;
-                        break;
+                        if (Collision.CheckCollision(this, oEnemy))
+                        {
+                            oState.Score += oEnemy.Value;
+                            oEnemy.HitPoints -= GameConsts.BulletDamage;
+                            Active = false;
+                            break;
+                        }
                     }
                 }
 

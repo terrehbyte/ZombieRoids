@@ -9,13 +9,13 @@
 ///     June 9, 2014
 /// </description></item>
 /// <item><term>Last Modified By</term><description>
-///     Terry Nguyen
+///     Elizabeth Lowry
 /// </description></item>
 /// <item><term>Last Modified</term><description>
 ///     June 10, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Merging 'dev' into 'feature-terry'
+///     Refactoring GameState.Context
 /// </description></item>
 /// </list>
 using System;
@@ -50,8 +50,7 @@ namespace ZombieRoids
             public GameTime time;
             public Rectangle viewport;
             public Random random;
-            public HashSet<Enemy> enemies;
-            public Ref<int> score;
+            public GameState state;
         };
 
         protected GameState()

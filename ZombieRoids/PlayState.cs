@@ -9,13 +9,13 @@
 ///     June 9, 2014
 /// </description></item>
 /// <item><term>Last Modified By</term><description>
-///     Terry Nguyen
+///     Elizabeth Lowry
 /// </description></item>
 /// <item><term>Last Modified</term><description>
 ///     June 10, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Merging 'dev' into 'feature-terry'
+///     Refactoring GameState.Context
 /// </description></item>
 /// </list>
 using System;
@@ -35,7 +35,7 @@ namespace ZombieRoids
         #region Props & Vars
         
         // Score varible
-        private int m_iScore = 0;
+        public int Score { get; set; }
         private int m_iNextLifeScore;        
 
         // Background images
@@ -44,6 +44,7 @@ namespace ZombieRoids
 
         // Enemies
         private TimeSpan m_tsTimeSinceEnemySpawn;
+        public HashSet<Enemy> Enemies { get { return m_oEnemies; } }
         private HashSet<Enemy> m_oEnemies = new HashSet<Enemy>();
 
         // Enemy Wave Count
@@ -158,17 +159,14 @@ namespace ZombieRoids
                 oContext.time = a_oGameTime;
                 oContext.viewport = m_rctViewport;
                 oContext.random = m_rngRandom;
-                oContext.enemies = m_oEnemies;
-                oContext.score =
-                    new Ref<int>((() => m_iScore),
-                                 ((int a_iScore) => m_iScore = a_iScore));
+                oContext.state = this;
 
                 // Update player and enemies
                 m_oPlayer.Update(oContext);
                 UpdateEnemies(oContext);
 
                 // If the new life point threshold has been passed,
-                if (m_iScore == m_iNextLifeScore)
+                if (Score == m_iNextLifeScore)
                 {
                     // add a life,
                     ++m_oPlayer.Lives;
@@ -212,7 +210,7 @@ namespace ZombieRoids
             // - DRAW UI -
 
             // Draw score
-            m_oSpriteBatch.DrawString(GameAssets.ScoreFont, "Score: " + m_iScore,
+            m_oSpriteBatch.DrawString(GameAssets.ScoreFont, "Score: " + Score,
                                       GameConsts.ScorePosition, Color.Black);
 
             // Draw lives
@@ -342,7 +340,7 @@ namespace ZombieRoids
         /// </summary>
         public void NewGame()
         {
-            m_iScore = 0;
+            Score = 0;
             m_iNextLifeScore = GameConsts.LifeGainPoints;
             m_tsTimeUntilOnGameOver = GameConsts.GameOverDuration;
             m_tsTimeSinceEnemySpawn = TimeSpan.Zero;
