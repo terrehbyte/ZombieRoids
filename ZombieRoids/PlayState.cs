@@ -15,7 +15,7 @@
 ///     June 11, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Implementing Pause state
+///     Fading BGM on GameOver
 /// </description></item>
 /// </list>
 using System;
@@ -102,6 +102,7 @@ namespace ZombieRoids
                 {
                     m_oBGM.Play();
                 }
+                m_oBGM.Volume = 1.0f;
             }
         }
 
@@ -131,6 +132,7 @@ namespace ZombieRoids
             {
                 m_oBGM.Play();
             }
+            m_oBGM.Volume = 1.0f;
         }
 
         protected override void LoadContent()
@@ -180,6 +182,11 @@ namespace ZombieRoids
                 if (TimeSpan.Zero >= m_tsTimeUntilOnGameOver)
                 {
                     OnGameOver(a_oGameTime);
+                }
+                else
+                {
+                    m_oBGM.Volume = (float)(m_tsTimeUntilOnGameOver.TotalSeconds /
+                                            GameConsts.GameOverDuration.TotalSeconds);
                 }
             }
 
