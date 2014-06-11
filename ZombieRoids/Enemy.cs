@@ -12,10 +12,10 @@
 ///     Elizabeth Lowry
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 10, 2014
+///     June 11, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Refactoring GameState.Context
+///     Animating Zombie
 /// </description></item>
 /// </list>
 
@@ -52,9 +52,14 @@ namespace ZombieRoids
         /// </summary>
         /// <param name="a_tTex">Enemy image</param>
         /// <param name="a_v2Pos">Enemy position</param>
-        public override void Initialize(Texture2D a_tTex, Vector2 a_v2Pos)
+        public override void Initialize(Texture2D a_tTex, Vector2 a_v2Pos,
+                                       int a_iColumns, int a_iRows,
+                                       int a_iFrameCount, float a_fFPS,
+                                       Color a_cColor, Vector2 a_v2Scale,
+                                       bool a_bLooping)
         {
-            base.Initialize(a_tTex, a_v2Pos);
+            base.Initialize(a_tTex, a_v2Pos, a_iColumns, a_iRows, a_iFrameCount,
+                            a_fFPS, a_cColor, a_v2Scale, a_bLooping);
             Active = true;
             HitPoints = GameConsts.ZombieHP;
             Damage = GameConsts.ZombieDamage;
@@ -77,7 +82,7 @@ namespace ZombieRoids
                     // Birth fragments if any
                     if (a_oContext.state is PlayState)
                     {
-                        Spawn(a_oContext);
+                        Fragment(a_oContext);
                         (a_oContext.state as PlayState).Enemies.Remove(this);
                     }
 
@@ -92,7 +97,7 @@ namespace ZombieRoids
         /// </summary>
         /// <param name="a_oContext"></param>
         /// <param name="a_tTexture"></param>
-        public static void Spawn(GameState.Context a_oContext, Texture2D a_tTexture)
+        public static void Spawn(GameState.Context a_oContext)
         {
             if (!(a_oContext.state is PlayState))
             {
@@ -100,6 +105,10 @@ namespace ZombieRoids
             }
 
             // Random position offscreen
+            float fSpriteWidth = GameAssets.ZombieTexture.Width /
+                                 GameConsts.ZombieTextureColumns;
+            float fSpriteHeight = GameAssets.ZombieTexture.Height /
+                                  GameConsts.ZombieTextureRows;
             Vector2 v2Position =
                 new Vector2((float)(a_oContext.random.NextDouble() * 2 - 1),
                             (float)(a_oContext.random.NextDouble() * 2 - 1));
@@ -116,8 +125,8 @@ namespace ZombieRoids
                 v2Position /= Math.Max(Math.Abs(v2Position.X),
                                        Math.Abs(v2Position.Y));
             }
-            v2Position.X *= (a_oContext.viewport.Width + a_tTexture.Width) / 2;
-            v2Position.Y *= (a_oContext.viewport.Height + a_tTexture.Height) / 2;
+            v2Position.X *= (a_oContext.viewport.Width + fSpriteWidth) / 2;
+            v2Position.Y *= (a_oContext.viewport.Height + fSpriteHeight) / 2;
             v2Position.X += a_oContext.viewport.Left + a_oContext.viewport.Width / 2;
             v2Position.Y += a_oContext.viewport.Top + a_oContext.viewport.Height / 2;
 
@@ -159,10 +168,16 @@ namespace ZombieRoids
             oEnemy.Velocity = oEnemy.Forward * GameConsts.ZombieSpeed;
 
             Debug.Assert(Math.Abs(oEnemy.Position.X) < a_oContext.viewport.Width &&
-                         Math.Abs(oEnemy.Position.Y) < a_oContext.viewport.Height, "Invalid Enemy Position = " + oEnemy.Position);
+                         Math.Abs(oEnemy.Position.Y) < a_oContext.viewport.Height,
+                         "Invalid Enemy Position = " + oEnemy.Position);
 
             // Initialize the Enemy
-            oEnemy.Initialize(a_tTexture, v2Position);
+            oEnemy.Initialize(GameAssets.ZombieTexture, v2Position,
+                              GameConsts.ZombieTextureColumns,
+                              GameConsts.ZombieTextureRows,
+                              GameConsts.ZombieTextureFrames,
+                              GameConsts.ZombieTextureFPS,
+                              Color.White, Vector2.One, true);
 
             // Add the enemy to the list
             (a_oContext.state as PlayState).Enemies.Add(oEnemy);
@@ -172,7 +187,7 @@ namespace ZombieRoids
         /// Create enemies from fragments of this enemy
         /// </summary>
         /// <param name="a_oContext"></param>
-        public void Spawn(GameState.Context a_oContext)
+        public void Fragment(GameState.Context a_oContext)
         {
             if (!(a_oContext.state is PlayState))
             {
@@ -217,7 +232,9 @@ namespace ZombieRoids
                 }
 
                 // Initialize and assign other values
-                eneNewFoe.Initialize(Texture, v2Position);
+                eneNewFoe.Initialize(Texture, v2Position, Columns, Rows,
+                                     FrameCount, FPS, Tint,
+                                     Scale * GameConsts.FragmentScale, Looping);
                 eneNewFoe.Velocity = v2Velocity;
                 eneNewFoe.Forward = v2Velocity;
                 eneNewFoe.Scale = Scale * GameConsts.FragmentScale;

@@ -15,7 +15,7 @@
 ///     June 11, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Adding pause screen fade-in time
+///     Animating Zombie
 /// </description></item>
 /// </list>
 
@@ -346,6 +346,26 @@ namespace ZombieRoids
             get { return GetIfLoaded(m_sZombieTextureName); }
         }
         private static string m_sZombieTextureName;
+        public static int ZombieTextureFrames
+        {
+            get { return GetIfLoaded(m_iZombieTextureFrames); }
+        }
+        private static int m_iZombieTextureFrames;
+        public static int ZombieTextureRows
+        {
+            get { return GetIfLoaded(m_iZombieTextureRows); }
+        }
+        private static int m_iZombieTextureRows;
+        public static int ZombieTextureColumns
+        {
+            get { return GetIfLoaded(m_iZombieTextureColumns); }
+        }
+        private static int m_iZombieTextureColumns;
+        public static float ZombieTextureFPS
+        {
+            get { return GetIfLoaded(m_fZombieTextureFPS); }
+        }
+        private static float m_fZombieTextureFPS;
         public static string ZombieDeathSoundName
         {
             get { return GetIfLoaded(m_sZombieDeathSnd); }
@@ -715,6 +735,10 @@ namespace ZombieRoids
                 Reload(a_oZombieNode, "FragmentDeltaPosition", ref m_iFragmentDeltaPosition);
                 Reload(a_oZombieNode, "FragmentScale", ref m_fFragmentScale);
                 Reload(a_oZombieNode, "Texture", ref m_sZombieTextureName);
+                Reload(a_oZombieNode, "TextureFrames", ref m_iZombieTextureFrames);
+                Reload(a_oZombieNode, "TextureRows", ref m_iZombieTextureRows);
+                Reload(a_oZombieNode, "TextureColumns", ref m_iZombieTextureColumns);
+                Reload(a_oZombieNode, "FPS", ref m_fZombieTextureFPS);
                 Reload(a_oZombieNode, "DeathSound", ref m_sZombieDeathSnd);
             }
         }

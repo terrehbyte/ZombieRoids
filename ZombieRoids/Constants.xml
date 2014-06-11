@@ -13,7 +13,7 @@
                  ExitButton="Graphics/Menu/ExitButton" ExitButtonX="600" ExitButtonY="360" />
   <WorldConstants Background="Graphics/World/Floor" ScoreFont="GameFont"
                   LifeGainPoints="10000" ScoreX="25" ScoreY="25" LivesX="25"
-                  LivesY="50" EnemyCountX="25" EnemyCount="75"
+                  LivesY="50" EnemyCountX="25" EnemyCountY="75"
                   Overlay1Texture="Graphics/World/Fog 1" Overlay1Speed="-30"
                   Overlay2Texture="Graphics/World/Fog 2" Overlay2Speed="-60"
                   BackgroundMusic="Sounds/Background" LifeGainSound="Sounds/ExtraLife" />
@@ -27,8 +27,9 @@
   <ZombieConstants BaseHP="10" Speed="120" Damage="10" Value="100"
                    InitialFragmentCount="2" FragmentMinSpeed="100" FragmentMaxSpeed="200"
                    FragmentDeltaSpeed="100" FragmentDeltaPosition="50"
-                   FragmentScale="0.65" Texture="Graphics/Zombie/Zombie"
-                   DeathSound="Sounds/explosion" />
+                   FragmentScale="0.65" Texture="Graphics/Zombie/ZombieStrip"
+                   TextureFrames="8" TextureRows="8" TextureColumns="1"
+                   FPS="8" DeathSound="Sounds/explosion" />
   <WaveConstants InitialWaveSize="3" WaveIncrement="2"
                  WaveInterval="5" EnemySpawnTime="1.0" />
 </GameConstants>

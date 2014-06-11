@@ -12,10 +12,10 @@
 ///     Elizabeth Lowry
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 4, 2014
+///     June 11, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Refactoring Game1 class
+///     Animating Zombie
 /// </description></item>
 /// </list>
 
@@ -31,7 +31,7 @@ namespace ZombieRoids
     /// <remarks>
     /// Represents a moving object with hitpoints
     /// </remarks>
-    public class Entity : Sprite
+    public class Entity : Animation
     {
         /// <summary>
         /// Bounding box
@@ -217,11 +217,18 @@ namespace ZombieRoids
         public virtual void Initialize(Texture2D a_tTexture,
                                        Vector2 a_v2Position)
         {
-            // Assign Texture
-            Texture = a_tTexture;
-
-            // Assign Position
-            Position = a_v2Position;
+            Initialize(a_tTexture, a_v2Position, 1, 1, 1,
+                       0.0f, Color.White, Vector2.One, true);
+        }
+        public override void Initialize(Texture2D a_tTexture, Vector2 a_v2Pos,
+                                                int a_iColumns, int a_iRows,
+                                                int a_iFrameCount, float a_fFPS,
+                                                Color a_cColor, Vector2 a_v2Scale,
+                                                bool a_bLooping)
+        {
+            base.Initialize(a_tTexture, a_v2Pos, a_iColumns, a_iRows,
+                            a_iFrameCount, a_fFPS, a_cColor, a_v2Scale,
+                            a_bLooping);
 
             // Assign OnScreen
             OnScreen = true;
@@ -250,6 +257,9 @@ namespace ZombieRoids
 #endif
             if (Active)
             {
+                // Animate
+                Update(a_oContext.time);
+
                 // Update Position
                 Vector2 v2OldPosition = Position;
                 Position += Velocity *
