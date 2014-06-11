@@ -9,13 +9,13 @@
 ///     May 28, 2014
 /// </description></item>
 /// <item><term>Last Modified By</term><description>
-///     Terry Nguyen
+///     Elizabeth Lowry
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 4, 2014
+///     June 11, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Merged with dev for @emlowry Refactoring Game1 class
+///     Animating Zombie
 /// </description></item>
 /// </list>
 
@@ -60,6 +60,16 @@ namespace ZombieRoids
         public int FrameCount { get; set; }
 
         /// <summary>
+        /// Number of rows in the sprite sheet
+        /// </summary>
+        public int Rows { get; set; }
+
+        /// <summary>
+        /// Number of columns in the sprite sheet
+        /// </summary>
+        public int Columns { get; set; }
+
+        /// <summary>
         /// If true, the animation repeats once it passes the final frame
         /// </summary>
         public bool Looping { get; set; }
@@ -83,20 +93,23 @@ namespace ZombieRoids
         /// <param name="a_cColor">Frame tint color</param>
         /// <param name="a_fScale">Scale of sprite in both dimensions</param>
         /// <param name="a_bLooping">True if animation repeats</param>
-        public void Initialize(Texture2D a_tTexture, Vector2 a_v2Pos,
-                               int a_iFrameWidth, int a_iFrameHeight,
-                               int a_iFrameCount, float a_fFPS,
-                               Color a_cColor, float a_fScale, bool a_bLooping)
+        public virtual void Initialize(Texture2D a_tTexture, Vector2 a_v2Pos,
+                                       int a_iColumns, int a_iRows,
+                                       int a_iFrameCount, float a_fFPS,
+                                       Color a_cColor, Vector2 a_v2Scale,
+                                       bool a_bLooping)
         {
             Tint = a_cColor;
-            SliceWidth = a_iFrameWidth;
-            SliceHeight = a_iFrameHeight;
+            Columns = a_iColumns;
+            Rows = a_iRows;
             FrameCount = a_iFrameCount;
             FPS = a_fFPS;
-            HorizontalScale = VerticalScale = a_fScale;
+            Scale = a_v2Scale;
             Looping = a_bLooping;
             Position = a_v2Pos;
             Texture = a_tTexture;
+            SliceWidth = Texture.Width / Columns;
+            SliceHeight = Texture.Height / Rows;
         }
 
         /// <summary>
@@ -146,7 +159,8 @@ namespace ZombieRoids
             }
 
             // Update texture slice to current frame
-            SliceLeft = m_iCurrentFrame * SliceWidth;
+            SliceLeft = (m_iCurrentFrame % Columns) * SliceWidth;
+            SliceTop = (m_iCurrentFrame / Columns) * SliceHeight;
         }
     }
 }
