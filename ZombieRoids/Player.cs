@@ -24,9 +24,9 @@ using System.Linq;
 using System.Collections.Generic;
 
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Audio;
 
 namespace ZombieRoids
 {
@@ -66,7 +66,7 @@ namespace ZombieRoids
         public int Lives { get; set; }
 
         public List<Bullet> m_lbulBullets = new List<Bullet>();
-        public Texture2D BulletTexture { get; set; }
+        public Texture2D BulletTexture { get; set; }       
 
         /// <summary>
         /// handle user input for movement
@@ -317,6 +317,8 @@ namespace ZombieRoids
                 {
                     // Otherwise, fire the preexisting bullet
                     bulTemp.Fire(this, a_oContext);
+                    // Play bullet sound
+
                 }
             }
         }

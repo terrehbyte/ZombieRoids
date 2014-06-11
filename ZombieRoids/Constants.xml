@@ -14,7 +14,8 @@
                   LivesY="50" EnemyCountX="25" EnemyCount="75"
                   Overlay1Texture="Graphics/World/Fog 1" Overlay1Speed="-30"
                   Overlay2Texture="Graphics/World/Fog 2" Overlay2Speed="-60"
-                  BackgroundMusic="Sounds/Background" LifeGainSound="Sounds/ExtraLife" />
+                  BackgroundMusic="Sounds/Background" LifeGainSound="Sounds/ExtraLife" 
+                  PauseScreenMusic="Sounds/PauseMenu"/>/>
   <PlayerConstants BaseHP="100" Speed="150" ShotDelay="0.2" NormalTint="#FFFFFFFF"
                    InvulnerableTint="#C0FF0000" InvulnerabilityPeriod="2.0"
                    InitialLives="3" Texture="Graphics/Player/Player"

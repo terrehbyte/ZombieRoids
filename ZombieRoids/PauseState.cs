@@ -34,6 +34,7 @@ namespace ZombieRoids
         private GameState m_oPausedState;
         private bool m_bUnpauseKeyDown;
         private SoundEffectInstance m_oBGM;
+        private SoundEffectInstance m_oPSM;
 
         public PauseState(Game1 a_oMainGame, GameState a_oPausedState)
             : base(a_oMainGame)
@@ -54,7 +55,7 @@ namespace ZombieRoids
             }
 
             // TODO - change to pause menu music
-            m_oBGM = GameAssets.BackgroundMusic.CreateInstance();
+            m_oBGM = GameAssets.PauseScreenMusic.CreateInstance();
             m_oBGM.IsLooped = true;
             m_oBGM.Play();
         }
