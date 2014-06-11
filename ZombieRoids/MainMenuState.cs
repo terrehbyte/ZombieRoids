@@ -9,13 +9,13 @@
 ///     June 10, 2014
 /// </description></item>
 /// <item><term>Last Modified By</term><description>
-///     Terry Nguyen
+///     Elizabeth Lowry
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 10, 2014
+///     June 11, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Added logic for moving to gameplay from mainmenu
+///     Fixing button tint bug
 /// </description></item>
 /// </list>
 using System;
@@ -46,6 +46,10 @@ namespace ZombieRoids
             // Load game constants and assets
             GameConsts.Reload("Constants.xml");
             GameAssets.Reload(m_oContentManager);
+
+            // Reset button tints, now that they've been loaded
+            m_oStartButton.ResetTint();
+            m_oExitButton.ResetTint();
 
             // Start Button
             m_oStartButton.Position = GameConsts.NewGameButtonPosition;
