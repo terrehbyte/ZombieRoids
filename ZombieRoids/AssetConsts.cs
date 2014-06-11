@@ -58,6 +58,7 @@ namespace ZombieRoids
 
             // Load sounds
             BackgroundMusic = a_oContent.Load<SoundEffect>(GameConsts.BackgroundMusicName);
+            PauseScreenMusic = a_oContent.Load<SoundEffect>(GameConsts.PauseScreenMusicName);
             PlayerShootSound = a_oContent.Load<SoundEffect>(GameConsts.PlayerShootSoundName);
             PlayerDeathSound = a_oContent.Load<SoundEffect>(GameConsts.PlayerDeathSoundName);
             PlayerSpawnSound = a_oContent.Load<SoundEffect>(GameConsts.PlayerSpawnSoundName);
@@ -89,6 +90,7 @@ namespace ZombieRoids
 
         // Music
         public static SoundEffect BackgroundMusic { get; private set; } // BGM Path
+        public static SoundEffect PauseScreenMusic { get; private set; } // PSM Path
 
         // Sounds
         public static SoundEffect PlayerShootSound { get; private set; }    // Player Throw Sound Path

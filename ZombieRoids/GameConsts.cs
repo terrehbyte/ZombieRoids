@@ -198,6 +198,11 @@ namespace ZombieRoids
             get { return GetIfLoaded(m_sUIBGM); }
         }
         private static string m_sUIBGM;             // BGM Path
+        public static string PauseScreenMusicName
+        {
+            get { return GetIfLoaded(m_sUIPSM); }
+        }
+        private static string m_sUIPSM;             // PSM Path
         public static string LifeGainSoundName
         {
             get { return GetIfLoaded(m_sUILifeGainSnd); }
@@ -635,6 +640,7 @@ namespace ZombieRoids
                 Reload(a_oWorldNode, "Overlay2Texture", ref m_sOverlay2TextureName);
                 Reload(a_oWorldNode, "Overlay2Speed", ref m_iOverlay2Speed);
                 Reload(a_oWorldNode, "BackgroundMusic", ref m_sUIBGM);
+                Reload(a_oWorldNode, "PauseScreenMusic", ref m_sUIPSM);
                 Reload(a_oWorldNode, "LifeGainSound", ref m_sUILifeGainSnd);
             }
         }
