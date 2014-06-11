@@ -15,7 +15,7 @@
 ///     June 10, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Merging 'dev' into 'feature-terry'
+///     Added logic for moving to gameplay from mainmenu
 /// </description></item>
 /// </list>
 

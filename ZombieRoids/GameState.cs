@@ -1,5 +1,5 @@
 ﻿/// <list type="table">
-/// <listheader><term>GameConsts.cs</term><description>
+/// <listheader><term>GameState.cs</term><description>
 ///     Class containing base abstract class for game states
 /// </description></listheader>
 /// <item><term>Author</term><description>
@@ -57,6 +57,10 @@ namespace ZombieRoids
         {
         }
 
+        /// <summary>
+        /// Initializes GameState with properties needed
+        /// </summary>
+        /// <param name="a_oMainGame"></param>
         protected GameState(Game1 a_oMainGame)
         {
             // Get variables to access Game attributes
@@ -69,7 +73,7 @@ namespace ZombieRoids
         }
 
         /// <summary>
-        /// Loads the requested pieces of content to the game state
+        /// Loads the requested content to the content manager
         /// </summary>
         protected virtual void LoadContent()
         {
@@ -78,7 +82,7 @@ namespace ZombieRoids
         }
 
         /// <summary>
-        /// Unloads all content loaded by this game state
+        /// Unloads all content in the content manager
         /// </summary>
         protected virtual void UnloadContent()
         {
@@ -96,14 +100,18 @@ namespace ZombieRoids
         }
 
         /// <summary>
-        /// Called every game update frame
+        /// Runs a frame of the game logic
         /// </summary>
         public abstract void Update(GameTime a_oGameTime);
 
+        /// <summary>
+        /// Draws textures to the sprite batch
+        /// </summary>
+        /// <param name="a_oGameTime"></param>
         public abstract void Draw(GameTime a_oGameTime);
 
         /// <summary>
-        /// Called to end the game state
+        /// Called when gamestate is popped from the gamestate stack
         /// </summary>
         public virtual void End()
         {

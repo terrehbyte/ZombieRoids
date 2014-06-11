@@ -1,6 +1,6 @@
 ﻿/// <list type="table">
-/// <listheader><term>MainMenuState.cs</term><description>
-///     Class containing logic for mainmenu
+/// <listheader><term>GameOverState.cs</term><description>
+///     Class containing logic for game over menu
 /// </description></listheader>
 /// <item><term>Author</term><description>
 ///     Terry Nguyen
@@ -26,16 +26,16 @@ using Microsoft.Xna.Framework;
 
 namespace ZombieRoids
 {
-    class MainMenuState : GameState
+    class GameOverState : GameState
     {
-        private Button m_oStartButton = new Button();
         private Button m_oExitButton = new Button();
 
-        private MainMenuState()
+        private GameOverState()
         {
         }
 
-        public MainMenuState(Game1 a_oMainGame) : base(a_oMainGame)
+        public GameOverState(Game1 a_oMainGame)
+            : base(a_oMainGame)
         {
         }
 
@@ -46,10 +46,6 @@ namespace ZombieRoids
             // Load game constants and assets
             GameConsts.Reload("Constants.xml");
             GameAssets.Reload(m_oContentManager);
-
-            // Start Button
-            m_oStartButton.Position = GameConsts.NewGameButtonPosition;
-            m_oStartButton.Texture = GameAssets.NewGameButtonTexture;
 
             // End Button
             m_oExitButton.Position = GameConsts.ExitButtonPosition;
@@ -62,7 +58,6 @@ namespace ZombieRoids
             m_oGame.IsMouseVisible = true;
 
             // Subscribe to button events
-            m_oStartButton.OnClickEnd += StartClick;
             m_oExitButton.OnClickEnd += ExitClick;
         }
         public override void Update(GameTime a_oGameTime)
@@ -75,18 +70,16 @@ namespace ZombieRoids
             oContext.random = m_rngRandom;
             oContext.state = this;
 
-            m_oStartButton.Update(oContext);
             m_oExitButton.Update(oContext);
         }
         public override void Draw(GameTime a_oGameTime)
         {
             m_oSpriteBatch.Begin();
-            
+
             // Draw background
-            m_oSpriteBatch.Draw(GameAssets.TitleScreenTexture, m_rctViewport, Color.White);
-            
+            m_oSpriteBatch.Draw(GameAssets.GameOverOverlayTexture, m_rctViewport, Color.White);
+
             // Draw new game button
-            m_oStartButton.Draw(m_oSpriteBatch);
             m_oExitButton.Draw(m_oSpriteBatch);
 
             m_oSpriteBatch.End();
@@ -102,14 +95,10 @@ namespace ZombieRoids
         }
 
         #region Logic Members
-        void StartClick(Button a_oControl, Context a_oContext)
-        {
-            StateStack.PopState();
-            StateStack.AddState(StateStack.State.GAMEPLAY);
-        }
         void ExitClick(Button a_oControl, Context a_oContext)
         {
             StateStack.PopState();
+            StateStack.AddState(StateStack.State.MAINMENU);
         }
         #endregion
     }
