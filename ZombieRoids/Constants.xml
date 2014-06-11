@@ -5,8 +5,8 @@
                  GameOverDuration="5" GameOverOverlay="Graphics/Menu/GameOverOverlay"
                  GameOverOverlayStartTint="#00FF0000" GameOverOverlayEndTint="#FFFF0000"
                  TitleScreen="Graphics/Menu/TitleScreen"
-                 ButtonClickTint="#FFFF0000" ButtonHoverTint="#C0FF0000"
-                 ButtonNormalTint="#80FFFFFF" ButtonSelectedTint="#80FF0000"
+                 ButtonClickTint="#FFFF0000" ButtonHoverTint="#80FF0000"
+                 ButtonNormalTint="#80C0C0C0" ButtonSelectedTint="#80C00000"
                  NewGameButton="Graphics/Menu/NewGameButton" NewGameButtonX="240" NewGameButtonY="360"
                  ExitButton="Graphics/Menu/ExitButton" ExitButtonX="600" ExitButtonY="360" />
   <WorldConstants Background="Graphics/World/Floor" ScoreFont="GameFont"
@@ -17,7 +17,7 @@
                   BackgroundMusic="Sounds/Background" LifeGainSound="Sounds/ExtraLife" 
                   PauseScreenMusic="Sounds/PauseMenu"/>/>
   <PlayerConstants BaseHP="100" Speed="150" ShotDelay="0.2" NormalTint="#FFFFFFFF"
-                   InvulnerableTint="#D0FF0000" InvulnerabilityPeriod="2.0"
+                   InvulnerableTint="#C0FF0000" InvulnerabilityPeriod="2.0"
                    InitialLives="3" Texture="Graphics/Player/Player"
                    ShootSound="Sounds/StarThrow" DeathSound="Sounds/PlayerDeath"
                    SpawnSound="Sounds/Teleport" TeleportSound="Sounds/Teleport" />
