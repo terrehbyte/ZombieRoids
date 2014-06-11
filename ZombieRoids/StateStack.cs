@@ -28,6 +28,9 @@ namespace ZombieRoids
 {
     public static class StateStack
     {
+        /// <summary>
+        /// Remaining states in the stack
+        /// </summary>
         public static int StackCount
         {
             get
@@ -36,11 +39,16 @@ namespace ZombieRoids
             }
         }
 
+        /// <summary>
+        /// Registers the Game1 state
+        /// </summary>
+        /// <param name="a_oGame"></param>
         public static void RegisterGame(Game1 a_oGame)
         {
             m_oGame = a_oGame;
         }
 
+        // States that can be added
         public enum State
         {
             MAINMENU,
@@ -61,12 +69,20 @@ namespace ZombieRoids
         /// <param name="a_oState"></param>
         public static  void AddState(GameState a_oState)
         {
+            // Add state to the stack
             m_oStates.Push(a_oState);
+
+            // Call the state's start function for initialization
             m_oStates.Peek().Start();
         }
 
+        /// <summary>
+        /// Pushes and starts a state to the stack based on enum
+        /// </summary>
+        /// <param name="a_oNewState"></param>
         public static void AddState(State a_oNewState)
         {
+            // Call AddState on the correct state requested
             switch (a_oNewState)
             {
                 case (State.MAINMENU):
@@ -97,7 +113,7 @@ namespace ZombieRoids
         }
 
         /// <summary>
-        /// Pops the topmost GameState from the stack
+        /// Ends and Pops the topmost GameState
         /// </summary>
         public static void PopState()
         {
@@ -106,13 +122,17 @@ namespace ZombieRoids
         }
 
         /// <summary>
-        /// Calls update on the topmost GameState
+        /// Updates the topmost GameState
         /// </summary>
         public static void Update(GameTime a_oGameTime)
         {
             m_oStates.Peek().Update(a_oGameTime);
         }
 
+        /// <summary>
+        /// Draws the topmost GameState
+        /// </summary>
+        /// <param name="a_oGameTime"></param>
         public static void Draw(GameTime a_oGameTime)
         {
             m_oStates.Peek().Draw(a_oGameTime);
