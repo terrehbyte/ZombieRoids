@@ -15,7 +15,7 @@
 ///     June 10, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Merging 'dev' into 'feature-terry'
+///     Added 'm_bIsHover == true' to condition determining Click
 /// </description></item>
 /// </list>
 
@@ -149,7 +149,7 @@ namespace ZombieRoids
             // Get mouse location and left button state
             MouseState mCurState = Mouse.GetState();
             bool bHover = Boundary.Contains(mCurState.Position);
-            bool bClick = (ButtonState.Pressed == mCurState.LeftButton);
+            bool bClick = ((ButtonState.Pressed == mCurState.LeftButton) && bHover);
             EventHandler ehToCall = null;
 
             // Update hover state
