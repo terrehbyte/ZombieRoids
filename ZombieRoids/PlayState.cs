@@ -15,7 +15,7 @@
 ///     June 10, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Refactoring GameState.Context
+///     Added logic for moving to gameplay from mainmenu
 /// </description></item>
 /// </list>
 using System;
@@ -98,6 +98,8 @@ namespace ZombieRoids
         public override void End()
         {
             base.End();
+
+            m_oBGM.Stop();
         }
 
         protected override void LoadContent()
@@ -359,7 +361,8 @@ namespace ZombieRoids
         /// <param name="gameTime"></param>
         protected void OnGameOver(GameTime gameTime)
         {
-            NewGame();
+            StateStack.PopState();
+            StateStack.AddState(StateStack.State.GAMEOVER);
         }
         #endregion
 

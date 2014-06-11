@@ -61,7 +61,7 @@ namespace ZombieRoids
                     }
                 case (State.GAMEOVER):
                     {
-                        throw new System.NotImplementedException("Game Over not implemented!");
+                        AddState(new GameOverState(m_oGame));
                         break;
                     }
                 case (State.PAUSE):
@@ -81,6 +81,7 @@ namespace ZombieRoids
         /// </summary>
         public static void PopState()
         {
+            m_oStates.Peek().End();
             m_oStates.Pop();
         }
 
