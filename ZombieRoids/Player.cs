@@ -12,10 +12,10 @@
 ///     Elizabeth Lowry
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 10, 2014
+///     June 11, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Refactoring GameState.Context
+///     Animating Zombie
 /// </description></item>
 /// </list>
 
@@ -128,9 +128,15 @@ namespace ZombieRoids
         /// </summary>
         /// <param name="a_tTexture">Player image</param>
         /// <param name="a_v2Position">Player starting position</param>
-        public override void Initialize(Texture2D a_tTexture, Vector2 a_v2Position)
+        public override void Initialize(Texture2D a_tTexture, Vector2 a_v2Position,
+                                       int a_iColumns, int a_iRows,
+                                       int a_iFrameCount, float a_fFPS,
+                                       Color a_cColor, Vector2 a_v2Scale,
+                                       bool a_bLooping)
         {
-            base.Initialize(a_tTexture, a_v2Position);
+            base.Initialize(a_tTexture, a_v2Position, a_iColumns, a_iRows,
+                            a_iFrameCount, a_fFPS, a_cColor, a_v2Scale,
+                            a_bLooping);
             Reset(a_v2Position);
         }
 

@@ -15,7 +15,7 @@
 ///     June 11, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Fading BGM on GameOver
+///     Animating Zombie
 /// </description></item>
 /// </list>
 using System;
@@ -322,7 +322,7 @@ namespace ZombieRoids
                     TimeSpan.Zero > m_tsTimeUntilNextWave)
                 {
                     m_tsTimeSinceEnemySpawn = TimeSpan.Zero;
-                    Enemy.Spawn(a_oContext, GameAssets.ZombieTexture);
+                    Enemy.Spawn(a_oContext);
 
                     // Decrement queue
                     m_iEnemyWaveQueue--;
