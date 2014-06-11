@@ -77,7 +77,8 @@ namespace ZombieRoids
             m_oSpriteBatch.Begin();
 
             // Draw background
-            m_oSpriteBatch.Draw(GameAssets.GameOverOverlayTexture, m_rctViewport, Color.White);
+            m_oSpriteBatch.Draw(GameAssets.GameOverOverlayTexture, m_rctViewport,
+                                GameConsts.GameOverOverlayEndTint);
 
             // Draw new game button
             m_oExitButton.Draw(m_oSpriteBatch);

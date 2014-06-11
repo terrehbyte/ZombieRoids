@@ -227,8 +227,12 @@ namespace ZombieRoids
             // If game over, draw game over overlay
             if (GameOver)
             {
+                Color oTint = Color.Lerp(GameConsts.GameOverOverlayEndTint,
+                                         GameConsts.GameOverOverlayStartTint,
+                                         (float)(m_tsTimeUntilOnGameOver.TotalSeconds /
+                                                 GameConsts.GameOverDuration.TotalSeconds));
                 m_oSpriteBatch.Draw(GameAssets.GameOverOverlayTexture,
-                                    m_rctViewport, GameConsts.GameOverOverlayTint);
+                                    m_rctViewport, oTint);
             }
             // If paused, draw pause overlay
             else if (Paused)

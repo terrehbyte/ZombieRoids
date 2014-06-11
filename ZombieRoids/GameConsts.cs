@@ -82,11 +82,16 @@ namespace ZombieRoids
             get { return GetIfLoaded(m_sGameOverOverlayTextureName); }
         }
         private static string m_sGameOverOverlayTextureName;
-        public static Color GameOverOverlayTint
+        public static Color GameOverOverlayStartTint
         {
-            get { return GetIfLoaded(m_oGameOverOverlayTint); }
+            get { return GetIfLoaded(m_oGameOverOverlayStartTint); }
         }
-        private static Color m_oGameOverOverlayTint;
+        private static Color m_oGameOverOverlayStartTint;
+        public static Color GameOverOverlayEndTint
+        {
+            get { return GetIfLoaded(m_oGameOverOverlayEndTint); }
+        }
+        private static Color m_oGameOverOverlayEndTint;
         public static string TitleScreenTextureName
         {
             get { return GetIfLoaded(m_sTitleScreenTextureName); }
@@ -592,7 +597,8 @@ namespace ZombieRoids
                 Reload(a_oMenuNode, "PauseOverlayTint", ref m_oPauseOverlayTint);
                 Reload(a_oMenuNode, "GameOverDuration", ref m_tsGameOverDuration);
                 Reload(a_oMenuNode, "GameOverOverlay", ref m_sGameOverOverlayTextureName);
-                Reload(a_oMenuNode, "GameOverOverlayTint", ref m_oGameOverOverlayTint);
+                Reload(a_oMenuNode, "GameOverOverlayStartTint", ref m_oGameOverOverlayStartTint);
+                Reload(a_oMenuNode, "GameOverOverlayEndTint", ref m_oGameOverOverlayEndTint);
                 Reload(a_oMenuNode, "TitleScreen", ref m_sTitleScreenTextureName);
                 Reload(a_oMenuNode, "ButtonClickTint", ref m_oButtonClickTint);
                 Reload(a_oMenuNode, "ButtonHoverTint", ref m_oButtonHoverTint);

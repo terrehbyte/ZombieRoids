@@ -76,37 +76,6 @@ namespace ZombieRoids
             m_oStates.Peek().Start();
         }
 
-        public static void AddState(State a_oNewState)
-        {
-            switch (a_oNewState)
-            {
-                case (State.MAINMENU):
-                    {
-                        AddState(new MainMenuState(m_oGame));
-                        break;
-                    }
-                case (State.GAMEPLAY):
-                    {
-                        AddState(new PlayState(m_oGame));
-                        break;
-                    }
-                case (State.GAMEOVER):
-                    {
-                        throw new System.NotImplementedException("Game Over not implemented!");
-                        break;
-                    }
-                case (State.PAUSE):
-                    {
-                        throw new System.NotImplementedException("Pause not implemented!");
-                        break;
-                    }
-                default:
-                    {
-                        throw new Exception("Invalid State Added!");
-                    }
-            }
-        }
-
         /// <summary>
         /// Pushes and starts a state to the stack based on enum
         /// </summary>
