@@ -1,5 +1,5 @@
 ﻿/// <list type="table">
-/// <listheader><term>GameConsts.cs</term><description>
+/// <listheader><term>PlayState.cs</term><description>
 ///     Class containing logic for gameplay for fighting zombies
 /// </description></listheader>
 /// <item><term>Author</term><description>

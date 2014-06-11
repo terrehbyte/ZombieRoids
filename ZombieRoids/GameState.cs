@@ -1,5 +1,5 @@
 ﻿/// <list type="table">
-/// <listheader><term>GameConsts.cs</term><description>
+/// <listheader><term>GameState.cs</term><description>
 ///     Class containing base abstract class for game states
 /// </description></listheader>
 /// <item><term>Author</term><description>

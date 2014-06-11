@@ -1,8 +1,28 @@
-﻿using System;
+﻿/// <list type="table">
+/// <listheader><term>StateStack.cs</term><description>
+///     Class containing logic for game over menu
+/// </description></listheader>
+/// <item><term>Author</term><description>
+///     Terry Nguyen
+/// </description></item>
+/// <item><term>Date Created</term><description>
+///     June 10, 2014
+/// </description></item>
+/// <item><term>Last Modified By</term><description>
+///     Terry Nguyen
+/// </description></item>
+/// <item><term>Last Modified</term><description>
+///     June 10, 2014
+/// </description></item>
+/// <item><term>Last Modification</term><description>
+///     Added logic for moving to gameplay from mainmenu
+/// </description></item>
+/// </list>using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Xna.Framework;
+using System;
 
 namespace ZombieRoids
 {

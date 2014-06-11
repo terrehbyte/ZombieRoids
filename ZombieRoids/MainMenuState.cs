@@ -1,5 +1,5 @@
 ﻿/// <list type="table">
-/// <listheader><term>GameConsts.cs</term><description>
+/// <listheader><term>MainMenuState.cs</term><description>
 ///     Class containing logic for mainmenu
 /// </description></listheader>
 /// <item><term>Author</term><description>
