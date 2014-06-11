@@ -120,7 +120,7 @@ namespace ZombieRoids
         protected override void Draw(GameTime gameTime)
         {
             // Get ready to draw
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
             // Draw State
             StateStack.Draw(gameTime);
             base.Draw(gameTime);

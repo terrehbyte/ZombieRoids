@@ -9,13 +9,13 @@
 ///     June 10, 2014
 /// </description></item>
 /// <item><term>Last Modified By</term><description>
-///     Terry Nguyen
+///     Elizabeth Lowry
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 10, 2014
+///     June 11, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Added 'm_bIsHover == true' to condition determining Click
+///     Fixing button tint bug
 /// </description></item>
 /// </list>
 
@@ -132,7 +132,7 @@ namespace ZombieRoids
         /// <summary>
         /// Set tint according to click, hover, and selected state
         /// </summary>
-        private void ResetTint()
+        public void ResetTint()
         {
             Tint = (Click ? GameConsts.ButtonClickTint :
                     Hover ? GameConsts.ButtonHoverTint :

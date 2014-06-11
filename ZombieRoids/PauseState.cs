@@ -15,7 +15,7 @@
 ///     June 11, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Creation
+///     Adding pause screen fade-in time
 /// </description></item>
 /// </list>
 
@@ -34,7 +34,7 @@ namespace ZombieRoids
         private GameState m_oPausedState;
         private bool m_bUnpauseKeyDown;
         private SoundEffectInstance m_oBGM;
-        private SoundEffectInstance m_oPSM;
+        private TimeSpan m_tsTimeUntilFadedIn;
 
         public PauseState(Game1 a_oMainGame, GameState a_oPausedState)
             : base(a_oMainGame)
@@ -69,6 +69,7 @@ namespace ZombieRoids
         public override void Start()
         {
             base.Start();
+            m_tsTimeUntilFadedIn = GameConsts.PauseFadeInTime;
             if (null != m_oBGM)
             {
                 if (SoundState.Paused == m_oBGM.State)
@@ -100,6 +101,14 @@ namespace ZombieRoids
                     StateStack.AddState(m_oPausedState);
                 }
             }
+            if (TimeSpan.Zero < m_tsTimeUntilFadedIn)
+            {
+                m_tsTimeUntilFadedIn -= a_oGameTime.ElapsedGameTime;
+                if (TimeSpan.Zero > m_tsTimeUntilFadedIn)
+                {
+                    m_tsTimeUntilFadedIn = TimeSpan.Zero;
+                }
+            }
         }
 
         public override void Draw(GameTime a_oGameTime)
@@ -108,9 +117,14 @@ namespace ZombieRoids
             {
                 m_oPausedState.Draw(a_oGameTime);
             }
+            Color oTint =
+                Color.Lerp(GameConsts.PauseOverlayEndTint,
+                           GameConsts.PauseOverlayStartTint,
+                           (float)(m_tsTimeUntilFadedIn.TotalSeconds /
+                                   GameConsts.PauseFadeInTime.TotalSeconds));
             m_oSpriteBatch.Begin();
             m_oSpriteBatch.Draw(GameAssets.PauseOverlayTexture,
-                                m_rctViewport, GameConsts.PauseOverlayTint);
+                                m_rctViewport, oTint);
             m_oSpriteBatch.End();
         }
     }
