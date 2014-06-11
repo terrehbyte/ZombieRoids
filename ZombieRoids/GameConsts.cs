@@ -9,13 +9,13 @@
 ///     June 6, 2014
 /// </description></item>
 /// <item><term>Last Modified By</term><description>
-///     Terry Nguyen
+///     Elizabeth Lowry
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 10, 2014
+///     June 11, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Merging 'dev' into 'feature-terry'
+///     Adding pause screen fade-in time
 /// </description></item>
 /// </list>
 
@@ -62,16 +62,31 @@ namespace ZombieRoids
             get { return GetIfLoaded(m_sUIConfirmSnd); }
         }
         private static string m_sUIConfirmSnd;      // UI Confirm Sound Path
+        public static TimeSpan PauseFadeInTime
+        {
+            get { return GetIfLoaded(m_tsPauseFadeInTime); }
+        }
+        private static TimeSpan m_tsPauseFadeInTime;
         public static string PauseOverlayTextureName
         {
             get { return GetIfLoaded(m_sPauseOverlayTextureName); }
         }
         private static string m_sPauseOverlayTextureName;
-        public static Color PauseOverlayTint
+        public static Color PauseOverlayStartTint
         {
-            get { return GetIfLoaded(m_oPauseOverlayTint); }
+            get { return GetIfLoaded(m_oPauseOverlayStartTint); }
         }
-        private static Color m_oPauseOverlayTint;
+        private static Color m_oPauseOverlayStartTint;
+        public static Color PauseOverlayEndTint
+        {
+            get { return GetIfLoaded(m_oPauseOverlayEndTint); }
+        }
+        private static Color m_oPauseOverlayEndTint;
+        public static string PauseScreenMusicName
+        {
+            get { return GetIfLoaded(m_sUIPSM); }
+        }
+        private static string m_sUIPSM;             // PSM Path
         public static TimeSpan GameOverDuration
         {
             get { return GetIfLoaded(m_tsGameOverDuration); }
@@ -198,11 +213,6 @@ namespace ZombieRoids
             get { return GetIfLoaded(m_sUIBGM); }
         }
         private static string m_sUIBGM;             // BGM Path
-        public static string PauseScreenMusicName
-        {
-            get { return GetIfLoaded(m_sUIPSM); }
-        }
-        private static string m_sUIPSM;             // PSM Path
         public static string LifeGainSoundName
         {
             get { return GetIfLoaded(m_sUILifeGainSnd); }
@@ -598,8 +608,11 @@ namespace ZombieRoids
             {
                 Reload(a_oMenuNode, "SelectSound", ref m_sUISelectSnd);
                 Reload(a_oMenuNode, "ConfirmSound", ref m_sUIConfirmSnd);
+                Reload(a_oMenuNode, "PauseFadeInTime", ref m_tsPauseFadeInTime);
                 Reload(a_oMenuNode, "PauseOverlay", ref m_sPauseOverlayTextureName);
-                Reload(a_oMenuNode, "PauseOverlayTint", ref m_oPauseOverlayTint);
+                Reload(a_oMenuNode, "PauseOverlayStartTint", ref m_oPauseOverlayEndTint);
+                Reload(a_oMenuNode, "PauseOverlayEndTint", ref m_oPauseOverlayEndTint);
+                Reload(a_oMenuNode, "PauseScreenMusic", ref m_sUIPSM);
                 Reload(a_oMenuNode, "GameOverDuration", ref m_tsGameOverDuration);
                 Reload(a_oMenuNode, "GameOverOverlay", ref m_sGameOverOverlayTextureName);
                 Reload(a_oMenuNode, "GameOverOverlayStartTint", ref m_oGameOverOverlayStartTint);
@@ -640,7 +653,6 @@ namespace ZombieRoids
                 Reload(a_oWorldNode, "Overlay2Texture", ref m_sOverlay2TextureName);
                 Reload(a_oWorldNode, "Overlay2Speed", ref m_iOverlay2Speed);
                 Reload(a_oWorldNode, "BackgroundMusic", ref m_sUIBGM);
-                Reload(a_oWorldNode, "PauseScreenMusic", ref m_sUIPSM);
                 Reload(a_oWorldNode, "LifeGainSound", ref m_sUILifeGainSnd);
             }
         }
