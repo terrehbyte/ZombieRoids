@@ -9,13 +9,13 @@
 ///     May 27, 2014
 /// </description></item>
 /// <item><term>Last Modified By</term><description>
-///     Terry Nguyen
+///     Elizabeth Lowry
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 4, 2014
+///     June 10, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Refactoring Game1 class
+///     Refactoring GameState.Context
 /// </description></item>
 /// </list>
 
@@ -131,15 +131,34 @@ namespace ZombieRoids
         public override void Initialize(Texture2D a_tTexture, Vector2 a_v2Position)
         {
             base.Initialize(a_tTexture, a_v2Position);
+            Reset(a_v2Position);
+        }
+
+        /// <summary>
+        /// Sets up the player at the start of a new game
+        /// </summary>
+        /// <param name="a_v2Position">Position to put the player in</param>
+        public void Reset(Vector2 a_v2Position)
+        {
+            foreach (Bullet oBullet in m_lbulBullets)
+            {
+                oBullet.Active = false;
+            }
+            Position = a_v2Position;
             HitPoints = GameConsts.PlayerHP;
+            Lives = GameConsts.PlayerLives;
+            Invulnerable = false;
+            m_tsInvulnTimeRemaining = TimeSpan.Zero;
+            m_tsTimeSinceLastShot = GameConsts.PlayerFireInterval;
             Active = true;
+            m_bTeleportKeyDown = false;
         }
 
         /// <summary>
         /// Perform Player game logic
         /// </summary>
         /// <param name="gameTime">GameTime</param>
-        public override void Update(Game1.Context a_oContext)
+        public override void Update(GameState.Context a_oContext)
         {
             // Update position
             base.Update(a_oContext);
@@ -201,9 +220,9 @@ namespace ZombieRoids
             }
 
             // Check for collision with enemies
-            if (Alive)
+            if (Alive && a_oContext.state is PlayState)
             {
-                foreach (Enemy oEnemy in a_oContext.enemies)
+                foreach (Enemy oEnemy in (a_oContext.state as PlayState).Enemies)
                 {
                     if (Collision.CheckCollision(this, oEnemy))
                     {
@@ -227,7 +246,7 @@ namespace ZombieRoids
         /// <summary>
         /// Process input for other actions performed by player
         /// </summary>
-        private void OtherActions(Game1.Context a_oContext)
+        private void OtherActions(GameState.Context a_oContext)
         {
             // Grab Keyboard State
             KeyboardState kbCurKeys = Keyboard.GetState();
@@ -268,7 +287,7 @@ namespace ZombieRoids
         /// Fire a bullet
         /// </summary>
         /// <param name="a_gtGameTime">Current/elapsed time</param>
-        private void Fire(Game1.Context a_oContext)
+        private void Fire(GameState.Context a_oContext)
         {
             // If it's been long enough since the last shot,
             if (m_tsTimeSinceLastShot > GameConsts.PlayerFireInterval)
@@ -308,7 +327,7 @@ namespace ZombieRoids
         /// Randomly dumps the player somewhere on-screen
         /// </summary>
         /// <param name="a_oContext">Current game context</param>
-        private void Teleport(Game1.Context a_oContext)
+        private void Teleport(GameState.Context a_oContext)
         {
             // Reassign position to randomized location
             Position =

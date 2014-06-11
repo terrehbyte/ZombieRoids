@@ -9,13 +9,13 @@
 ///     June 2, 2014
 /// </description></item>
 /// <item><term>Last Modified By</term><description>
-///     Terry Nguyen
+///     Elizabeth Lowry
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 5, 2014
+///     June 10, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Added constant rotation speed applied every frame
+///     Refactoring GameState.Context
 /// </description></item>
 /// </list>
 
@@ -47,7 +47,7 @@ namespace ZombieRoids
         /// <param name="a_oShooter">Entity firing the bullet</param>
         /// <param name="a_tTexture">Bullet image</param>
         /// <param name="a_oContext">Current game context</param>
-        public Bullet(Entity a_oShooter, Texture2D a_tTexture, Game1.Context a_oContext)
+        public Bullet(Entity a_oShooter, Texture2D a_tTexture, GameState.Context a_oContext)
         {
             Initialize(a_tTexture, a_oShooter.Position);
             if (null != a_oShooter)
@@ -61,7 +61,7 @@ namespace ZombieRoids
         /// </summary>
         /// <param name="a_oShooter">Entity firing the bullet</param>
         /// <param name="a_oContext">Current game context</param>
-        public void Fire(Entity a_oShooter, Game1.Context a_oContext)
+        public void Fire(Entity a_oShooter, GameState.Context a_oContext)
         {
             // Set up bullet
             Active = true;
@@ -81,7 +81,7 @@ namespace ZombieRoids
         /// Updates bullet position and recycles bullets that leave the screen
         /// </summary>
         /// <param name="a_oContext"></param>
-        public override void Update(Game1.Context a_oContext)
+        public override void Update(GameState.Context a_oContext)
         {
             // Only update if active
             if (Active)
@@ -89,14 +89,18 @@ namespace ZombieRoids
                 base.Update(a_oContext);
 
                 // Check for collision with enemy
-                foreach (Enemy oEnemy in a_oContext.enemies.Where(enemy => enemy.Alive))
+                if (a_oContext.state is PlayState)
                 {
-                    if (Collision.CheckCollision(this, oEnemy))
+                    PlayState oState = a_oContext.state as PlayState;
+                    foreach (Enemy oEnemy in oState.Enemies.Where(enemy => enemy.Alive))
                     {
-                        a_oContext.score.Value += oEnemy.Value;
-                        oEnemy.HitPoints -= GameConsts.BulletDamage;
-                        Active = false;
-                        break;
+                        if (Collision.CheckCollision(this, oEnemy))
+                        {
+                            oState.Score += oEnemy.Value;
+                            oEnemy.HitPoints -= GameConsts.BulletDamage;
+                            Active = false;
+                            break;
+                        }
                     }
                 }
 

@@ -57,19 +57,26 @@
     <Compile Include="AssetConsts.cs" />
     <Compile Include="Bullet.cs" />
     <Compile Include="BulletManager.cs" />
+    <Compile Include="Button.cs" />
     <Compile Include="Collision.cs" />
     <Compile Include="Enemy.cs" />
     <Compile Include="Engine.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="GameConsts.cs" />
+    <Compile Include="GameOverState.cs" />
+    <Compile Include="GameState.cs" />
+    <Compile Include="MainMenuState.cs" />
     <Compile Include="ParallaxingBackground.cs" />
+    <Compile Include="PauseState.cs" />
     <Compile Include="Player.cs" />
+    <Compile Include="PlayState.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Ref.cs" />
     <Compile Include="RotatedRectangle.cs" />
     <Compile Include="Sprite.cs" />
+    <Compile Include="StateStack.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="OpenTK">

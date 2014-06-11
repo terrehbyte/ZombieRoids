@@ -9,13 +9,13 @@
 ///     June 6, 2014
 /// </description></item>
 /// <item><term>Last Modified By</term><description>
-///     Elizabeth Lowry
+///     Terry Nguyen
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 9, 2014
+///     June 10, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Refactoring
+///     Merging 'dev' into 'feature-terry'
 /// </description></item>
 /// </list>
 
@@ -49,6 +49,96 @@ namespace ZombieRoids
             }
             return a_value;
         }
+
+        #region Menu constants
+
+        public static string SelectSoundName
+        {
+            get { return GetIfLoaded(m_sUISelectSnd); }
+        }
+        private static string m_sUISelectSnd;       // UI Select Sound Path
+        public static string ConfirmSoundName
+        {
+            get { return GetIfLoaded(m_sUIConfirmSnd); }
+        }
+        private static string m_sUIConfirmSnd;      // UI Confirm Sound Path
+        public static string PauseOverlayTextureName
+        {
+            get { return GetIfLoaded(m_sPauseOverlayTextureName); }
+        }
+        private static string m_sPauseOverlayTextureName;
+        public static Color PauseOverlayTint
+        {
+            get { return GetIfLoaded(m_oPauseOverlayTint); }
+        }
+        private static Color m_oPauseOverlayTint;
+        public static TimeSpan GameOverDuration
+        {
+            get { return GetIfLoaded(m_tsGameOverDuration); }
+        }
+        private static TimeSpan m_tsGameOverDuration;
+        public static string GameOverOverlayTextureName
+        {
+            get { return GetIfLoaded(m_sGameOverOverlayTextureName); }
+        }
+        private static string m_sGameOverOverlayTextureName;
+        public static Color GameOverOverlayStartTint
+        {
+            get { return GetIfLoaded(m_oGameOverOverlayStartTint); }
+        }
+        private static Color m_oGameOverOverlayStartTint;
+        public static Color GameOverOverlayEndTint
+        {
+            get { return GetIfLoaded(m_oGameOverOverlayEndTint); }
+        }
+        private static Color m_oGameOverOverlayEndTint;
+        public static string TitleScreenTextureName
+        {
+            get { return GetIfLoaded(m_sTitleScreenTextureName); }
+        }
+        private static string m_sTitleScreenTextureName;
+        public static Color ButtonClickTint
+        {
+            get { return GetIfLoaded(m_oButtonClickTint); }
+        }
+        private static Color m_oButtonClickTint;
+        public static Color ButtonHoverTint
+        {
+            get { return GetIfLoaded(m_oButtonHoverTint); }
+        }
+        private static Color m_oButtonHoverTint;
+        public static Color ButtonNormalTint
+        {
+            get { return GetIfLoaded(m_oButtonNormalTint); }
+        }
+        private static Color m_oButtonNormalTint;
+        public static Color ButtonSelectedTint
+        {
+            get { return GetIfLoaded(m_oButtonSelectedTint); }
+        }
+        private static Color m_oButtonSelectedTint;
+        public static string NewGameButtonTextureName
+        {
+            get { return GetIfLoaded(m_sNewGameButtonTextureName); }
+        }
+        private static string m_sNewGameButtonTextureName;
+        public static Vector2 NewGameButtonPosition
+        {
+            get { return GetIfLoaded(m_v2NewGameButtonPosition); }
+        }
+        private static Vector2 m_v2NewGameButtonPosition;
+        public static string ExitButtonTextureName
+        {
+            get { return GetIfLoaded(m_sExitButtonTextureName); }
+        }
+        private static string m_sExitButtonTextureName;
+        public static Vector2 ExitButtonPosition
+        {
+            get { return GetIfLoaded(m_v2ExitButtonPosition); }
+        }
+        private static Vector2 m_v2ExitButtonPosition;
+
+        #endregion
 
         #region World constants
 
@@ -108,41 +198,11 @@ namespace ZombieRoids
             get { return GetIfLoaded(m_sUIBGM); }
         }
         private static string m_sUIBGM;             // BGM Path
-        public static string SelectSoundName
-        {
-            get { return GetIfLoaded(m_sUISelectSnd); }
-        }
-        private static string m_sUISelectSnd;       // UI Select Sound Path
-        public static string ConfirmSoundName
-        {
-            get { return GetIfLoaded(m_sUIConfirmSnd); }
-        }
-        private static string m_sUIConfirmSnd;      // UI Confirm Sound Path
         public static string LifeGainSoundName
         {
             get { return GetIfLoaded(m_sUILifeGainSnd); }
         }
         private static string m_sUILifeGainSnd;     // UI Life Gain Sound Path
-        public static string PauseOverlayTextureName
-        {
-            get { return GetIfLoaded(m_sPauseOverlayTextureName); }
-        }
-        private static string m_sPauseOverlayTextureName;
-        public static Color PauseOverlayTint
-        {
-            get { return GetIfLoaded(m_oPauseOverlayTint); }
-        }
-        private static Color m_oPauseOverlayTint;
-        public static string GameOverOverlayTextureName
-        {
-            get { return GetIfLoaded(m_sGameOverOverlayTextureName); }
-        }
-        private static string m_sGameOverOverlayTextureName;
-        public static Color GameOverOverlayTint
-        {
-            get { return GetIfLoaded(m_oGameOverOverlayTint); }
-        }
-        private static Color m_oGameOverOverlayTint;
 
         #endregion
 
@@ -406,6 +466,7 @@ namespace ZombieRoids
         /// <param name="a_oXMLDoc">Source XML Document</param>
         public static void Reload(XmlDocument a_oXMLDoc)
         {
+            ReloadMenuConstants(a_oXMLDoc.SelectSingleNode(".//MenuConstants"));
             ReloadWorldConstants(a_oXMLDoc.SelectSingleNode(".//WorldConstants"));
             ReloadPlayerConstants(a_oXMLDoc.SelectSingleNode(".//PlayerConstants"));
             ReloadBulletConstants(a_oXMLDoc.SelectSingleNode(".//BulletConstants"));
@@ -523,7 +584,37 @@ namespace ZombieRoids
         #region Load groups of values
 
         /// <summary>
-        /// Reloads world constants from atributes of the given XML node
+        /// Reloads menu system constants from attributes of the given XML node
+        /// </summary>
+        /// <param name="a_oMenuNode">Node to load values from</param>
+        private static void ReloadMenuConstants(XmlNode a_oMenuNode)
+        {
+            if (null != a_oMenuNode)
+            {
+                Reload(a_oMenuNode, "SelectSound", ref m_sUISelectSnd);
+                Reload(a_oMenuNode, "ConfirmSound", ref m_sUIConfirmSnd);
+                Reload(a_oMenuNode, "PauseOverlay", ref m_sPauseOverlayTextureName);
+                Reload(a_oMenuNode, "PauseOverlayTint", ref m_oPauseOverlayTint);
+                Reload(a_oMenuNode, "GameOverDuration", ref m_tsGameOverDuration);
+                Reload(a_oMenuNode, "GameOverOverlay", ref m_sGameOverOverlayTextureName);
+                Reload(a_oMenuNode, "GameOverOverlayStartTint", ref m_oGameOverOverlayStartTint);
+                Reload(a_oMenuNode, "GameOverOverlayEndTint", ref m_oGameOverOverlayEndTint);
+                Reload(a_oMenuNode, "TitleScreen", ref m_sTitleScreenTextureName);
+                Reload(a_oMenuNode, "ButtonClickTint", ref m_oButtonClickTint);
+                Reload(a_oMenuNode, "ButtonHoverTint", ref m_oButtonHoverTint);
+                Reload(a_oMenuNode, "ButtonNormalTint", ref m_oButtonNormalTint);
+                Reload(a_oMenuNode, "ButtonSelectedTint", ref m_oButtonSelectedTint);
+                Reload(a_oMenuNode, "NewGameButton", ref m_sNewGameButtonTextureName);
+                Reload(a_oMenuNode, "NewGameButtonX", ref m_v2NewGameButtonPosition.X);
+                Reload(a_oMenuNode, "NewGameButtonY", ref m_v2NewGameButtonPosition.Y);
+                Reload(a_oMenuNode, "ExitButton", ref m_sExitButtonTextureName);
+                Reload(a_oMenuNode, "ExitButtonX", ref m_v2ExitButtonPosition.X);
+                Reload(a_oMenuNode, "ExitButtonY", ref m_v2ExitButtonPosition.Y);
+            }
+        }
+
+        /// <summary>
+        /// Reloads world constants from attributes of the given XML node
         /// </summary>
         /// <param name="a_oWorldNode">Node to load values from</param>
         private static void ReloadWorldConstants(XmlNode a_oWorldNode)
@@ -544,13 +635,7 @@ namespace ZombieRoids
                 Reload(a_oWorldNode, "Overlay2Texture", ref m_sOverlay2TextureName);
                 Reload(a_oWorldNode, "Overlay2Speed", ref m_iOverlay2Speed);
                 Reload(a_oWorldNode, "BackgroundMusic", ref m_sUIBGM);
-                Reload(a_oWorldNode, "SelectSound", ref m_sUISelectSnd);
-                Reload(a_oWorldNode, "ConfirmSound", ref m_sUIConfirmSnd);
                 Reload(a_oWorldNode, "LifeGainSound", ref m_sUILifeGainSnd);
-                Reload(a_oWorldNode, "PauseOverlay", ref m_sPauseOverlayTextureName);
-                Reload(a_oWorldNode, "PauseOverlayTint", ref m_oPauseOverlayTint);
-                Reload(a_oWorldNode, "GameOverOverlay", ref m_sGameOverOverlayTextureName);
-                Reload(a_oWorldNode, "GameOverOverlayTint", ref m_oGameOverOverlayTint);
             }
         }
 

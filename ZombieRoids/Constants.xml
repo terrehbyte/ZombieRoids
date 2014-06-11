@@ -1,14 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <GameConstants>
+  <MenuConstants SelectSound="Sounds/StarThrow" ConfirmSound="Sounds/Teleport"
+                 PauseOverlay="Graphics/Menu/PausedOverlay" PauseOverlayTint="#80FF0000"
+                 GameOverDuration="5" GameOverOverlay="Graphics/Menu/GameOverOverlay"
+                 GameOverOverlayStartTint="#00FF0000" GameOverOverlayEndTint="#FFFF0000"
+                 TitleScreen="Graphics/Menu/TitleScreen"
+                 ButtonClickTint="#FFFF0000" ButtonHoverTint="#C0FF0000"
+                 ButtonNormalTint="#80FFFFFF" ButtonSelectedTint="#80FF0000"
+                 NewGameButton="Graphics/Menu/NewGameButton" NewGameButtonX="240" NewGameButtonY="360"
+                 ExitButton="Graphics/Menu/ExitButton" ExitButtonX="600" ExitButtonY="360" />
   <WorldConstants Background="Graphics/World/Floor" ScoreFont="GameFont"
                   LifeGainPoints="10000" ScoreX="25" ScoreY="25" LivesX="25"
                   LivesY="50" EnemyCountX="25" EnemyCount="75"
                   Overlay1Texture="Graphics/World/Fog 1" Overlay1Speed="-30"
                   Overlay2Texture="Graphics/World/Fog 2" Overlay2Speed="-60"
-                  SelectSound="Sounds/StarThrow" ConfirmSound="Sounds/StarThrow"
-                  BackgroundMusic="Sounds/Background" LifeGainSound="Sounds/ExtraLife"
-                  PauseOverlay="Graphics/World/PausedOverlay" PauseOverlayTint="80FF0000"
-                  GameOverOverlay="Graphics/World/GameOverOverlay" GameOverOverlayTint="80FF0000" />
+                  BackgroundMusic="Sounds/Background" LifeGainSound="Sounds/ExtraLife" />
   <PlayerConstants BaseHP="100" Speed="150" ShotDelay="0.2" NormalTint="#FFFFFFFF"
                    InvulnerableTint="#D0FF0000" InvulnerabilityPeriod="2.0"
                    InitialLives="3" Texture="Graphics/Player/Player"

@@ -9,13 +9,13 @@
 ///     May 29, 2014
 /// </description></item>
 /// <item><term>Last Modified By</term><description>
-///     Terry Nguyen
+///     Elizabeth Lowry
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 5, 2014
+///     June 10, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Enemy fragments now decrease in size
+///     Refactoring GameState.Context
 /// </description></item>
 /// </list>
 
@@ -65,7 +65,7 @@ namespace ZombieRoids
         /// Enemy becomes inactive if it leaves the screen
         /// </summary>
         /// <param name="a_oContext"></param>
-        public override void Update(Game1.Context a_oContext)
+        public override void Update(GameState.Context a_oContext)
         {
             base.Update(a_oContext);
 
@@ -75,8 +75,11 @@ namespace ZombieRoids
                 if (!Alive)
                 {
                     // Birth fragments if any
-                    Spawn(a_oContext);
-                    a_oContext.enemies.Remove(this);
+                    if (a_oContext.state is PlayState)
+                    {
+                        Spawn(a_oContext);
+                        (a_oContext.state as PlayState).Enemies.Remove(this);
+                    }
 
                     // Play death sound
                     GameAssets.ZombieDeathSound.Play();
@@ -89,8 +92,13 @@ namespace ZombieRoids
         /// </summary>
         /// <param name="a_oContext"></param>
         /// <param name="a_tTexture"></param>
-        public static void Spawn(Game1.Context a_oContext, Texture2D a_tTexture)
+        public static void Spawn(GameState.Context a_oContext, Texture2D a_tTexture)
         {
+            if (!(a_oContext.state is PlayState))
+            {
+                return;
+            }
+
             // Random position offscreen
             Vector2 v2Position =
                 new Vector2((float)(a_oContext.random.NextDouble() * 2 - 1),
@@ -157,15 +165,20 @@ namespace ZombieRoids
             oEnemy.Initialize(a_tTexture, v2Position);
 
             // Add the enemy to the list
-            a_oContext.enemies.Add(oEnemy);
+            (a_oContext.state as PlayState).Enemies.Add(oEnemy);
         }
 
         /// <summary>
         /// Create enemies from fragments of this enemy
         /// </summary>
         /// <param name="a_oContext"></param>
-        public void Spawn(Game1.Context a_oContext)
+        public void Spawn(GameState.Context a_oContext)
         {
+            if (!(a_oContext.state is PlayState))
+            {
+                return;
+            }
+
             for (int i = 0; i < FragmentCount; ++i)
             {
                 Enemy eneNewFoe = new Enemy();
@@ -211,7 +224,7 @@ namespace ZombieRoids
 
                 // New enemy breaks into fewer fragments than this one
                 eneNewFoe.FragmentCount = FragmentCount - 1;
-                a_oContext.enemies.Add(eneNewFoe);
+                (a_oContext.state as PlayState).Enemies.Add(eneNewFoe);
             }
         }
     }
