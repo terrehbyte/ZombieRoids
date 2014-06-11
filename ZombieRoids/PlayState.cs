@@ -12,10 +12,10 @@
 ///     Elizabeth Lowry
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 10, 2014
+///     June 11, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Added logic for moving to gameplay from mainmenu
+///     Implementing Pause state
 /// </description></item>
 /// </list>
 using System;
@@ -58,9 +58,6 @@ namespace ZombieRoids
         // Background music loop
         private SoundEffectInstance m_oBGM;
 
-        // Game is paused
-        public bool Paused { get; set; }
-
         // Game over
         public bool GameOver
         {
@@ -93,13 +90,47 @@ namespace ZombieRoids
 
             // Track enemies
             m_oEnemies = new HashSet<Enemy>();
+
+            // if background music has been loaded but isn't playing, play it
+            if (null != m_oBGM)
+            {
+                if (SoundState.Paused == m_oBGM.State)
+                {
+                    m_oBGM.Resume();
+                }
+                else if (SoundState.Stopped == m_oBGM.State)
+                {
+                    m_oBGM.Play();
+                }
+            }
         }
 
         public override void End()
         {
             base.End();
-
             m_oBGM.Stop();
+        }
+
+        public override void Suspend()
+        {
+            base.Suspend();
+            if (SoundState.Playing == m_oBGM.State)
+            {
+                m_oBGM.Pause();
+            }
+        }
+
+        public override void Resume()
+        {
+            base.Resume();
+            if (SoundState.Paused == m_oBGM.State)
+            {
+                m_oBGM.Resume();
+            }
+            else if (SoundState.Stopped == m_oBGM.State)
+            {
+                m_oBGM.Play();
+            }
         }
 
         protected override void LoadContent()
@@ -152,38 +183,34 @@ namespace ZombieRoids
                 }
             }
 
-            // If not paused, update game state
-            if (!Paused)
+            // Make a game context object for passing game state information to
+            // entity Update functions
+            Context oContext;
+            oContext.time = a_oGameTime;
+            oContext.viewport = m_rctViewport;
+            oContext.random = m_rngRandom;
+            oContext.state = this;
+
+            // Update player and enemies
+            m_oPlayer.Update(oContext);
+            UpdateEnemies(oContext);
+
+            // If the new life point threshold has been passed,
+            if (Score == m_iNextLifeScore)
             {
-                // Make a game context object for passing game state information to
-                // entity Update functions
-                Context oContext;
-                oContext.time = a_oGameTime;
-                oContext.viewport = m_rctViewport;
-                oContext.random = m_rngRandom;
-                oContext.state = this;
+                // add a life,
+                ++m_oPlayer.Lives;
 
-                // Update player and enemies
-                m_oPlayer.Update(oContext);
-                UpdateEnemies(oContext);
+                /// set a new threshold,
+                m_iNextLifeScore += GameConsts.LifeGainPoints;
 
-                // If the new life point threshold has been passed,
-                if (Score == m_iNextLifeScore)
-                {
-                    // add a life,
-                    ++m_oPlayer.Lives;
-
-                    /// set a new threshold,
-                    m_iNextLifeScore += GameConsts.LifeGainPoints;
-
-                    // and play the new life sound
-                    GameAssets.LifeGainSound.Play();
-                }
-
-                // Update parallaxing background
-                m_pbgBGLayer1.Update(a_oGameTime);
-                m_pbgBGLayer2.Update(a_oGameTime);
+                // and play the new life sound
+                GameAssets.LifeGainSound.Play();
             }
+
+            // Update parallaxing background
+            m_pbgBGLayer1.Update(a_oGameTime);
+            m_pbgBGLayer2.Update(a_oGameTime);
         }
 
         public override void Draw(GameTime a_oGameTime)
@@ -234,12 +261,6 @@ namespace ZombieRoids
                 m_oSpriteBatch.Draw(GameAssets.GameOverOverlayTexture,
                                     m_rctViewport, oTint);
             }
-            // If paused, draw pause overlay
-            else if (Paused)
-            {
-                m_oSpriteBatch.Draw(GameAssets.PauseOverlayTexture,
-                                    m_rctViewport, GameConsts.PauseOverlayTint);
-            }
 
             // Finish drawing
             m_oSpriteBatch.End();
@@ -274,8 +295,8 @@ namespace ZombieRoids
                 }
                 else
                 {
-                    // Otherwise, toggle pause state
-                    Paused = !Paused;
+                    // Otherwise, pause
+                    StateStack.AddState(StateStack.State.PAUSE);
                 }
             }
         }
@@ -356,7 +377,11 @@ namespace ZombieRoids
             m_oEnemies.Clear();
             m_oPlayer.Reset(new Vector2(m_rctViewport.Center.X,
                                         m_rctViewport.Center.Y));
-            Paused = false;
+            if (m_oBGM.State != SoundState.Stopped)
+            {
+                m_oBGM.Stop();
+            }
+            m_oBGM.Play();
         }
 
         /// <summary>

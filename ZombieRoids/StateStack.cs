@@ -9,15 +9,17 @@
 ///     June 10, 2014
 /// </description></item>
 /// <item><term>Last Modified By</term><description>
-///     Terry Nguyen
+///     Elizabeth Lowry
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 10, 2014
+///     June 11, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Added logic for moving to gameplay from mainmenu
+///     Implementing Pause state
 /// </description></item>
-/// </list>using System;
+/// </list>
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -69,6 +71,12 @@ namespace ZombieRoids
         /// <param name="a_oState"></param>
         public static  void AddState(GameState a_oState)
         {
+            // Suspend current state, if any
+            if (0 != StackCount)
+            {
+                m_oStates.Peek().Suspend();
+            }
+
             // Add state to the stack
             m_oStates.Push(a_oState);
 
@@ -102,7 +110,10 @@ namespace ZombieRoids
                     }
                 case (State.PAUSE):
                     {
-                        throw new System.NotImplementedException("Pause not implemented!");
+                        AddState(
+                            new PauseState(m_oGame,
+                                           0 == StackCount ? null
+                                                           : m_oStates.Peek()));
                         break;
                     }
                 default:
@@ -117,8 +128,15 @@ namespace ZombieRoids
         /// </summary>
         public static void PopState()
         {
+            // Remove current state
             m_oStates.Peek().End();
             m_oStates.Pop();
+
+            // Resume previous state
+            if (0 != StackCount)
+            {
+                m_oStates.Peek().Resume();
+            }
         }
 
         /// <summary>

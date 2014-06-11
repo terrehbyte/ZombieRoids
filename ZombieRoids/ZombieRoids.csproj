@@ -68,6 +68,7 @@
     <Compile Include="GameState.cs" />
     <Compile Include="MainMenuState.cs" />
     <Compile Include="ParallaxingBackground.cs" />
+    <Compile Include="PauseState.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="PlayState.cs" />
     <Compile Include="Program.cs" />

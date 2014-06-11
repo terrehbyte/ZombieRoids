@@ -12,10 +12,10 @@
 ///     Elizabeth Lowry
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 10, 2014
+///     June 11, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Refactoring GameState.Context
+///     Implementing Pause state
 /// </description></item>
 /// </list>
 using System;
@@ -117,5 +117,17 @@ namespace ZombieRoids
         {
             UnloadContent();
         }
+
+        /// <summary>
+        /// Called when another gamestate is pused onto the stack on top of this
+        /// one.
+        /// </summary>
+        public virtual void Suspend() { }
+
+        /// <summary>
+        /// Called when another gamestate directly above this one in the stack
+        /// is popped, making this state the current state once again.
+        /// </summary>
+        public virtual void Resume() { }
     }
 }
