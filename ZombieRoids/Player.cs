@@ -12,10 +12,10 @@
 ///     Elizabeth Lowry
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 11, 2014
+///     June 14, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Animating Zombie
+///     Particle System
 /// </description></item>
 /// </list>
 
@@ -43,6 +43,9 @@ namespace ZombieRoids
 
         // Time Until Invuln Ends
         private TimeSpan m_tsInvulnTimeRemaining;
+
+        // For dropping smoke bombs when teleporting
+        private ParticleEmitter m_oEmitter = new ParticleEmitter();
 
         /// <summary>
         /// Is the player currently immune to damage?
@@ -158,6 +161,7 @@ namespace ZombieRoids
             m_tsTimeSinceLastShot = GameConsts.PlayerFireInterval;
             Active = true;
             m_bTeleportKeyDown = false;
+            m_oEmitter.RecycleAll();
         }
 
         /// <summary>
@@ -168,6 +172,9 @@ namespace ZombieRoids
         {
             // Update position
             base.Update(a_oContext);
+
+            // Update smoke bomb animations
+            m_oEmitter.Update(a_oContext);
 
             if (Active)
             {
@@ -335,6 +342,9 @@ namespace ZombieRoids
         /// <param name="a_oContext">Current game context</param>
         private void Teleport(GameState.Context a_oContext)
         {
+            // Drop smoke bomb at old location
+            DropSmokeBomb();
+
             // Reassign position to randomized location
             Position =
                 new Vector2(a_oContext.random.Next(a_oContext.viewport.Left,
@@ -342,8 +352,26 @@ namespace ZombieRoids
                             a_oContext.random.Next(a_oContext.viewport.Top,
                                                    a_oContext.viewport.Bottom));
 
+            // Drop smoke bomb at new location
+            DropSmokeBomb();
+
             // Play Sound
             GameAssets.PlayerTeleportSound.Play();
+        }
+
+        /// <summary>
+        /// Drop a smoke bomb at the player's current location
+        /// </summary>
+        private void DropSmokeBomb()
+        {
+            Animation oBomb = m_oEmitter.Emit(GameAssets.PlayerTeleportTexture,
+                                              Position,
+                                              GameConsts.PlayerTeleportColumns,
+                                              GameConsts.PlayerTeleportRows,
+                                              GameConsts.PlayerTeleportFrames,
+                                              GameConsts.PlayerTeleportFPS,
+                                              Color.White, Vector2.One, false);
+            oBomb.HideWhenComplete();
         }
 
         /// <summary>
@@ -369,6 +397,9 @@ namespace ZombieRoids
         /// <param name="a_sbSpriteBatch">SpriteBatch</param>
         public override void Draw(SpriteBatch a_sbSpriteBatch)
         {
+            // Draw smoke bombs
+            m_oEmitter.Draw(a_sbSpriteBatch);
+
             // Draw bullets
             for (int i = 0; i < m_lbulBullets.Count; i++)
             {

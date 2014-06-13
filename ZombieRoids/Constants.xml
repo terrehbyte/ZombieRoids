@@ -21,7 +21,9 @@
                    InvulnerableTint="#C0FF0000" InvulnerabilityPeriod="2.0"
                    InitialLives="3" Texture="Graphics/Player/Player"
                    ShootSound="Sounds/StarThrow" DeathSound="Sounds/PlayerDeath"
-                   SpawnSound="Sounds/Teleport" TeleportSound="Sounds/Teleport" />
+                   SpawnSound="Sounds/Teleport" TeleportSound="Sounds/Teleport"
+                   TeleportTexture="Graphics/Player/CloudAnimation" TeleportFPS="16"
+                   TeleportFrames="16" TeleportRows="2" TeleportColumns="8"/>
   <BulletConstants LifeTime="2.0" Speed="250" Spin="10" Damage="10"
                    Texture="Graphics/Player/Star" />
   <ZombieConstants BaseHP="10" Speed="120" Damage="10" Value="100"

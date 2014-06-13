@@ -12,10 +12,10 @@
 ///     Elizabeth Lowry
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 11, 2014
+///     June 14, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Animating Zombie
+///     Particle System
 /// </description></item>
 /// </list>
 
@@ -214,11 +214,11 @@ namespace ZombieRoids
         /// </summary>
         /// <param name="a_tTexture">Texture used for drawing</param>
         /// <param name="a_v2Position">Initial position of sprite</param>
-        public virtual void Initialize(Texture2D a_tTexture,
+        public override void Initialize(Texture2D a_tTexture,
                                        Vector2 a_v2Position)
         {
-            Initialize(a_tTexture, a_v2Position, 1, 1, 1,
-                       0.0f, Color.White, Vector2.One, true);
+            base.Initialize(a_tTexture, a_v2Position);
+            Init();
         }
         public override void Initialize(Texture2D a_tTexture, Vector2 a_v2Pos,
                                                 int a_iColumns, int a_iRows,
@@ -229,7 +229,10 @@ namespace ZombieRoids
             base.Initialize(a_tTexture, a_v2Pos, a_iColumns, a_iRows,
                             a_iFrameCount, a_fFPS, a_cColor, a_v2Scale,
                             a_bLooping);
-
+            Init();
+        }
+        private void Init()
+        {
             // Assign OnScreen
             OnScreen = true;
 
@@ -245,7 +248,7 @@ namespace ZombieRoids
         /// Update logic for this entity, if it needs updating each frame
         /// </summary>
         /// <param name="a_oContext"></param>
-        public virtual void Update(GameState.Context a_oContext)
+        public override void Update(GameState.Context a_oContext)
         {
 #if DEBUG
             // In debug mode, throw an exception if this is called before the
@@ -258,7 +261,7 @@ namespace ZombieRoids
             if (Active)
             {
                 // Animate
-                Update(a_oContext.time);
+                base.Update(a_oContext);
 
                 // Update Position
                 Vector2 v2OldPosition = Position;

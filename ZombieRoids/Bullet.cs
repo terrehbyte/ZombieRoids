@@ -12,10 +12,10 @@
 ///     Elizabeth Lowry
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 10, 2014
+///     June 14, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Refactoring GameState.Context
+///     Particle System
 /// </description></item>
 /// </list>
 
@@ -37,9 +37,6 @@ namespace ZombieRoids
     {
         // Time to Cull Bullet
         private TimeSpan m_tsLifeRemaining;
-
-        // Bullet sound effect
-        SoundEffect bulletSound;
 
         /// <summary>
         /// Constructs a new bullet fired by the given entity
