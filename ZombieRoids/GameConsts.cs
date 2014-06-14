@@ -12,10 +12,10 @@
 ///     Elizabeth Lowry
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 11, 2014
+///     June 14, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Animating Zombie
+///     Particle System
 /// </description></item>
 /// </list>
 
@@ -284,6 +284,31 @@ namespace ZombieRoids
             get { return GetIfLoaded(m_sPlayerTeleportSnd); }
         }
         private static string m_sPlayerTeleportSnd; // Player Teleport Sound Path
+        public static int PlayerTeleportFrames
+        {
+            get { return GetIfLoaded(m_iPlayerTeleportFrames); }
+        }
+        private static int m_iPlayerTeleportFrames;
+        public static int PlayerTeleportRows
+        {
+            get { return GetIfLoaded(m_iPlayerTeleportRows); }
+        }
+        private static int m_iPlayerTeleportRows;
+        public static int PlayerTeleportColumns
+        {
+            get { return GetIfLoaded(m_iPlayerTeleportColumns); }
+        }
+        private static int m_iPlayerTeleportColumns;
+        public static float PlayerTeleportFPS
+        {
+            get { return GetIfLoaded(m_fPlayerTeleportFPS); }
+        }
+        private static float m_fPlayerTeleportFPS;
+        public static string PlayerTeleportTextureName
+        {
+            get { return GetIfLoaded(m_sPlayerTeleportTextureName); }
+        }
+        private static string m_sPlayerTeleportTextureName;
 
         #endregion
 
@@ -630,7 +655,7 @@ namespace ZombieRoids
                 Reload(a_oMenuNode, "ConfirmSound", ref m_sUIConfirmSnd);
                 Reload(a_oMenuNode, "PauseFadeInTime", ref m_tsPauseFadeInTime);
                 Reload(a_oMenuNode, "PauseOverlay", ref m_sPauseOverlayTextureName);
-                Reload(a_oMenuNode, "PauseOverlayStartTint", ref m_oPauseOverlayEndTint);
+                Reload(a_oMenuNode, "PauseOverlayStartTint", ref m_oPauseOverlayStartTint);
                 Reload(a_oMenuNode, "PauseOverlayEndTint", ref m_oPauseOverlayEndTint);
                 Reload(a_oMenuNode, "PauseScreenMusic", ref m_sUIPSM);
                 Reload(a_oMenuNode, "GameOverDuration", ref m_tsGameOverDuration);
@@ -697,6 +722,11 @@ namespace ZombieRoids
                 Reload(a_oPlayerNode, "DeathSound", ref m_sPlayerDeathSnd);
                 Reload(a_oPlayerNode, "SpawnSound", ref m_sPlayerSpawnSnd);
                 Reload(a_oPlayerNode, "TeleportSound", ref m_sPlayerTeleportSnd);
+                Reload(a_oPlayerNode, "TeleportTexture", ref m_sPlayerTeleportTextureName);
+                Reload(a_oPlayerNode, "TeleportRows", ref m_iPlayerTeleportRows);
+                Reload(a_oPlayerNode, "TeleportColumns", ref m_iPlayerTeleportColumns);
+                Reload(a_oPlayerNode, "TeleportFrames", ref m_iPlayerTeleportFrames);
+                Reload(a_oPlayerNode, "TeleportFPS", ref m_fPlayerTeleportFPS);
             }
         }
 

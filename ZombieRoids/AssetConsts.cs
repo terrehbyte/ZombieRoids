@@ -9,13 +9,13 @@
 ///     June 6, 2014
 /// </description></item>
 /// <item><term>Last Modified By</term><description>
-///     Terry Nguyen
+///     Elizabeth Lowry
 /// </description></item>
 /// <item><term>Last Modified</term><description>
-///     June 10, 2014
+///     June 14, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Merging 'dev' into 'feature-terry'
+///     Particle System
 /// </description></item>
 /// </list>
 
@@ -44,6 +44,7 @@ namespace ZombieRoids
         {
             // Load textures
             PlayerTexture = a_oContent.Load<Texture2D>(GameConsts.PlayerTextureName);
+            PlayerTeleportTexture = a_oContent.Load<Texture2D>(GameConsts.PlayerTeleportTextureName);
             BulletTexture = a_oContent.Load<Texture2D>(GameConsts.BulletTextureName);
             ZombieTexture = a_oContent.Load<Texture2D>(GameConsts.ZombieTextureName);
             BackgroundTexture = a_oContent.Load<Texture2D>(GameConsts.BackgroundTextureName);
@@ -72,6 +73,7 @@ namespace ZombieRoids
         #region Variables
         // Entities
         public static Texture2D PlayerTexture { get; private set; }
+        public static Texture2D PlayerTeleportTexture { get; private set; }
         public static Texture2D BulletTexture { get; private set; }
         public static Texture2D ZombieTexture { get; private set; }
 
