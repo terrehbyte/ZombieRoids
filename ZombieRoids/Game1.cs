@@ -1,12 +1,39 @@
-﻿#region Using Statements
+﻿/// <list type="table">
+/// <listheader><term>Game.cs</term><description>
+///     The main class for the game as a whole.
+/// </description></listheader>
+/// <item><term>Author</term><description>
+///     Terry Nguyen
+/// </description></item>
+/// <item><term>Date Created</term><description>
+///     May 27, 2014
+/// </description></item>
+/// <item><term>Last Modified By</term><description>
+///     Terry Nguyen
+/// </description></item>
+/// <item><term>Last Modified</term><description>
+///     June 10, 2014
+/// </description></item>
+/// <item><term>Last Modification</term><description>
+///     Added logic for moving to gameplay from mainmenu
+/// </description></item>
+/// </list>
+
+#region Using Statements
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Input.Touch;
 using Microsoft.Xna.Framework.Storage;
 using Microsoft.Xna.Framework.GamerServices;
+using Microsoft.Xna.Framework.Audio;
+using System.Diagnostics;
+
+using Utility;
 #endregion
 
 namespace ZombieRoids
@@ -16,13 +43,22 @@ namespace ZombieRoids
     /// </summary>
     public class Game1 : Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        #region Props & Vars
 
+        // Used for handling graphics
+        private GraphicsDeviceManager m_oGraphics;
+
+        #endregion
+
+        #region FrameworkMethods
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public Game1()
             : base()
         {
-            graphics = new GraphicsDeviceManager(this);
+            m_oGraphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
 
@@ -34,9 +70,12 @@ namespace ZombieRoids
         /// </summary>
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
-
             base.Initialize();
+
+            StateStack.RegisterGame(this);
+
+            // Initialize Any Global Data
+            StateStack.AddState(StateStack.State.MAINMENU);
         }
 
         /// <summary>
@@ -45,10 +84,7 @@ namespace ZombieRoids
         /// </summary>
         protected override void LoadContent()
         {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            // TODO: use this.Content to load your game content here
+            // Load Any Global Content
         }
 
         /// <summary>
@@ -57,7 +93,8 @@ namespace ZombieRoids
         /// </summary>
         protected override void UnloadContent()
         {
-            // TODO: Unload any non ContentManager content here
+            Content.Unload();
+            // Unload All States
         }
 
         /// <summary>
@@ -67,12 +104,13 @@ namespace ZombieRoids
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            // Update State
+            StateStack.Update(gameTime);
+
+            if (StateStack.StackCount <= 0)
+            {
                 Exit();
-
-            // TODO: Add your update logic here
-
-            base.Update(gameTime);
+            }
         }
 
         /// <summary>
@@ -81,11 +119,12 @@ namespace ZombieRoids
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
-
-            // TODO: Add your drawing code here
-
+            // Get ready to draw
+            GraphicsDevice.Clear(Color.Black);
+            // Draw State
+            StateStack.Draw(gameTime);
             base.Draw(gameTime);
         }
+        #endregion
     }
 }

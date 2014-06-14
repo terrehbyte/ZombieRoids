@@ -1,0 +1,37 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<GameConstants>
+  <MenuConstants SelectSound="Sounds/StarThrow" ConfirmSound="Sounds/Teleport"
+                 PauseFadeInTime="0.1" PauseOverlay="Graphics/Menu/PausedOverlay"
+                 PauseOverlayStartTint="#00FF0000" PauseOverlayEndTint="#80FF0000"
+                 PauseScreenMusic="Sounds/PauseMenu" GameOverDuration="5"
+                 GameOverOverlay="Graphics/Menu/GameOverOverlay"
+                 GameOverOverlayStartTint="#00FF0000" GameOverOverlayEndTint="#FFFF0000"
+                 TitleScreen="Graphics/Menu/TitleScreen"
+                 ButtonClickTint="#FFFF0000" ButtonHoverTint="#80FF0000"
+                 ButtonNormalTint="#80C0C0C0" ButtonSelectedTint="#80C00000"
+                 NewGameButton="Graphics/Menu/NewGameButton" NewGameButtonX="240" NewGameButtonY="360"
+                 ExitButton="Graphics/Menu/ExitButton" ExitButtonX="600" ExitButtonY="360" />
+  <WorldConstants Background="Graphics/World/Floor" ScoreFont="GameFont"
+                  LifeGainPoints="10000" ScoreX="25" ScoreY="25" LivesX="25" LivesY="50"
+                  WaveCountX="25" WaveCountY="75" EnemyCountX="25" EnemyCountY="100"
+                  Overlay1Texture="Graphics/World/Fog 1" Overlay1Speed="-30"
+                  Overlay2Texture="Graphics/World/Fog 2" Overlay2Speed="-60"
+                  BackgroundMusic="Sounds/Background" LifeGainSound="Sounds/ExtraLife" />
+  <PlayerConstants BaseHP="100" Speed="150" ShotDelay="0.2" NormalTint="#FFFFFFFF"
+                   InvulnerableTint="#C0FF0000" InvulnerabilityPeriod="2.0"
+                   InitialLives="3" Texture="Graphics/Player/Player"
+                   ShootSound="Sounds/StarThrow" DeathSound="Sounds/PlayerDeath"
+                   SpawnSound="Sounds/Teleport" TeleportSound="Sounds/Teleport"
+                   TeleportTexture="Graphics/Player/CloudAnimation" TeleportFPS="16"
+                   TeleportFrames="16" TeleportRows="2" TeleportColumns="8"/>
+  <BulletConstants LifeTime="2.0" Speed="250" Spin="10" Damage="10"
+                   Texture="Graphics/Player/Star" />
+  <ZombieConstants BaseHP="10" Speed="120" Damage="10" Value="100"
+                   InitialFragmentCount="2" FragmentMinSpeed="100" FragmentMaxSpeed="200"
+                   FragmentDeltaSpeed="100" FragmentDeltaPosition="50"
+                   FragmentScale="0.65" Texture="Graphics/Zombie/ZombieStrip"
+                   TextureFrames="8" TextureRows="8" TextureColumns="1"
+                   FPS="8" DeathSound="Sounds/explosion" />
+  <WaveConstants InitialWaveSize="3" WaveIncrement="2"
+                 WaveInterval="5" EnemySpawnTime="1.0" />
+</GameConstants>
