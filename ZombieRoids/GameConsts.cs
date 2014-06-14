@@ -15,7 +15,7 @@
 ///     June 14, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Particle System
+///     Displaying wave number
 /// </description></item>
 /// </list>
 
@@ -183,6 +183,11 @@ namespace ZombieRoids
             get { return GetIfLoaded(m_v2LivesPosition); }
         }
         private static Vector2 m_v2LivesPosition;
+        public static Vector2 WaveCountPosition
+        {
+            get { return GetIfLoaded(m_v2WaveCountPosition); }
+        }
+        private static Vector2 m_v2WaveCountPosition;
         public static Vector2 EnemyCountPosition
         {
             get { return GetIfLoaded(m_v2EnemyCountPosition); }
@@ -691,6 +696,8 @@ namespace ZombieRoids
                 Reload(a_oWorldNode, "ScoreY", ref m_v2ScorePosition.Y);
                 Reload(a_oWorldNode, "LivesX", ref m_v2LivesPosition.X);
                 Reload(a_oWorldNode, "LivesY", ref m_v2LivesPosition.Y);
+                Reload(a_oWorldNode, "WaveCountX", ref m_v2WaveCountPosition.X);
+                Reload(a_oWorldNode, "WaveCountY", ref m_v2WaveCountPosition.Y);
                 Reload(a_oWorldNode, "EnemyCountX", ref m_v2EnemyCountPosition.X);
                 Reload(a_oWorldNode, "EnemyCountY", ref m_v2EnemyCountPosition.Y);
                 Reload(a_oWorldNode, "Overlay1Texture", ref m_sOverlay1TextureName);

@@ -15,7 +15,7 @@
 ///     June 11, 2014
 /// </description></item>
 /// <item><term>Last Modification</term><description>
-///     Animating Zombie
+///     Displaying wave number
 /// </description></item>
 /// </list>
 using System;
@@ -253,10 +253,33 @@ namespace ZombieRoids
             m_oSpriteBatch.DrawString(GameAssets.ScoreFont, "Lives: " + m_oPlayer.Lives,
                                       GameConsts.LivesPosition, Color.Black);
 
-            // Draw enemy count
-            m_oSpriteBatch.DrawString(GameAssets.ScoreFont,
-                                      "Enemies Remaining: " + m_oEnemies.Count,
-                                      GameConsts.EnemyCountPosition, Color.Black);
+            if (Enemies.Count > 0 || m_iEnemyWaveQueue > 0)
+            {
+                // Draw wave number
+                m_oSpriteBatch.DrawString(GameAssets.ScoreFont,
+                                          "Wave #" + m_iEnemyWaveCurrent,
+                                          GameConsts.WaveCountPosition, Color.Black);
+
+                // Draw enemy count
+                m_oSpriteBatch.DrawString(GameAssets.ScoreFont,
+                                          "Enemies Remaining: " + m_oEnemies.Count,
+                                          GameConsts.EnemyCountPosition, Color.Black);
+            }
+            // Draw time until next wave
+            else if (m_tsTimeUntilNextWave.TotalSeconds < 1.0f)
+            {
+                m_oSpriteBatch.DrawString(GameAssets.ScoreFont,
+                                          String.Format("Next Wave in {0:F1} Seconds",
+                                                        m_tsTimeUntilNextWave.TotalSeconds),
+                                          GameConsts.WaveCountPosition, Color.Red);
+            }
+            else
+            {
+                m_oSpriteBatch.DrawString(GameAssets.ScoreFont,
+                                          "Next Wave in " +
+                                          (int)m_tsTimeUntilNextWave.TotalSeconds + " Seconds",
+                                          GameConsts.WaveCountPosition, Color.Black);
+            }
 
             // If game over, draw game over overlay
             if (GameOver)
@@ -312,14 +335,16 @@ namespace ZombieRoids
         {
             // Calculate time since last spawn
             m_tsTimeSinceEnemySpawn += a_oContext.time.ElapsedGameTime;
-            m_tsTimeUntilNextWave -= a_oContext.time.ElapsedGameTime;
+            if (Enemies.Count == 0 && m_iEnemyWaveQueue == 0)
+            {
+                m_tsTimeUntilNextWave -= a_oContext.time.ElapsedGameTime;
+            }
 
             // Has enough time passed to spawn another enemy?
             if (m_tsTimeSinceEnemySpawn > GameConsts.SpawnDelay)
             {
                 // Are there any enemies left to spawn?
-                if (m_iEnemyWaveQueue > 0 &&
-                    TimeSpan.Zero > m_tsTimeUntilNextWave)
+                if (m_iEnemyWaveQueue > 0)
                 {
                     m_tsTimeSinceEnemySpawn = TimeSpan.Zero;
                     Enemy.Spawn(a_oContext);
@@ -348,7 +373,7 @@ namespace ZombieRoids
             if (m_oEnemies.Count == 0 && m_iEnemyWaveQueue == 0)
             {
                 // Assign values for next wave
-                if (TimeSpan.Zero > m_tsTimeUntilNextWave)
+                if (TimeSpan.Zero >= m_tsTimeUntilNextWave)
                 {
                     // Calculate new queue
                     // queue = base + (waves * incPerWave)
