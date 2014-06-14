@@ -12,8 +12,8 @@
                  NewGameButton="Graphics/Menu/NewGameButton" NewGameButtonX="240" NewGameButtonY="360"
                  ExitButton="Graphics/Menu/ExitButton" ExitButtonX="600" ExitButtonY="360" />
   <WorldConstants Background="Graphics/World/Floor" ScoreFont="GameFont"
-                  LifeGainPoints="10000" ScoreX="25" ScoreY="25" LivesX="25"
-                  LivesY="50" EnemyCountX="25" EnemyCountY="75"
+                  LifeGainPoints="10000" ScoreX="25" ScoreY="25" LivesX="25" LivesY="50"
+                  WaveCountX="25" WaveCountY="75" EnemyCountX="25" EnemyCountY="100"
                   Overlay1Texture="Graphics/World/Fog 1" Overlay1Speed="-30"
                   Overlay2Texture="Graphics/World/Fog 2" Overlay2Speed="-60"
                   BackgroundMusic="Sounds/Background" LifeGainSound="Sounds/ExtraLife" />
